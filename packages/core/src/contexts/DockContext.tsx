@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { logger } from '@/lib/logger';
+import { logger } from '../lib/logger';
 
 interface DockItem {
   id: string;

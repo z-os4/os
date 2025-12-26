@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { DockProvider, DesktopSettingsProvider } from '@zos/core';
-import { loadApp, getAvailableApps, type AppManifest } from '@zos/apps-loader';
+import { DockProvider } from '@z-os/core';
 import Desktop from './components/Desktop';
 
 // System states
@@ -39,19 +38,17 @@ function App() {
   }
 
   return (
-    <DesktopSettingsProvider>
-      <DockProvider>
-        <div className="h-screen w-screen overflow-hidden bg-black">
-          <Desktop
-            isLocked={systemState === 'locked'}
-            onUnlock={handleUnlock}
-            onShutdown={handleShutdown}
-            onRestart={handleRestart}
-            onLock={handleLock}
-          />
-        </div>
-      </DockProvider>
-    </DesktopSettingsProvider>
+    <DockProvider>
+      <div className="h-screen w-screen overflow-hidden bg-black">
+        <Desktop
+          isLocked={systemState === 'locked'}
+          onUnlock={handleUnlock}
+          onShutdown={handleShutdown}
+          onRestart={handleRestart}
+          onLock={handleLock}
+        />
+      </div>
+    </DockProvider>
   );
 }
 

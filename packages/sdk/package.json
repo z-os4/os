@@ -1,5 +1,5 @@
 {
-  "name": "@zos/sdk",
+  "name": "@z-os/sdk",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,7 +22,8 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "@zos/core": "workspace:*"
+    "@z-os/core": "workspace:*",
+    "@z-os/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

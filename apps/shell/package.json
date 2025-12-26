@@ -10,10 +10,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@zos/core": "workspace:*",
-    "@zos/ui": "workspace:*",
-    "@zos/sdk": "workspace:*",
-    "@zos/apps-loader": "workspace:*",
+    "@z-os/core": "workspace:*",
+    "@z-os/ui": "workspace:*",
+    "@z-os/sdk": "workspace:*",
+    "@z-os/apps-loader": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

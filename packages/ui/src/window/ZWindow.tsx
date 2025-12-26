@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import WindowTitleBar from './window/WindowTitleBar';
-import WindowResizeHandle from './window/WindowResizeHandle';
-import { getWindowStyle, getNextZIndex, getResponsiveWindowSize, getResponsiveWindowPosition } from './window/windowUtils';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { ANIMATION_DURATIONS } from '@/utils/animationConstants';
+import { cn } from '../lib/utils';
+import { useIsMobile } from '@z-os/core';
+import WindowTitleBar from './WindowTitleBar';
+import WindowResizeHandle from './WindowResizeHandle';
+import { getWindowStyle, getNextZIndex, getResponsiveWindowSize, getResponsiveWindowPosition } from './windowUtils';
+import { ANIMATION_DURATIONS } from '../constants';
 
 export interface ZWindowProps {
   title: string;

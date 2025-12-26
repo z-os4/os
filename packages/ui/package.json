@@ -1,5 +1,5 @@
 {
-  "name": "@zos/ui",
+  "name": "@z-os/ui",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,10 +13,6 @@
     "./window": {
       "import": "./dist/window/index.js",
       "types": "./dist/window/index.d.ts"
-    },
-    "./dock": {
-      "import": "./dist/dock/index.js",
-      "types": "./dist/dock/index.d.ts"
     }
   },
   "scripts": {
@@ -30,7 +26,7 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "@zos/core": "workspace:*",
+    "@z-os/core": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",

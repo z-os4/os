@@ -6,13 +6,13 @@ A modular, composable web-based operating system built with React.
 
 ```
 packages/
-  @zos/core       # Window manager, hooks, contexts, services
-  @zos/ui         # UI components (ZWindow, Dock, etc.)
-  @zos/sdk        # App development SDK
-  @zos/apps-loader # Dynamic app loading from CDN
+  @z-os/core        # Window manager, hooks, contexts, services
+  @z-os/ui          # UI components (ZWindow, etc.)
+  @z-os/sdk         # App development SDK
+  @z-os/apps-loader # Dynamic app loading from CDN
 
 apps/
-  shell           # Minimal shell app that composes everything
+  shell             # Minimal shell app that composes everything
 ```
 
 ## Quick Start
@@ -30,30 +30,33 @@ pnpm build
 
 ## Package Structure
 
-### @zos/core
+### @z-os/core
 Core OS functionality:
 - `useWindowManager` - Window state management
 - `useDesktopSettings` - Theme, wallpaper, dock settings
 - `useOverlays` - Modal/overlay management
-- `DockContext` - Dock state
-- `appLoader` - GitHub app loading service
+- `DockProvider` / `useDock` - Dock state management
+- `TerminalProvider` / `useTerminal` - Terminal emulator
+- `logger` - Unified logging utility
 
-### @zos/ui
+### @z-os/ui
 UI components:
-- `ZWindow` - Window component with titlebar, resize, etc.
-- Dock components (DockItem, ApplicationsPopover, etc.)
-- Icons and logos
+- `ZWindow` - macOS-style window with titlebar, resize, drag
+- `WindowTitleBar` - Window title bar with traffic light controls
+- `WindowControls` - Close/minimize/maximize buttons
+- `cn` - Tailwind class name utility
 
-### @zos/sdk
+### @z-os/sdk
 App development SDK:
-- `ZOSApp` - App wrapper component
-- Hooks: `useApp`, `useStorage`, `useNotifications`, etc.
+- `ZOSApp` - App wrapper component with standard window chrome
+- `useSDK` - Access all SDK functionality
+- Hooks: `useApp`, `useStorage`, `useNotifications`, `useFileSystem`, etc.
 - Types for app manifests
 
-### @zos/apps-loader
+### @z-os/apps-loader
 Dynamic app loading:
-- Load apps from zos-apps GitHub org via ESM CDN
-- Registry caching
+- Load apps from zos-apps GitHub org via ESM CDN (jsDelivr)
+- Registry caching with GitHub Pages
 - Sandbox/error boundary
 
 ## Creating Apps
@@ -79,19 +82,44 @@ Apps are loaded dynamically from the `zos-apps` GitHub organization.
 ### App Component
 
 ```tsx
-import { ZOSApp, useApp } from '@zos/sdk';
+import { ZOSApp, useSDK } from '@z-os/sdk';
+
+const manifest = {
+  identifier: 'com.example.myapp',
+  name: 'My App',
+  version: '1.0.0',
+};
 
 export default function MyApp({ onClose }) {
-  const { manifest } = useApp();
-
   return (
-    <ZOSApp>
-      <h1>{manifest.name}</h1>
-      <button onClick={onClose}>Close</button>
+    <ZOSApp manifest={manifest} onClose={onClose}>
+      <MyAppContent />
     </ZOSApp>
   );
 }
+
+function MyAppContent() {
+  const { app, notifications } = useSDK();
+
+  return (
+    <div>
+      <h1>{app.manifest.name}</h1>
+      <button onClick={() => notifications.show({ title: 'Hello!' })}>
+        Notify
+      </button>
+    </div>
+  );
+}
 ```
+
+## Bundle Sizes
+
+| Package | Size (gzip) |
+|---------|-------------|
+| @z-os/core | ~4 KB |
+| @z-os/ui | ~14 KB |
+| @z-os/sdk | ~20 KB |
+| @z-os/apps-loader | ~4 KB |
 
 ## License
 

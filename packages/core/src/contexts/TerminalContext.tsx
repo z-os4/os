@@ -1,32 +1,29 @@
-
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { WebContainer } from '@webcontainer/api';
-import { logger } from '@/lib/logger';
-import { TerminalContextType, TerminalEntry, EditorState } from '@/types/terminal';
-import { initializeWebContainer } from '@/utils/webContainerUtil';
-import { processCommand } from '@/utils/terminalCommandUtil';
-import { updateFileContent } from '@/utils/terminalFileSystem';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { logger } from '../lib/logger';
+import type { TerminalContextType, TerminalEntry, EditorState } from '../types/terminal';
 
 // Create the context with default values
 const TerminalContext = createContext<TerminalContextType | null>(null);
 
 interface TerminalProviderProps {
   children: React.ReactNode;
+  // Optional command handler - allows external integration (e.g., WebContainer)
+  onExecuteCommand?: (command: string) => Promise<string | void>;
 }
 
-export const TerminalProvider: React.FC<TerminalProviderProps> = ({ children }) => {
+export const TerminalProvider: React.FC<TerminalProviderProps> = ({
+  children,
+  onExecuteCommand,
+}) => {
   const [entries, setEntries] = useState<TerminalEntry[]>([
     {
       command: '',
       output: `Welcome to zOS v4.2.0 - z@zeekay.ai
-Type 'help' for commands, 'neofetch' for system info
-Try 'cd Documents' for GitHub projects, 'ellipsis' for dotfiles`,
+Type 'help' for commands, 'neofetch' for system info`,
       id: 0
     }
   ]);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [webContainerInstance, setWebContainerInstance] = useState<WebContainer | null>(null);
-  const [isWebContainerReady, setIsWebContainerReady] = useState(false);
   const [editorState, setEditorState] = useState<EditorState>({
     isOpen: false,
     fileName: '',
@@ -66,18 +63,9 @@ Try 'cd Documents' for GitHub projects, 'ellipsis' for dotfiles`,
   }, []);
 
   const saveFile = useCallback(async (fileName: string, content: string) => {
-    // Update virtual filesystem
-    updateFileContent(fileName, content);
-    
-    // Also update WebContainer if available
-    if (webContainerInstance && isWebContainerReady) {
-      try {
-        await webContainerInstance.fs.writeFile(fileName, content);
-      } catch (error) {
-        logger.error('Failed to write to WebContainer:', error);
-      }
-    }
-  }, [webContainerInstance, isWebContainerReady]);
+    logger.info(`Saving file: ${fileName}`);
+    // File saving can be extended with external storage
+  }, []);
 
   const addEntry = useCallback((entry: Omit<TerminalEntry, 'id'> & { id?: number }) => {
     setEntries(prev => [
@@ -93,36 +81,94 @@ Try 'cd Documents' for GitHub projects, 'ellipsis' for dotfiles`,
     setEntries([]);
   }, []);
 
-  useEffect(() => {
-    const init = async () => {
-      const instance = await initializeWebContainer(addEntry);
-      if (instance) {
-        setWebContainerInstance(instance);
-        setIsWebContainerReady(true);
-      }
-    };
-
-    init();
-  }, [addEntry]);
-
   const executeCommand = async (command: string): Promise<void> => {
-    await processCommand(
-      command,
-      webContainerInstance,
-      isWebContainerReady,
-      addEntry,
-      clearEntries,
-      commandHistory,
-      openEditor
-    );
+    // Add to history
+    setCommandHistory(prev => [...prev, command]);
+
+    // Add command entry
+    addEntry({ command, output: '' });
+
+    // Handle built-in commands
+    const trimmed = command.trim().toLowerCase();
+
+    if (trimmed === 'clear') {
+      clearEntries();
+      return;
+    }
+
+    if (trimmed === 'help') {
+      addEntry({
+        command: '',
+        output: `Available commands:
+  help      - Show this help
+  clear     - Clear terminal
+  neofetch  - System info
+  echo      - Print text
+  date      - Current date/time`,
+      });
+      return;
+    }
+
+    if (trimmed === 'neofetch') {
+      addEntry({
+        command: '',
+        output: `
+   ____  _____
+  |_  / / _ \\/ __|
+   / / | (_) \\__ \\
+  /___| \\___/|___/
+
+  OS: zOS v4.2.0
+  Host: Web Browser
+  Kernel: React 18
+  Shell: zsh`,
+      });
+      return;
+    }
+
+    if (trimmed.startsWith('echo ')) {
+      addEntry({
+        command: '',
+        output: command.slice(5),
+      });
+      return;
+    }
+
+    if (trimmed === 'date') {
+      addEntry({
+        command: '',
+        output: new Date().toString(),
+      });
+      return;
+    }
+
+    // Try external command handler if provided
+    if (onExecuteCommand) {
+      try {
+        const result = await onExecuteCommand(command);
+        if (result) {
+          addEntry({ command: '', output: result });
+        }
+      } catch (error) {
+        logger.error('Command execution error:', error);
+        addEntry({ command: '', output: `Error: ${error}` });
+      }
+      return;
+    }
+
+    // Unknown command
+    addEntry({
+      command: '',
+      output: `zsh: command not found: ${command.split(' ')[0]}`,
+    });
   };
 
   const contextValue: TerminalContextType = {
     entries,
     addEntry,
     executeCommand,
-    webContainerInstance,
-    isWebContainerReady,
+    webContainerInstance: null,
+    isWebContainerReady: false,
     commandHistory,
     setCommandHistory,
     clearEntries,
@@ -145,10 +191,10 @@ Try 'cd Documents' for GitHub projects, 'ellipsis' for dotfiles`,
 // Custom hook to use the terminal context
 export const useTerminal = () => {
   const context = useContext(TerminalContext);
-  
+
   if (!context) {
     throw new Error('useTerminal must be used within a TerminalProvider');
   }
-  
+
   return context;
 };

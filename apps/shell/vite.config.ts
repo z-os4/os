@@ -16,8 +16,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'zos-core': ['@zos/core'],
-          'zos-ui': ['@zos/ui'],
+          'zos-core': ['@z-os/core'],
+          'zos-ui': ['@z-os/ui'],
         },
       },
     },

@@ -1,5 +1,6 @@
 export { default as ZWindow } from './ZWindow';
-export { WindowTitleBar } from './WindowTitleBar';
-export { WindowControls } from './WindowControls';
-export { WindowResizeHandle } from './WindowResizeHandle';
+export type { ZWindowProps } from './ZWindow';
+export { default as WindowTitleBar } from './WindowTitleBar';
+export { default as WindowControls } from './WindowControls';
+export { default as WindowResizeHandle } from './WindowResizeHandle';
 export * from './windowUtils';

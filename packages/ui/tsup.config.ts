@@ -4,12 +4,11 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     'window/index': 'src/window/index.ts',
-    'dock/index': 'src/dock/index.ts',
   },
   format: ['esm'],
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', '@zos/core'],
+  external: ['react', 'react-dom', '@z-os/core'],
   treeshake: true,
 });

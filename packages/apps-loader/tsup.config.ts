@@ -6,6 +6,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', '@zos/core', '@zos/sdk'],
+  external: ['react', 'react-dom', '@z-os/core', '@z-os/sdk'],
   treeshake: true,
 });

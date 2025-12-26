@@ -1,6 +1,6 @@
 import React, { useState, useCallback, Suspense } from 'react';
-import { useWindowManager, useDesktopSettings, type AppType } from '@zos/core';
-import { loadApp, type LoadedApp } from '@zos/apps-loader';
+import { useWindowManager, useDesktopSettings, type AppType } from '@z-os/core';
+import { loadApp, type LoadedApp } from '@z-os/apps-loader';
 
 interface DesktopProps {
   isLocked: boolean;
@@ -58,7 +58,8 @@ const Desktop: React.FC<DesktopProps> = ({
   onLock,
 }) => {
   const windows = useWindowManager();
-  const { wallpaper } = useDesktopSettings();
+  const { theme, customBgUrl } = useDesktopSettings();
+  const wallpaper = customBgUrl || `/wallpapers/${theme}.jpg`;
   const [dynamicApps, setDynamicApps] = useState<string[]>([]);
 
   const openDynamicApp = useCallback((identifier: string) => {
