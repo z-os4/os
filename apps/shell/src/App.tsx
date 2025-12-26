@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { DockProvider } from '@z-os/core';
 import Desktop from './components/Desktop';
+import BootSequence from './components/BootSequence';
 
 // System states
 type SystemState = 'booting' | 'running' | 'locked' | 'sleeping' | 'shutdown';
 
 function App() {
-  const [systemState, setSystemState] = useState<SystemState>('running');
+  const [systemState, setSystemState] = useState<SystemState>('booting');
 
   const handleShutdown = useCallback(() => setSystemState('shutdown'), []);
   const handleRestart = useCallback(() => {
@@ -25,16 +26,7 @@ function App() {
   }
 
   if (systemState === 'booting') {
-    return (
-      <div className="h-screen w-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4">🍎</div>
-          <div className="w-32 h-1 bg-white/20 rounded-full overflow-hidden">
-            <div className="h-full bg-white animate-pulse" style={{ width: '60%' }} />
-          </div>
-        </div>
-      </div>
-    );
+    return <BootSequence onComplete={() => setSystemState('running')} />;
   }
 
   return (

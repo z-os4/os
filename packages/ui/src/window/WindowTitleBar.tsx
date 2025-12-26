@@ -29,26 +29,19 @@ const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
   const isMobile = useIsMobile();
   
   const getTitleBarStyle = () => {
+    // Modern macOS - seamless transparent title bar that blends with window content
     switch (windowType) {
       case 'terminal':
-        return 'bg-black text-gray-500'; // Pure black like iTerm2
-      case 'safari':
-        return 'glass-titlebar text-gray-300';
-      case 'itunes':
-        return 'glass-titlebar text-white';
-      case 'textpad':
-        return 'glass-titlebar text-gray-300';
+        return 'bg-transparent text-gray-500'; // Seamless with terminal content
       default:
-        return 'glass-titlebar text-gray-300';
+        return 'bg-transparent text-white/60';
     }
   };
 
-  // Terminal has no visible title, cleaner border
+  // Modern macOS - no visible border between title bar and content
   const getBorderStyle = () => {
-    if (windowType === 'terminal') {
-      return 'border-b border-gray-800';
-    }
-    return 'border-b border-white/10';
+    // No border for seamless unified look
+    return '';
   };
 
   // For terminal, hide the title text

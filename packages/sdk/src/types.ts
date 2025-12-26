@@ -487,3 +487,131 @@ export type SystemEvent =
   | 'system:theme-change'
   | 'system:font-size-change'
   | 'system:dock-position-change';
+
+// ============================================================================
+// App Menu Types
+// ============================================================================
+
+/**
+ * Menu bar configuration for an app
+ */
+export interface AppMenuBar {
+  /** Menu items to show when this app is focused */
+  menus: AppMenu[];
+}
+
+/**
+ * A menu in the menu bar (e.g., "File", "Edit", "View")
+ */
+export interface AppMenu {
+  /** Menu label shown in menu bar */
+  label: string;
+
+  /** Unique identifier for the menu */
+  id: string;
+
+  /** Menu items */
+  items: AppMenuItem[];
+
+  /** Hide this menu (e.g., conditionally hide) */
+  hidden?: boolean;
+}
+
+/**
+ * A menu item within a menu
+ */
+export interface AppMenuItem {
+  /** Item type */
+  type: 'item' | 'separator' | 'submenu';
+
+  /** Item label (not used for separator) */
+  label?: string;
+
+  /** Unique identifier */
+  id?: string;
+
+  /** Keyboard shortcut (e.g., "Cmd+S", "Cmd+Shift+N") */
+  shortcut?: string;
+
+  /** Is item disabled */
+  disabled?: boolean;
+
+  /** Is item checked (for toggle items) */
+  checked?: boolean;
+
+  /** Click handler */
+  onClick?: () => void;
+
+  /** Submenu items (only for type: 'submenu') */
+  submenu?: AppMenuItem[];
+
+  /** Icon (optional) */
+  icon?: React.ReactNode;
+}
+
+/**
+ * useMenu hook return type
+ */
+export interface MenuAPI {
+  /** Set the app's menu bar configuration */
+  setMenuBar: (menuBar: AppMenuBar) => void;
+
+  /** Update a specific menu */
+  updateMenu: (menuId: string, menu: Partial<AppMenu>) => void;
+
+  /** Enable/disable a menu item */
+  setItemEnabled: (menuId: string, itemId: string, enabled: boolean) => void;
+
+  /** Set checked state of a menu item */
+  setItemChecked: (menuId: string, itemId: string, checked: boolean) => void;
+
+  /** Get the current menu bar configuration */
+  getMenuBar: () => AppMenuBar | null;
+}
+
+/**
+ * Standard app menus that follow macOS conventions
+ */
+export type StandardMenu = 'file' | 'edit' | 'view' | 'window' | 'help';
+
+/**
+ * Create standard File menu items
+ */
+export interface StandardFileMenuOptions {
+  onNew?: () => void;
+  onOpen?: () => void;
+  onSave?: () => void;
+  onSaveAs?: () => void;
+  onPrint?: () => void;
+  onClose?: () => void;
+}
+
+/**
+ * Create standard Edit menu items
+ */
+export interface StandardEditMenuOptions {
+  onUndo?: () => void;
+  onRedo?: () => void;
+  onCut?: () => void;
+  onCopy?: () => void;
+  onPaste?: () => void;
+  onSelectAll?: () => void;
+  onFind?: () => void;
+}
+
+/**
+ * App definition - simplified way to define a zOS app
+ */
+export interface ZOSAppDefinition {
+  /** App manifest */
+  manifest: AppManifest;
+
+  /** App menu bar configuration */
+  menuBar?: AppMenuBar;
+
+  /** App component */
+  component: React.ComponentType<{ onClose: () => void }>;
+
+  /** Dock icon component */
+  icon?: React.ComponentType<{ className?: string }>;
+}

@@ -69,6 +69,16 @@ export type {
   FileSystemAPI,
   ClipboardAPI,
   KeyboardAPI,
+  MenuAPI,
+
+  // Menu Types
+  AppMenuBar,
+  AppMenu,
+  AppMenuItem,
+  StandardMenu,
+  StandardFileMenuOptions,
+  StandardEditMenuOptions,
+  ZOSAppDefinition,
 
   // Events
   AppLifecycleEvent,
@@ -93,6 +103,8 @@ export {
   useFileSystem,
   useClipboard,
   useKeyboard,
+  useMenu,
+  subscribeToMenuChanges,
 } from './hooks';
 
 // ============================================================================
@@ -121,6 +133,76 @@ export function createManifest(
     main: 'index.tsx',
     ...partial,
   };
+}
+
+/**
+ * Define a zOS app with all necessary configuration
+ *
+ * @example
+ * ```tsx
+ * import { defineApp, AppManifest, AppMenuBar } from '@z-os/sdk';
+ *
+ * const TextEditApp = defineApp({
+ *   manifest: {
+ *     identifier: 'ai.hanzo.textedit',
+ *     name: 'TextEdit',
+ *     version: '1.0.0',
+ *     category: 'productivity',
+ *     window: {
+ *       type: 'textpad',
+ *       defaultSize: { width: 600, height: 400 },
+ *     },
+ *   },
+ *   menuBar: {
+ *     menus: [
+ *       { id: 'file', label: 'File', items: [...] },
+ *       { id: 'edit', label: 'Edit', items: [...] },
+ *     ],
+ *   },
+ *   icon: TextEditIcon,
+ *   component: TextEditContent,
+ * });
+ *
+ * export default TextEditApp;
+ * ```
+ */
+export function defineApp(definition: import('./types').ZOSAppDefinition): import('./types').ZOSAppDefinition {
+  return {
+    ...definition,
+    manifest: createManifest(definition.manifest),
+  };
+}
+
+/**
+ * App registry for managing registered apps
+ */
+export class AppRegistry {
+  private static apps = new Map<string, import('./types').ZOSAppDefinition>();
+
+  /** Register an app */
+  static register(app: import('./types').ZOSAppDefinition): void {
+    this.apps.set(app.manifest.identifier, app);
+  }
+
+  /** Get an app by identifier */
+  static get(identifier: string): import('./types').ZOSAppDefinition | undefined {
+    return this.apps.get(identifier);
+  }
+
+  /** Get all registered apps */
+  static getAll(): import('./types').ZOSAppDefinition[] {
+    return Array.from(this.apps.values());
+  }
+
+  /** Check if an app is registered */
+  static has(identifier: string): boolean {
+    return this.apps.has(identifier);
+  }
+
+  /** Unregister an app */
+  static unregister(identifier: string): boolean {
+    return this.apps.delete(identifier);
+  }
 }
 
 /**

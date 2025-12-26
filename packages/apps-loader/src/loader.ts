@@ -9,9 +9,13 @@ let registryCache: AppRegistry | null = null;
 let registryCacheTime = 0;
 const REGISTRY_TTL = 5 * 60 * 1000; // 5 minutes
 
+// Registry URLs
+const REGISTRY_URL = 'https://zeekay.io/zos-apps/apps.json';
+const REGISTRY_CDN_URL = 'https://cdn.jsdelivr.net/gh/zeekay/zos-apps@main/docs/apps.json';
+
 /**
  * Fetch the app registry from GitHub Pages
- * Falls back to GitHub API if registry not available
+ * Falls back to jsDelivr CDN if registry not available
  */
 export async function fetchRegistry(): Promise<AppRegistry> {
   // Check cache
@@ -21,102 +25,32 @@ export async function fetchRegistry(): Promise<AppRegistry> {
 
   try {
     // Try GitHub Pages registry first (no rate limit)
-    const res = await fetch('https://zos-apps.github.io/registry/apps.json');
+    const res = await fetch(REGISTRY_URL);
     if (res.ok) {
       registryCache = await res.json();
       registryCacheTime = Date.now();
       return registryCache!;
     }
   } catch {
-    // Fall through to GitHub API
+    // Fall through to CDN fallback
   }
 
-  // Fallback: fetch from GitHub API
-  return fetchRegistryFromGitHub();
-}
-
-/**
- * Fetch app list from GitHub API (rate limited)
- */
-async function fetchRegistryFromGitHub(): Promise<AppRegistry> {
-  const response = await fetch(
-    'https://api.github.com/orgs/zos-apps/repos?per_page=100&sort=updated'
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-
-  const repos = await response.json();
-  const apps: Record<string, RegistryEntry> = {};
-
-  for (const repo of repos) {
-    if (repo.name === 'template' || repo.name === '.github' || repo.name === 'registry') {
-      continue;
+  // Fallback: fetch from jsDelivr CDN
+  try {
+    const res = await fetch(REGISTRY_CDN_URL);
+    if (res.ok) {
+      registryCache = await res.json();
+      registryCacheTime = Date.now();
+      return registryCache!;
     }
-
-    try {
-      const manifest = await fetchManifestFromGitHub(repo.full_name);
-      apps[manifest.identifier] = {
-        name: manifest.name,
-        version: manifest.version,
-        cdn: getCDNUrl(repo.name, manifest.version),
-        manifest,
-      };
-    } catch {
-      // Skip repos without valid manifest
-    }
+  } catch {
+    // Fall through to empty registry
   }
 
-  const registry: AppRegistry = {
-    apps,
-    updated: new Date().toISOString(),
-  };
-
-  registryCache = registry;
-  registryCacheTime = Date.now();
-  return registry;
+  // Return empty registry if all fails
+  return { apps: {}, updated: new Date().toISOString() };
 }
 
-/**
- * Fetch manifest from package.json in GitHub repo
- */
-async function fetchManifestFromGitHub(fullName: string): Promise<AppManifest> {
-  const response = await fetch(
-    `https://api.github.com/repos/${fullName}/contents/package.json`
-  );
-
-  if (!response.ok) {
-    throw new Error('No package.json found');
-  }
-
-  const data = await response.json();
-  const content = atob(data.content);
-  const pkg = JSON.parse(content);
-  const zos = pkg.zos || {};
-
-  return {
-    identifier: zos.id || `apps.zos.${fullName.split('/')[1]}`,
-    name: zos.name || pkg.name,
-    version: pkg.version || '1.0.0',
-    description: zos.description || pkg.description,
-    author: pkg.author,
-    category: zos.category || 'other',
-    icon: zos.icon,
-    permissions: zos.permissions || [],
-    repository: `https://github.com/${fullName}`,
-    homepage: pkg.homepage,
-    window: zos.window,
-  };
-}
-
-/**
- * Get CDN URL for an app bundle
- */
-function getCDNUrl(repoName: string, version: string): string {
-  // Use jsDelivr for GitHub repos
-  return `https://cdn.jsdelivr.net/gh/zos-apps/${repoName}@${version}/dist/index.js`;
-}
 
 /**
  * Load an app dynamically from CDN

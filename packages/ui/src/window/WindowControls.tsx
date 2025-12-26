@@ -16,30 +16,38 @@ const WindowControls: React.FC<WindowControlsProps> = ({
   isMaximized = false,
 }) => {
   return (
-    <div className="flex space-x-[6px] items-center group/controls" role="group" aria-label="Window controls">
+    <div className="traffic-lights flex gap-1.5 items-center" role="group" aria-label="Window controls">
       <button
         onClick={onClose}
-        className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff5f57] transition-colors flex items-center justify-center"
+        className="traffic-light traffic-light-close"
         aria-label="Close window"
       >
-        <X className="w-2 h-2 text-[#4d0000] opacity-0 group-hover/controls:opacity-100 transition-opacity" aria-hidden="true" />
+        <svg viewBox="0 0 8 8" className="text-[#4d0000]">
+          <path d="M1 1L7 7M7 1L1 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        </svg>
       </button>
       <button
         onClick={onMinimize}
-        className="w-3 h-3 rounded-full bg-[#febc2e] hover:bg-[#febc2e] transition-colors flex items-center justify-center"
+        className="traffic-light traffic-light-minimize"
         aria-label="Minimize window"
       >
-        <Minus className="w-2 h-2 text-[#995700] opacity-0 group-hover/controls:opacity-100 transition-opacity" aria-hidden="true" />
+        <svg viewBox="0 0 8 8" className="text-[#995700]">
+          <path d="M1 4h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        </svg>
       </button>
       <button
         onClick={onMaximize}
-        className="w-3 h-3 rounded-full bg-[#28c840] hover:bg-[#28c840] transition-colors flex items-center justify-center"
+        className="traffic-light traffic-light-maximize"
         aria-label={isMaximized ? "Restore window" : "Maximize window"}
       >
         {isMaximized ? (
-          <Minimize2 className="w-2 h-2 text-[#006500] opacity-0 group-hover/controls:opacity-100 transition-opacity" aria-hidden="true" />
+          <svg viewBox="0 0 8 8" className="text-[#006500]">
+            <path d="M1.5 2.5h5v5h-5z M2.5 2.5v-1h5v5h-1" stroke="currentColor" strokeWidth="1" fill="none"/>
+          </svg>
         ) : (
-          <Maximize2 className="w-2 h-2 text-[#006500] opacity-0 group-hover/controls:opacity-100 transition-opacity" aria-hidden="true" />
+          <svg viewBox="0 0 8 8" className="text-[#006500]">
+            <path d="M1 1h6v6H1z" stroke="currentColor" strokeWidth="1" fill="none"/>
+          </svg>
         )}
       </button>
     </div>
