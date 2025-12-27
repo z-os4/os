@@ -49,22 +49,12 @@ const WeatherWindow: React.FC<WeatherWindowProps> = ({ onClose, onFocus }) => {
 
   const getWeatherIcon = (condition: string, size = 'w-8 h-8') => {
     const icons: Record<string, React.ReactNode> = {
-      sunny: <Sun className={`${size} text-yellow-400`} />,
-      cloudy: <Cloud className={`${size} text-gray-300`} />,
-      rainy: <CloudRain className={`${size} text-blue-400`} />,
+      sunny: <Sun className={`${size} text-amber-400`} />,
+      cloudy: <Cloud className={`${size} text-white/80`} />,
+      rainy: <CloudRain className={`${size} text-sky-400`} />,
       snowy: <CloudSnow className={`${size} text-white`} />,
     };
     return icons[condition] || icons.sunny;
-  };
-
-  const getGradient = (condition: string) => {
-    const gradients: Record<string, string> = {
-      sunny: 'from-orange-400 via-yellow-300 to-blue-400',
-      cloudy: 'from-gray-500 via-gray-400 to-gray-600',
-      rainy: 'from-gray-600 via-blue-500 to-gray-700',
-      snowy: 'from-blue-200 via-gray-200 to-white',
-    };
-    return gradients[condition] || gradients.sunny;
   };
 
   const refresh = () => {
@@ -88,11 +78,11 @@ const WeatherWindow: React.FC<WeatherWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 380, height: 520 }}
       windowType="system"
     >
-      <div className={`h-full bg-gradient-to-b ${getGradient(weather.condition)} overflow-hidden`}>
+      <div className="h-full bg-black/80 backdrop-blur-2xl overflow-hidden">
         {/* Header */}
-        <div className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <MapPin className="w-4 h-4" />
+        <div className="p-4 flex items-center justify-between border-b border-white/10">
+          <div className="flex items-center gap-2 text-white/90">
+            <MapPin className="w-4 h-4 text-white/60" />
             <span className="font-medium">{weather.city}</span>
           </div>
           <button
@@ -100,7 +90,7 @@ const WeatherWindow: React.FC<WeatherWindowProps> = ({ onClose, onFocus }) => {
             disabled={loading}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 text-white ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 text-white/60 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
@@ -109,62 +99,62 @@ const WeatherWindow: React.FC<WeatherWindowProps> = ({ onClose, onFocus }) => {
           <div className="flex items-center justify-center mb-4">
             {getWeatherIcon(weather.condition, 'w-20 h-20')}
           </div>
-          <div className="text-7xl font-light text-white mb-2">
-            {weather.temp}
+          <div className="text-7xl font-extralight text-white mb-2 tracking-tight">
+            {weather.temp}<span className="text-4xl text-white/50">°</span>
           </div>
-          <div className="text-white/70 text-lg capitalize mb-4">
+          <div className="text-white/60 text-lg capitalize mb-4">
             {weather.condition}
           </div>
-          <div className="text-white/60 text-sm">
-            H:{weather.high} L:{weather.low}
+          <div className="text-white/40 text-sm">
+            H:{weather.high}° L:{weather.low}°
           </div>
         </div>
 
         {/* Weather Details */}
-        <div className="mx-4 mb-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+        <div className="mx-4 mb-4 bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="flex items-center justify-center mb-1">
-                <Droplets className="w-5 h-5 text-white/70" />
+                <Droplets className="w-5 h-5 text-sky-400/80" />
               </div>
               <div className="text-white text-lg font-medium">{weather.humidity}%</div>
-              <div className="text-white/50 text-xs">Humidity</div>
+              <div className="text-white/40 text-xs uppercase tracking-wider">Humidity</div>
             </div>
             <div>
               <div className="flex items-center justify-center mb-1">
-                <Wind className="w-5 h-5 text-white/70" />
+                <Wind className="w-5 h-5 text-white/60" />
               </div>
               <div className="text-white text-lg font-medium">{weather.wind} mph</div>
-              <div className="text-white/50 text-xs">Wind</div>
+              <div className="text-white/40 text-xs uppercase tracking-wider">Wind</div>
             </div>
             <div>
               <div className="flex items-center justify-center mb-1">
-                <ThermometerSun className="w-5 h-5 text-white/70" />
+                <ThermometerSun className="w-5 h-5 text-orange-400/80" />
               </div>
-              <div className="text-white text-lg font-medium">{weather.high}</div>
-              <div className="text-white/50 text-xs">Feels Like</div>
+              <div className="text-white text-lg font-medium">{weather.high}°</div>
+              <div className="text-white/40 text-xs uppercase tracking-wider">Feels Like</div>
             </div>
           </div>
         </div>
 
         {/* 7-Day Forecast */}
-        <div className="mx-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-          <div className="text-white/60 text-xs uppercase tracking-wider mb-3">7-Day Forecast</div>
-          <div className="space-y-2">
+        <div className="mx-4 bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
+          <div className="text-white/40 text-xs uppercase tracking-wider mb-3">7-Day Forecast</div>
+          <div className="space-y-1">
             {weather.forecast.map((day, i) => (
               <div
                 key={day.day}
                 className={`flex items-center justify-between py-2 ${
-                  i < weather.forecast.length - 1 ? 'border-b border-white/10' : ''
+                  i < weather.forecast.length - 1 ? 'border-b border-white/5' : ''
                 }`}
               >
-                <div className="w-12 text-white font-medium">{day.day}</div>
+                <div className="w-12 text-white/80 font-medium">{day.day}</div>
                 <div className="flex-1 flex justify-center">
                   {getWeatherIcon(day.condition, 'w-5 h-5')}
                 </div>
                 <div className="text-right">
-                  <span className="text-white">{day.high}</span>
-                  <span className="text-white/50 ml-2">{day.low}</span>
+                  <span className="text-white/90">{day.high}°</span>
+                  <span className="text-white/40 ml-2">{day.low}°</span>
                 </div>
               </div>
             ))}

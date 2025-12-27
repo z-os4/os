@@ -2,6 +2,7 @@
  * Disk Utility App
  *
  * Storage management and disk operations for zOS.
+ * Unified black glass UI with macOS dark mode aesthetic.
  */
 
 import React, { useState } from 'react';
@@ -114,8 +115,8 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
 
   const getStatusIcon = (status: Drive['status']) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="w-4 h-4 text-green-400" />;
-      case 'warning': return <AlertCircle className="w-4 h-4 text-yellow-400" />;
+      case 'healthy': return <CheckCircle className="w-4 h-4 text-emerald-400" />;
+      case 'warning': return <AlertCircle className="w-4 h-4 text-amber-400" />;
       case 'error': return <AlertCircle className="w-4 h-4 text-red-400" />;
     }
   };
@@ -152,21 +153,25 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
           key={cat.name}
           d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
           className={cat.color.replace('bg-', 'fill-')}
-          opacity={0.9}
+          opacity={0.85}
         />
       );
     });
 
     return (
-      <svg viewBox="0 0 100 100" className="w-40 h-40">
+      <svg viewBox="0 0 100 100" className="w-36 h-36">
         {segments}
-        <circle cx="50" cy="50" r="25" className="fill-[#1e1e1e]" />
+        <circle cx="50" cy="50" r="22" className="fill-black/60" />
       </svg>
     );
   };
 
   const internalDrives = mockDrives.filter(d => d.type === 'internal');
   const externalDrives = mockDrives.filter(d => d.type === 'external');
+
+  // Glass panel styles
+  const glassPanel = "bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-lg shadow-black/20";
+  const glassPanelHover = "hover:bg-white/[0.06] hover:border-white/[0.12]";
 
   return (
     <ZWindow
@@ -177,12 +182,12 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
-        <div className="w-56 bg-black/30 border-r border-white/10 flex flex-col">
-          {/* Internal drives */}
-          <div className="p-2 border-b border-white/10">
-            <span className="text-xs text-white/50 uppercase tracking-wider px-2">Internal</span>
+      <div className="flex h-full bg-black/90">
+        {/* Sidebar - Glass morphism with backdrop blur */}
+        <div className="w-56 bg-white/[0.03] backdrop-blur-2xl border-r border-white/[0.06] flex flex-col">
+          {/* Internal drives section */}
+          <div className="px-4 py-3 border-b border-white/[0.06]">
+            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-widest">Internal</span>
           </div>
           <div className="p-2">
             {internalDrives.map(drive => (
@@ -190,30 +195,40 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                 key={drive.id}
                 onClick={() => setSelectedDrive(drive)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
                   selectedDrive.id === drive.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-white/[0.08] border border-white/[0.1] shadow-sm"
+                    : "hover:bg-white/[0.04] border border-transparent"
                 )}
               >
-                <HardDrive className={cn(
-                  "w-5 h-5",
-                  selectedDrive.id === drive.id ? "text-blue-400" : "text-white/50"
-                )} />
-                <div className="flex-1 text-left">
-                  <div className="flex items-center gap-2">
-                    <span>{drive.name}</span>
+                <div className={cn(
+                  "w-8 h-8 rounded-lg flex items-center justify-center",
+                  selectedDrive.id === drive.id
+                    ? "bg-gradient-to-br from-blue-500/30 to-blue-600/20"
+                    : "bg-white/[0.05]"
+                )}>
+                  <HardDrive className={cn(
+                    "w-4 h-4",
+                    selectedDrive.id === drive.id ? "text-blue-400" : "text-white/50"
+                  )} />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className={cn(
+                      "truncate",
+                      selectedDrive.id === drive.id ? "text-white" : "text-white/80"
+                    )}>{drive.name}</span>
                     {getStatusIcon(drive.status)}
                   </div>
-                  <div className="text-xs text-white/40">{formatSize(getAvailableSpace(drive))} free</div>
+                  <div className="text-[11px] text-white/40">{formatSize(getAvailableSpace(drive))} free</div>
                 </div>
               </button>
             ))}
           </div>
 
-          {/* External drives */}
-          <div className="p-2 border-t border-white/10">
-            <span className="text-xs text-white/50 uppercase tracking-wider px-2">External</span>
+          {/* External drives section */}
+          <div className="px-4 py-3 border-t border-white/[0.06]">
+            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-widest">External</span>
           </div>
           <div className="flex-1 overflow-y-auto p-2">
             {externalDrives.map(drive => (
@@ -221,28 +236,38 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                 key={drive.id}
                 onClick={() => setSelectedDrive(drive)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
                   selectedDrive.id === drive.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-white/[0.08] border border-white/[0.1] shadow-sm"
+                    : "hover:bg-white/[0.04] border border-transparent"
                 )}
               >
-                <Usb className={cn(
-                  "w-5 h-5",
-                  selectedDrive.id === drive.id ? "text-blue-400" : "text-white/50"
-                )} />
-                <div className="flex-1 text-left">
-                  <div className="flex items-center gap-2">
-                    <span>{drive.name}</span>
+                <div className={cn(
+                  "w-8 h-8 rounded-lg flex items-center justify-center",
+                  selectedDrive.id === drive.id
+                    ? "bg-gradient-to-br from-blue-500/30 to-blue-600/20"
+                    : "bg-white/[0.05]"
+                )}>
+                  <Usb className={cn(
+                    "w-4 h-4",
+                    selectedDrive.id === drive.id ? "text-blue-400" : "text-white/50"
+                  )} />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className={cn(
+                      "truncate",
+                      selectedDrive.id === drive.id ? "text-white" : "text-white/80"
+                    )}>{drive.name}</span>
                     {getStatusIcon(drive.status)}
                   </div>
-                  <div className="text-xs text-white/40">{formatSize(getAvailableSpace(drive))} free</div>
+                  <div className="text-[11px] text-white/40">{formatSize(getAvailableSpace(drive))} free</div>
                 </div>
               </button>
             ))}
             {externalDrives.length === 0 && (
-              <div className="text-center text-white/30 text-sm py-4">
-                No external drives
+              <div className="text-center text-white/25 text-xs py-6">
+                No external drives connected
               </div>
             )}
           </div>
@@ -250,17 +275,18 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Toolbar */}
-          <div className="flex items-center justify-between p-3 border-b border-white/10 bg-[#252525]">
+          {/* Toolbar - Glass effect */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-xl">
             <div className="flex items-center gap-2">
               <button
                 onClick={runFirstAid}
                 disabled={operationInProgress !== null}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  glassPanel,
                   operationInProgress
-                    ? "bg-white/5 text-white/30 cursor-not-allowed"
-                    : "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:bg-blue-500/20 hover:border-blue-500/30 text-blue-400"
                 )}
               >
                 <Shield className="w-4 h-4" />
@@ -269,8 +295,10 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
               <button
                 disabled={operationInProgress !== null}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  "hover:bg-white/10 text-white/70"
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  glassPanel,
+                  glassPanelHover,
+                  "text-white/70"
                 )}
               >
                 <LayoutGrid className="w-4 h-4" />
@@ -279,8 +307,9 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
               <button
                 disabled={operationInProgress !== null}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  "hover:bg-red-500/20 text-red-400"
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  glassPanel,
+                  "hover:bg-red-500/15 hover:border-red-500/25 text-red-400/80"
                 )}
               >
                 <Trash2 className="w-4 h-4" />
@@ -290,8 +319,11 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
             <button
               onClick={() => setShowInfo(!showInfo)}
               className={cn(
-                "p-2 rounded-lg transition-colors",
-                showInfo ? "bg-blue-500/20 text-blue-400" : "hover:bg-white/10 text-white/50"
+                "p-2 rounded-lg transition-all duration-200",
+                glassPanel,
+                showInfo 
+                  ? "bg-blue-500/15 border-blue-500/25 text-blue-400" 
+                  : "text-white/50 hover:text-white/70"
               )}
             >
               <Info className="w-4 h-4" />
@@ -300,40 +332,43 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
 
           {/* Operation progress */}
           {operationInProgress && (
-            <div className="p-4 bg-blue-500/10 border-b border-blue-500/20">
+            <div className={cn("mx-4 mt-4 p-4 rounded-xl", glassPanel, "border-blue-500/20 bg-blue-500/[0.08]")}>
               <div className="flex items-center gap-3">
-                <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
+                </div>
                 <div className="flex-1">
                   <p className="text-white font-medium">Running First Aid on "{selectedDrive.name}"</p>
                   <p className="text-sm text-white/50">Checking file system structure...</p>
                 </div>
               </div>
-              <div className="mt-3 h-2 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 rounded-full animate-pulse" style={{ width: '45%' }} />
+              <div className="mt-3 h-1.5 bg-white/[0.08] rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full animate-pulse" style={{ width: '45%' }} />
               </div>
             </div>
           )}
 
           {/* Drive content */}
-          <div className="flex-1 overflow-auto p-6">
-            <div className="space-y-6">
+          <div className="flex-1 overflow-auto p-4">
+            <div className="space-y-4">
               {/* Drive header */}
-              <div className="flex items-start gap-6">
-                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-                  <HardDrive className="w-10 h-10 text-white" />
+              <div className={cn("p-5 rounded-2xl flex items-start gap-5", glassPanel)}>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/40 to-blue-700/30 border border-blue-400/20 flex items-center justify-center shadow-lg shadow-blue-500/10">
+                  <HardDrive className="w-8 h-8 text-blue-300" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-white mb-1">{selectedDrive.name}</h2>
-                  <div className="flex items-center gap-4 text-sm text-white/50">
-                    <span>{selectedDrive.fileSystem}</span>
-                    <span>|</span>
-                    <span>{selectedDrive.mountPoint}</span>
-                    <span>|</span>
-                    <div className="flex items-center gap-1">
+                  <h2 className="text-xl font-semibold text-white mb-1">{selectedDrive.name}</h2>
+                  <div className="flex items-center gap-3 text-sm text-white/50">
+                    <span className="px-2 py-0.5 rounded bg-white/[0.06] text-white/60">{selectedDrive.fileSystem}</span>
+                    <span className="text-white/30">|</span>
+                    <span className="font-mono text-xs">{selectedDrive.mountPoint}</span>
+                    <span className="text-white/30">|</span>
+                    <div className="flex items-center gap-1.5">
                       {getStatusIcon(selectedDrive.status)}
                       <span className={cn(
-                        selectedDrive.status === 'healthy' && "text-green-400",
-                        selectedDrive.status === 'warning' && "text-yellow-400",
+                        "font-medium",
+                        selectedDrive.status === 'healthy' && "text-emerald-400",
+                        selectedDrive.status === 'warning' && "text-amber-400",
                         selectedDrive.status === 'error' && "text-red-400",
                       )}>
                         {selectedDrive.status.charAt(0).toUpperCase() + selectedDrive.status.slice(1)}
@@ -343,9 +378,9 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                 </div>
               </div>
 
-              {/* Capacity info */}
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="flex items-center justify-between mb-3">
+              {/* Capacity info - Glass panel */}
+              <div className={cn("p-5 rounded-2xl", glassPanel)}>
+                <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-white font-medium">Storage</p>
                     <p className="text-sm text-white/50">
@@ -354,18 +389,18 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold text-white">{formatSize(getAvailableSpace(selectedDrive))}</p>
-                    <p className="text-sm text-white/50">Available</p>
+                    <p className="text-sm text-white/40">Available</p>
                   </div>
                 </div>
 
-                {/* Usage bar */}
-                <div className="h-6 bg-white/10 rounded-full overflow-hidden flex">
+                {/* Usage bar - Glass style */}
+                <div className="h-5 bg-white/[0.06] rounded-full overflow-hidden flex border border-white/[0.04]">
                   {selectedDrive.id === 'macintosh-hd' ? (
                     // Show category breakdown for main drive
                     storageCategories.map((cat) => (
                       <div
                         key={cat.name}
-                        className={cn("h-full", cat.color)}
+                        className={cn("h-full transition-all duration-300", cat.color, "opacity-80")}
                         style={{ width: `${(cat.size / selectedDrive.capacity) * 100}%` }}
                         title={`${cat.name}: ${formatSize(cat.size)}`}
                       />
@@ -374,9 +409,9 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                     // Simple usage bar for other drives
                     <div
                       className={cn(
-                        "h-full",
+                        "h-full transition-all duration-300",
                         getUsagePercent(selectedDrive) > 90 ? "bg-red-500" :
-                        getUsagePercent(selectedDrive) > 75 ? "bg-yellow-500" :
+                        getUsagePercent(selectedDrive) > 75 ? "bg-amber-500" :
                         "bg-blue-500"
                       )}
                       style={{ width: `${getUsagePercent(selectedDrive)}%` }}
@@ -387,49 +422,53 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
 
               {/* Storage breakdown (for main drive) */}
               {selectedDrive.id === 'macintosh-hd' && (
-                <div className="grid grid-cols-2 gap-6">
-                  {/* Pie chart */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Pie chart - Glass panel */}
+                  <div className={cn("p-5 rounded-2xl flex items-center justify-center", glassPanel)}>
                     {renderPieChart()}
                   </div>
 
-                  {/* Categories list */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
-                    <h3 className="text-white font-medium mb-3">Storage Breakdown</h3>
-                    {storageCategories.map((cat) => (
-                      <div key={cat.name} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={cn("w-3 h-3 rounded-full", cat.color)} />
-                          <cat.icon className="w-4 h-4 text-white/50" />
-                          <span className="text-white/70">{cat.name}</span>
+                  {/* Categories list - Glass panel */}
+                  <div className={cn("p-5 rounded-2xl", glassPanel)}>
+                    <h3 className="text-white/80 font-medium text-sm mb-4">Storage Breakdown</h3>
+                    <div className="space-y-2.5">
+                      {storageCategories.map((cat) => (
+                        <div key={cat.name} className="flex items-center justify-between py-1">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-2.5 h-2.5 rounded-full", cat.color)} />
+                            <cat.icon className="w-4 h-4 text-white/40" />
+                            <span className="text-white/70 text-sm">{cat.name}</span>
+                          </div>
+                          <span className="text-white/90 font-medium text-sm">{formatSize(cat.size)}</span>
                         </div>
-                        <span className="text-white font-medium">{formatSize(cat.size)}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Partitions */}
+              {/* Partitions - Glass panel */}
               {selectedDrive.partitions && (
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                  <h3 className="text-white font-medium mb-3">Partitions</h3>
+                <div className={cn("p-5 rounded-2xl", glassPanel)}>
+                  <h3 className="text-white/80 font-medium text-sm mb-4">Partitions</h3>
                   <div className="space-y-2">
                     {selectedDrive.partitions.map((partition, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-black/20">
+                      <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
                         <div className="flex items-center gap-3">
-                          <Database className="w-4 h-4 text-white/50" />
+                          <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center">
+                            <Database className="w-4 h-4 text-white/50" />
+                          </div>
                           <div>
-                            <p className="text-white">{partition.name}</p>
+                            <p className="text-white/90 text-sm font-medium">{partition.name}</p>
                             <p className="text-xs text-white/40">
                               {formatSize(partition.used)} used of {formatSize(partition.size)}
                             </p>
                           </div>
                         </div>
-                        <div className="w-32">
-                          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div className="w-28">
+                          <div className="h-1.5 bg-white/[0.08] rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-blue-500 rounded-full"
+                              className="h-full bg-blue-500/70 rounded-full"
                               style={{ width: `${(partition.used / partition.size) * 100}%` }}
                             />
                           </div>
@@ -440,37 +479,37 @@ const DiskUtilityWindow: React.FC<DiskUtilityWindowProps> = ({ onClose, onFocus 
                 </div>
               )}
 
-              {/* Drive info panel */}
+              {/* Drive info panel - Glass panel */}
               {showInfo && (
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                  <h3 className="text-white font-medium mb-3">Drive Information</h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Name</span>
-                        <span className="text-white">{selectedDrive.name}</span>
+                <div className={cn("p-5 rounded-2xl", glassPanel)}>
+                  <h3 className="text-white/80 font-medium text-sm mb-4">Drive Information</h3>
+                  <div className="grid grid-cols-2 gap-6 text-sm">
+                    <div className="space-y-3">
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">Name</span>
+                        <span className="text-white/90">{selectedDrive.name}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Type</span>
-                        <span className="text-white">{selectedDrive.type === 'internal' ? 'Internal' : 'External'}</span>
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">Type</span>
+                        <span className="text-white/90">{selectedDrive.type === 'internal' ? 'Internal' : 'External'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/50">File System</span>
-                        <span className="text-white">{selectedDrive.fileSystem}</span>
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">File System</span>
+                        <span className="text-white/90">{selectedDrive.fileSystem}</span>
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Mount Point</span>
-                        <span className="text-white font-mono text-xs">{selectedDrive.mountPoint}</span>
+                    <div className="space-y-3">
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">Mount Point</span>
+                        <span className="text-white/90 font-mono text-xs">{selectedDrive.mountPoint}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Capacity</span>
-                        <span className="text-white">{formatSize(selectedDrive.capacity)}</span>
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">Capacity</span>
+                        <span className="text-white/90">{formatSize(selectedDrive.capacity)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Available</span>
-                        <span className="text-white">{formatSize(getAvailableSpace(selectedDrive))}</span>
+                      <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+                        <span className="text-white/40">Available</span>
+                        <span className="text-white/90">{formatSize(getAvailableSpace(selectedDrive))}</span>
                       </div>
                     </div>
                   </div>
@@ -515,19 +554,19 @@ export const DiskUtilityMenuBar = {
       id: 'file',
       label: 'File',
       items: [
-        { type: 'item' as const, id: 'newImage', label: 'New Image', shortcut: '⌘N' },
-        { type: 'item' as const, id: 'openImage', label: 'Open Disk Image...', shortcut: '⌘O' },
+        { type: 'item' as const, id: 'newImage', label: 'New Image', shortcut: 'CmdN' },
+        { type: 'item' as const, id: 'openImage', label: 'Open Disk Image...', shortcut: 'CmdO' },
         { type: 'separator' as const },
-        { type: 'item' as const, id: 'close', label: 'Close', shortcut: '⌘W' },
+        { type: 'item' as const, id: 'close', label: 'Close', shortcut: 'CmdW' },
       ],
     },
     {
       id: 'edit',
       label: 'Edit',
       items: [
-        { type: 'item' as const, id: 'copy', label: 'Copy', shortcut: '⌘C' },
+        { type: 'item' as const, id: 'copy', label: 'Copy', shortcut: 'CmdC' },
         { type: 'separator' as const },
-        { type: 'item' as const, id: 'selectAll', label: 'Select All', shortcut: '⌘A' },
+        { type: 'item' as const, id: 'selectAll', label: 'Select All', shortcut: 'CmdA' },
       ],
     },
     {
@@ -554,7 +593,7 @@ export const DiskUtilityMenuBar = {
       id: 'window',
       label: 'Window',
       items: [
-        { type: 'item' as const, id: 'minimize', label: 'Minimize', shortcut: '⌘M' },
+        { type: 'item' as const, id: 'minimize', label: 'Minimize', shortcut: 'CmdM' },
         { type: 'item' as const, id: 'zoom', label: 'Zoom' },
       ],
     },

@@ -2,6 +2,7 @@
  * Preview App
  *
  * Image and PDF viewer for zOS with markup tools.
+ * Unified black glass UI with macOS dark mode aesthetics.
  */
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -98,8 +99,36 @@ const markupColors = [
   '#22c55e', // green
   '#3b82f6', // blue
   '#8b5cf6', // purple
-  '#000000', // black
+  '#ffffff', // white
 ];
+
+// ============================================================================
+// Glass UI Styles
+// ============================================================================
+
+const glassStyles = {
+  // Main container with deep black transparency
+  container: 'bg-black/80 backdrop-blur-xl',
+  // Toolbar with frosted glass effect
+  toolbar: 'bg-white/[0.03] backdrop-blur-2xl border-b border-white/[0.08]',
+  // Sidebar with subtle transparency
+  sidebar: 'bg-white/[0.02] backdrop-blur-xl border-r border-white/[0.06]',
+  // Button base style
+  button: 'hover:bg-white/[0.08] active:bg-white/[0.12] transition-all duration-150',
+  // Active button state
+  buttonActive: 'bg-white/[0.10] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]',
+  // Text colors
+  textPrimary: 'text-white/90',
+  textSecondary: 'text-white/60',
+  textMuted: 'text-white/40',
+  // Divider
+  divider: 'bg-white/[0.08]',
+  // Preview area
+  previewArea: 'bg-black/60',
+  // Thumbnail selected
+  thumbnailSelected: 'ring-2 ring-white/40 shadow-[0_0_12px_rgba(255,255,255,0.1)]',
+  thumbnailHover: 'hover:ring-1 hover:ring-white/20',
+};
 
 // ============================================================================
 // Preview Window Component
@@ -241,6 +270,33 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
     { tool: 'signature', icon: PenTool, label: 'Signature' },
   ];
 
+  // Glass button component
+  const GlassButton: React.FC<{
+    onClick?: () => void;
+    active?: boolean;
+    disabled?: boolean;
+    title?: string;
+    children: React.ReactNode;
+    className?: string;
+  }> = ({ onClick, active, disabled, title, children, className = '' }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      className={`
+        p-2 rounded-lg transition-all duration-150
+        ${active
+          ? 'bg-white/[0.12] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]'
+          : 'hover:bg-white/[0.08] active:bg-white/[0.12]'
+        }
+        ${disabled ? 'opacity-30 cursor-not-allowed' : ''}
+        ${className}
+      `}
+    >
+      {children}
+    </button>
+  );
+
   return (
     <ZWindow
       title={currentFile.name}
@@ -250,12 +306,14 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 1000, height: 700 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
+      <div className={`flex h-full ${glassStyles.container}`}>
         {/* Sidebar - Thumbnails */}
         {showSidebar && (
-          <div className="w-48 bg-[#2c2c2e] border-r border-white/10 flex flex-col">
-            <div className="p-2 border-b border-white/10">
-              <span className="text-white/60 text-xs uppercase tracking-wider">Files</span>
+          <div className={`w-48 flex flex-col ${glassStyles.sidebar}`}>
+            <div className="p-3 border-b border-white/[0.06]">
+              <span className={`text-[11px] font-medium uppercase tracking-wider ${glassStyles.textSecondary}`}>
+                Files
+              </span>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-2">
               {mockFiles.map((file) => (
@@ -267,21 +325,23 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
                     setZoom(100);
                     setRotation(0);
                   }}
-                  className={`w-full rounded-lg overflow-hidden transition-all ${
-                    currentFile.id === file.id ? 'ring-2 ring-blue-500' : 'hover:ring-1 ring-white/20'
+                  className={`w-full rounded-lg overflow-hidden transition-all duration-200 ${
+                    currentFile.id === file.id
+                      ? glassStyles.thumbnailSelected
+                      : glassStyles.thumbnailHover
                   }`}
                 >
-                  <div className="aspect-[4/3] bg-white/5">
+                  <div className="aspect-[4/3] bg-white/[0.03]">
                     <img
                       src={file.type === 'pdf' && file.pages ? file.pages[0] : file.src}
                       alt={file.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-1.5 bg-black/20">
-                    <p className="text-white/70 text-xs truncate">{file.name}</p>
+                  <div className="p-2 bg-black/30">
+                    <p className={`text-xs truncate ${glassStyles.textPrimary}`}>{file.name}</p>
                     {file.type === 'pdf' && file.pages && (
-                      <p className="text-white/40 text-[10px]">{file.pages.length} pages</p>
+                      <p className={`text-[10px] ${glassStyles.textMuted}`}>{file.pages.length} pages</p>
                     )}
                   </div>
                 </button>
@@ -291,25 +351,34 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
             {/* PDF Page Thumbnails */}
             {currentFile.type === 'pdf' && currentFile.pages && (
               <>
-                <div className="p-2 border-t border-white/10">
-                  <span className="text-white/60 text-xs uppercase tracking-wider">Pages</span>
+                <div className="p-3 border-t border-white/[0.06]">
+                  <span className={`text-[11px] font-medium uppercase tracking-wider ${glassStyles.textSecondary}`}>
+                    Pages
+                  </span>
                 </div>
                 <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-60">
                   {currentFile.pages.map((page, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentPage(index)}
-                      className={`w-full rounded-lg overflow-hidden transition-all ${
-                        currentPage === index ? 'ring-2 ring-blue-500' : 'hover:ring-1 ring-white/20'
+                      className={`w-full rounded-lg overflow-hidden transition-all duration-200 ${
+                        currentPage === index
+                          ? glassStyles.thumbnailSelected
+                          : glassStyles.thumbnailHover
                       }`}
                     >
-                      <div className="aspect-[3/4] bg-white/5 relative">
+                      <div className="aspect-[3/4] bg-white/[0.03] relative">
                         <img
                           src={page}
                           alt={`Page ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
-                        <span className="absolute bottom-1 right-1 bg-black/60 text-white/80 text-[10px] px-1 rounded">
+                        <span className={`
+                          absolute bottom-1 right-1 
+                          bg-black/70 backdrop-blur-sm
+                          text-[10px] px-1.5 py-0.5 rounded
+                          ${glassStyles.textPrimary}
+                        `}>
                           {index + 1}
                         </span>
                       </div>
@@ -324,117 +393,125 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Toolbar */}
-          <div className="flex items-center justify-between p-2 border-b border-white/10 bg-[#2c2c2e]">
+          <div className={`flex items-center justify-between px-3 py-2 ${glassStyles.toolbar}`}>
             <div className="flex items-center gap-1">
-              <button
+              <GlassButton
                 onClick={() => setShowSidebar(!showSidebar)}
-                className={`p-2 rounded-lg transition-colors ${showSidebar ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                active={showSidebar}
                 title="Toggle Sidebar"
               >
-                <ChevronLeft className="w-4 h-4 text-white/70" />
-              </button>
-              <div className="w-px h-6 bg-white/10 mx-1" />
-              <button
+                <ChevronLeft className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <div className={`w-px h-5 mx-1 ${glassStyles.divider}`} />
+              
+              <GlassButton
                 onClick={() => setZoom(z => Math.max(z - 25, 25))}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
                 title="Zoom Out"
               >
-                <ZoomOut className="w-4 h-4 text-white/70" />
-              </button>
-              <span className="text-white/60 text-sm w-12 text-center">{zoom}%</span>
-              <button
+                <ZoomOut className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <span className={`text-xs w-12 text-center font-medium ${glassStyles.textSecondary}`}>
+                {zoom}%
+              </span>
+              
+              <GlassButton
                 onClick={() => setZoom(z => Math.min(z + 25, 400))}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
                 title="Zoom In"
               >
-                <ZoomIn className="w-4 h-4 text-white/70" />
-              </button>
-              <div className="w-px h-6 bg-white/10 mx-1" />
-              <button
+                <ZoomIn className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <div className={`w-px h-5 mx-1 ${glassStyles.divider}`} />
+              
+              <GlassButton
                 onClick={() => setRotation(r => (r + 90) % 360)}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
                 title="Rotate"
               >
-                <RotateCw className="w-4 h-4 text-white/70" />
-              </button>
+                <RotateCw className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
             </div>
 
             <div className="flex items-center gap-1">
-              <button
+              <GlassButton
                 onClick={toggleMarkup}
-                className={`p-2 rounded-lg transition-colors ${showMarkup ? 'bg-blue-500/20 text-blue-400' : 'hover:bg-white/5 text-white/70'}`}
+                active={showMarkup}
                 title="Markup Tools"
               >
-                <Pencil className="w-4 h-4" />
-              </button>
-              <button className="p-2 hover:bg-white/5 rounded-lg transition-colors" title="Share">
-                <Share2 className="w-4 h-4 text-white/70" />
-              </button>
-              <button className="p-2 hover:bg-white/5 rounded-lg transition-colors" title="Download">
-                <Download className="w-4 h-4 text-white/70" />
-              </button>
+                <Pencil className={`w-4 h-4 ${showMarkup ? 'text-blue-400' : glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <GlassButton title="Share">
+                <Share2 className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <GlassButton title="Download">
+                <Download className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
             </div>
           </div>
 
           {/* Markup Toolbar */}
           {showMarkup && (
-            <div className="flex items-center gap-2 p-2 border-b border-white/10 bg-[#252527]">
+            <div className={`flex items-center gap-3 px-3 py-2 ${glassStyles.toolbar}`}>
               <div className="flex items-center gap-1">
                 {toolButtons.map(({ tool, icon: Icon, label }) => (
-                  <button
+                  <GlassButton
                     key={tool}
                     onClick={() => setActiveTool(tool)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      activeTool === tool ? 'bg-blue-500/20 text-blue-400' : 'hover:bg-white/5 text-white/70'
-                    }`}
+                    active={activeTool === tool}
                     title={label}
                   >
-                    <Icon className="w-4 h-4" />
-                  </button>
+                    <Icon className={`w-4 h-4 ${
+                      activeTool === tool ? 'text-blue-400' : glassStyles.textPrimary
+                    }`} />
+                  </GlassButton>
                 ))}
               </div>
-              <div className="w-px h-6 bg-white/10" />
-              <div className="flex items-center gap-1">
+              
+              <div className={`w-px h-5 ${glassStyles.divider}`} />
+              
+              <div className="flex items-center gap-1.5">
                 {markupColors.map((color) => (
                   <button
                     key={color}
                     onClick={() => setMarkupColor(color)}
-                    className={`w-5 h-5 rounded-full transition-all ${
-                      markupColor === color ? 'ring-2 ring-white/60 ring-offset-1 ring-offset-[#252527]' : ''
-                    }`}
-                    style={{ backgroundColor: color }}
+                    className={`
+                      w-5 h-5 rounded-full transition-all duration-150
+                      ${markupColor === color
+                        ? 'ring-2 ring-white/60 ring-offset-1 ring-offset-black/50 scale-110'
+                        : 'hover:scale-110'
+                      }
+                    `}
+                    style={{ 
+                      backgroundColor: color,
+                      boxShadow: color === '#ffffff' ? 'inset 0 0 0 1px rgba(255,255,255,0.2)' : undefined
+                    }}
                   />
                 ))}
               </div>
-              <div className="w-px h-6 bg-white/10" />
-              <button
-                onClick={() => {/* Undo */}}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                title="Undo"
-              >
-                <Undo className="w-4 h-4 text-white/70" />
-              </button>
-              <button
-                onClick={() => {/* Redo */}}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                title="Redo"
-              >
-                <Redo className="w-4 h-4 text-white/70" />
-              </button>
-              <button
-                onClick={clearAnnotations}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                title="Clear All"
-              >
-                <X className="w-4 h-4 text-white/70" />
-              </button>
+              
+              <div className={`w-px h-5 ${glassStyles.divider}`} />
+              
+              <GlassButton title="Undo">
+                <Undo className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <GlassButton title="Redo">
+                <Redo className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <GlassButton onClick={clearAnnotations} title="Clear All">
+                <X className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
             </div>
           )}
 
           {/* Preview Area */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-auto flex items-center justify-center p-4 bg-[#1a1a1a]"
+            className={`flex-1 overflow-auto flex items-center justify-center p-6 ${glassStyles.previewArea}`}
           >
             <div
               className="relative"
@@ -446,7 +523,10 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
               <img
                 src={currentSrc}
                 alt={currentFile.name}
-                className="max-w-full max-h-full object-contain shadow-2xl"
+                className="max-w-full max-h-full object-contain shadow-2xl rounded-sm"
+                style={{
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                }}
                 draggable={false}
               />
               {showMarkup && (
@@ -466,24 +546,24 @@ const PreviewWindow: React.FC<PreviewWindowProps> = ({ onClose, onFocus }) => {
 
           {/* Page Navigation */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 p-2 border-t border-white/10 bg-[#2c2c2e]">
-              <button
+            <div className={`flex items-center justify-center gap-4 px-3 py-2 ${glassStyles.toolbar} border-t border-white/[0.08]`}>
+              <GlassButton
                 onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
                 disabled={currentPage === 0}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChevronLeft className="w-4 h-4 text-white/70" />
-              </button>
-              <span className="text-white/60 text-sm">
+                <ChevronLeft className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
+              
+              <span className={`text-sm font-medium ${glassStyles.textSecondary}`}>
                 Page {currentPage + 1} of {totalPages}
               </span>
-              <button
+              
+              <GlassButton
                 onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
                 disabled={currentPage === totalPages - 1}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChevronRight className="w-4 h-4 text-white/70" />
-              </button>
+                <ChevronRight className={`w-4 h-4 ${glassStyles.textPrimary}`} />
+              </GlassButton>
             </div>
           )}
         </div>

@@ -3,6 +3,7 @@
  *
  * File browser for zOS following macOS Finder patterns.
  * Includes Quick Look integration for file previews.
+ * Unified black glass UI with glassmorphism design.
  */
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
@@ -419,26 +420,26 @@ const FinderWindow: React.FC<FinderWindowProps> = ({ onClose, onFocus }) => {
         initialSize={{ width: 900, height: 550 }}
         windowType="default"
       >
-        <div className="flex h-full bg-[#1e1e1e]">
-          {/* Sidebar */}
-          <div className="w-52 bg-black/30 border-r border-white/10 overflow-y-auto">
+        <div className="flex h-full bg-black/80 backdrop-blur-2xl">
+          {/* Sidebar - Dark glass with transparency */}
+          <div className="w-52 bg-black/60 backdrop-blur-xl border-r border-white/10 overflow-y-auto">
             <div className="p-2">
               {sidebarItems.map((item) => (
                 item.isHeader ? (
-                  <div key={item.id} className="px-3 py-1 text-xs font-semibold text-white/40 uppercase tracking-wider mt-3 first:mt-0">
+                  <div key={item.id} className="px-3 py-1.5 text-[11px] font-semibold text-white/40 uppercase tracking-wider mt-4 first:mt-1">
                     {item.label}
                   </div>
                 ) : (
                   <button
                     key={item.id}
                     onClick={() => navigate(item.id)}
-                    className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-[13px] transition-all duration-150 ${
                       selectedItem === item.id
-                        ? 'bg-blue-500/30 text-white'
-                        : 'text-white/70 hover:bg-white/5'
+                        ? 'bg-white/15 text-white shadow-sm'
+                        : 'text-white/70 hover:bg-white/8 hover:text-white/90'
                     }`}
                   >
-                    {item.icon && <item.icon className="w-4 h-4 text-blue-400" />}
+                    {item.icon && <item.icon className={`w-4 h-4 ${selectedItem === item.id ? 'text-blue-400' : 'text-blue-400/80'}`} />}
                     <span>{item.label}</span>
                   </button>
                 )
@@ -447,62 +448,63 @@ const FinderWindow: React.FC<FinderWindowProps> = ({ onClose, onFocus }) => {
           </div>
 
           {/* Main content */}
-          <div className="flex-1 flex flex-col">
-            {/* Toolbar */}
-            <div className="h-10 flex items-center gap-2 px-3 border-b border-white/10 bg-black/20">
+          <div className="flex-1 flex flex-col bg-black/40">
+            {/* Toolbar - Glass morphism */}
+            <div className="h-11 flex items-center gap-2 px-3 border-b border-white/10 bg-black/30 backdrop-blur-xl">
               <button
                 onClick={goBack}
                 disabled={historyIndex === 0}
-                className="p-1.5 rounded hover:bg-white/10 disabled:opacity-30"
+                className="p-1.5 rounded-md hover:bg-white/10 disabled:opacity-30 transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-white/50" />
+                <ChevronLeft className="w-4 h-4 text-white/60" />
               </button>
               <button
                 onClick={goForward}
                 disabled={historyIndex >= history.length - 1}
-                className="p-1.5 rounded hover:bg-white/10 disabled:opacity-30"
+                className="p-1.5 rounded-md hover:bg-white/10 disabled:opacity-30 transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-white/50" />
+                <ChevronRight className="w-4 h-4 text-white/60" />
               </button>
 
               <div className="flex-1" />
 
-              {/* View mode buttons */}
-              <div className="flex bg-white/5 rounded-md p-0.5">
+              {/* View mode buttons - Glass pill */}
+              <div className="flex bg-white/8 backdrop-blur-md rounded-lg p-0.5 border border-white/5">
                 <button
                   onClick={() => setViewMode('icons')}
-                  className={`p-1.5 rounded ${viewMode === 'icons' ? 'bg-white/10' : ''}`}
+                  className={`p-1.5 rounded-md transition-all ${viewMode === 'icons' ? 'bg-white/15 shadow-sm' : 'hover:bg-white/10'}`}
                 >
-                  <Grid className="w-4 h-4 text-white/50" />
+                  <Grid className={`w-4 h-4 ${viewMode === 'icons' ? 'text-white/90' : 'text-white/50'}`} />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-1.5 rounded ${viewMode === 'list' ? 'bg-white/10' : ''}`}
+                  className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white/15 shadow-sm' : 'hover:bg-white/10'}`}
                 >
-                  <List className="w-4 h-4 text-white/50" />
+                  <List className={`w-4 h-4 ${viewMode === 'list' ? 'text-white/90' : 'text-white/50'}`} />
                 </button>
                 <button
                   onClick={() => setViewMode('columns')}
-                  className={`p-1.5 rounded ${viewMode === 'columns' ? 'bg-white/10' : ''}`}
+                  className={`p-1.5 rounded-md transition-all ${viewMode === 'columns' ? 'bg-white/15 shadow-sm' : 'hover:bg-white/10'}`}
                 >
-                  <Columns className="w-4 h-4 text-white/50" />
+                  <Columns className={`w-4 h-4 ${viewMode === 'columns' ? 'text-white/90' : 'text-white/50'}`} />
                 </button>
               </div>
 
+              {/* Search - Glass input */}
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-white/30" />
+                <Search className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40" />
                 <input
                   type="text"
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-48 h-7 pl-8 pr-3 rounded-md bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/30"
+                  className="w-48 h-7 pl-8 pr-3 rounded-lg bg-white/8 backdrop-blur-md border border-white/10 text-[13px] text-white placeholder-white/40 focus:outline-none focus:border-white/25 focus:bg-white/12 transition-all"
                 />
               </div>
             </div>
 
-            {/* File list */}
-            <div className="flex-1 overflow-auto p-4">
+            {/* File list - Dark glass background */}
+            <div className="flex-1 overflow-auto p-4 bg-black/20">
               {viewMode === 'icons' && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {filteredFiles.map((file) => {
@@ -511,80 +513,88 @@ const FinderWindow: React.FC<FinderWindowProps> = ({ onClose, onFocus }) => {
                     return (
                       <button
                         key={file.id}
-                        className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-colors ${
-                          isSelected ? 'bg-blue-500/30' : 'hover:bg-white/5'
+                        className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-150 ${
+                          isSelected 
+                            ? 'bg-white/15 shadow-lg ring-1 ring-white/20' 
+                            : 'hover:bg-white/8'
                         }`}
                         onClick={() => handleFileClick(file)}
                         onDoubleClick={() => handleFileDoubleClick(file)}
                       >
-                        <FileIcon className={`w-12 h-12 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/50'}`} />
-                        <span className="text-sm text-white/80 text-center">{file.name}</span>
+                        <FileIcon className={`w-12 h-12 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/60'}`} />
+                        <span className="text-[12px] text-white/90 text-center leading-tight">{file.name}</span>
                       </button>
                     );
                   })}
                 </div>
               )}
               {viewMode === 'list' && (
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-white/40 text-xs border-b border-white/10">
-                      <th className="pb-2 font-medium">Name</th>
-                      <th className="pb-2 font-medium">Date Modified</th>
-                      <th className="pb-2 font-medium">Size</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredFiles.map((file) => {
-                      const FileIcon = getFileIcon(file);
-                      const isSelected = selectedFile === file.id;
-                      return (
-                        <tr
-                          key={file.id}
-                          className={`border-b border-white/5 cursor-pointer ${
-                            isSelected ? 'bg-blue-500/30' : 'hover:bg-white/5'
-                          }`}
-                          onClick={() => handleFileClick(file)}
-                          onDoubleClick={() => handleFileDoubleClick(file)}
-                        >
-                          <td className="py-2 flex items-center gap-2">
-                            <FileIcon className={`w-4 h-4 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/50'}`} />
-                            <span className="text-sm text-white/80">{file.name}</span>
-                          </td>
-                          <td className="py-2 text-sm text-white/50">{file.modified}</td>
-                          <td className="py-2 text-sm text-white/50">{file.size || '--'}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                <div className="bg-black/20 backdrop-blur-md rounded-xl border border-white/10 overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-white/50 text-[11px] border-b border-white/10 bg-white/5">
+                        <th className="py-2 px-3 font-medium">Name</th>
+                        <th className="py-2 px-3 font-medium">Date Modified</th>
+                        <th className="py-2 px-3 font-medium">Size</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredFiles.map((file) => {
+                        const FileIcon = getFileIcon(file);
+                        const isSelected = selectedFile === file.id;
+                        return (
+                          <tr
+                            key={file.id}
+                            className={`border-b border-white/5 cursor-pointer transition-colors ${
+                              isSelected 
+                                ? 'bg-white/15' 
+                                : 'hover:bg-white/8'
+                            }`}
+                            onClick={() => handleFileClick(file)}
+                            onDoubleClick={() => handleFileDoubleClick(file)}
+                          >
+                            <td className="py-2 px-3 flex items-center gap-2.5">
+                              <FileIcon className={`w-4 h-4 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/60'}`} />
+                              <span className="text-[13px] text-white/90">{file.name}</span>
+                            </td>
+                            <td className="py-2 px-3 text-[12px] text-white/50">{file.modified}</td>
+                            <td className="py-2 px-3 text-[12px] text-white/50">{file.size || '--'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
               {viewMode === 'columns' && (
-                <div className="flex h-full gap-px">
-                  <div className="w-48 bg-black/20 p-2">
+                <div className="flex h-full gap-px rounded-xl overflow-hidden border border-white/10">
+                  <div className="w-52 bg-black/30 backdrop-blur-md p-2 border-r border-white/10">
                     {filteredFiles.map((file) => {
                       const FileIcon = getFileIcon(file);
                       const isSelected = selectedFile === file.id;
                       return (
                         <button
                           key={file.id}
-                          className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm ${
-                            isSelected ? 'bg-blue-500/30 text-white' : 'text-white/80 hover:bg-white/5'
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[13px] transition-all ${
+                            isSelected 
+                              ? 'bg-white/15 text-white shadow-sm' 
+                              : 'text-white/80 hover:bg-white/8'
                           }`}
                           onClick={() => handleFileClick(file)}
                           onDoubleClick={() => handleFileDoubleClick(file)}
                         >
-                          <FileIcon className={`w-4 h-4 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/50'}`} />
+                          <FileIcon className={`w-4 h-4 ${file.type === 'folder' ? 'text-blue-400' : 'text-white/60'}`} />
                           <span className="flex-1 text-left truncate">{file.name}</span>
                           {file.type === 'folder' && <ChevronRight className="w-3 h-3 text-white/30" />}
                         </button>
                       );
                     })}
                   </div>
-                  <div className="flex-1 bg-black/10 flex items-center justify-center text-white/30 text-sm">
+                  <div className="flex-1 bg-black/20 backdrop-blur-md flex items-center justify-center text-white/40 text-[13px]">
                     {selectedFile ? (
                       <div className="text-center p-4">
-                        <p className="mb-2">Press Space to Quick Look</p>
-                        <p className="text-xs text-white/20">or double-click to open</p>
+                        <p className="mb-2 text-white/50">Press Space to Quick Look</p>
+                        <p className="text-[11px] text-white/30">or double-click to open</p>
                       </div>
                     ) : (
                       'Select an item to see its contents'
@@ -594,11 +604,11 @@ const FinderWindow: React.FC<FinderWindowProps> = ({ onClose, onFocus }) => {
               )}
             </div>
 
-            {/* Status bar */}
-            <div className="h-6 flex items-center px-3 border-t border-white/10 text-xs text-white/40">
+            {/* Status bar - Subtle glass */}
+            <div className="h-6 flex items-center px-3 border-t border-white/10 bg-black/30 backdrop-blur-md text-[11px] text-white/50">
               {filteredFiles.length} items
               {selectedFile && (
-                <span className="ml-2">
+                <span className="ml-2 text-white/40">
                   | Press Space to preview
                 </span>
               )}

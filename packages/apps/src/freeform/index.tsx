@@ -2,6 +2,7 @@
  * Freeform App
  *
  * Infinite canvas whiteboard app for zOS.
+ * Sleek macOS dark mode glass morphism UI.
  */
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
@@ -135,7 +136,7 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear
+    // Clear with dark transparent background
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Apply transform
@@ -143,9 +144,9 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
     ctx.translate(pan.x, pan.y);
     ctx.scale(zoom, zoom);
 
-    // Draw grid
+    // Draw grid with subtle lines
     if (showGrid) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
       ctx.lineWidth = 1 / zoom;
       const gridSize = 40;
       const startX = Math.floor(-pan.x / zoom / gridSize) * gridSize;
@@ -241,21 +242,22 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
 
         case 'text':
           if (el.x !== undefined && el.y !== undefined && el.text) {
-            ctx.font = '16px system-ui, sans-serif';
+            ctx.font = '16px system-ui, -apple-system, sans-serif';
             ctx.fillText(el.text, el.x, el.y);
           }
           break;
 
         case 'sticky':
           if (el.x !== undefined && el.y !== undefined && el.width !== undefined && el.height !== undefined) {
-            ctx.fillStyle = '#fef08a';
+            // Dark glass sticky note
+            ctx.fillStyle = 'rgba(255, 230, 109, 0.15)';
             ctx.fillRect(el.x, el.y, el.width, el.height);
-            ctx.strokeStyle = '#eab308';
+            ctx.strokeStyle = 'rgba(255, 230, 109, 0.4)';
             ctx.lineWidth = 1;
             ctx.strokeRect(el.x, el.y, el.width, el.height);
             if (el.text) {
-              ctx.fillStyle = '#1e1e1e';
-              ctx.font = '14px system-ui, sans-serif';
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.font = '14px system-ui, -apple-system, sans-serif';
               const lines = el.text.split('\n');
               lines.forEach((line, i) => {
                 ctx.fillText(line, el.x! + 10, el.y! + 20 + i * 18);
@@ -267,7 +269,7 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
 
       // Draw selection
       if (selectedElement === el.id) {
-        ctx.strokeStyle = '#3b82f6';
+        ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
         ctx.lineWidth = 2 / zoom;
         ctx.setLineDash([5 / zoom, 5 / zoom]);
         if (el.x !== undefined && el.y !== undefined && el.width !== undefined && el.height !== undefined) {
@@ -629,12 +631,14 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
     }
   };
 
-  // Tool button component
+  // Tool button component with glass morphism
   const ToolButton = ({ tool, icon: Icon, label }: { tool: Tool; icon: React.ElementType; label: string }) => (
     <button
       onClick={() => setActiveTool(tool)}
-      className={`p-2 rounded-lg transition-colors ${
-        activeTool === tool ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/10'
+      className={`p-2 rounded-lg transition-all duration-200 ${
+        activeTool === tool
+          ? 'bg-white/15 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.2)]'
+          : 'text-white/60 hover:text-white/90 hover:bg-white/10'
       }`}
       title={label}
     >
@@ -651,11 +655,24 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 1000, height: 700 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-[#1e1e1e]">
-        {/* Toolbar */}
-        <div className="flex items-center justify-between p-2 border-b border-white/10">
-          {/* Tools */}
-          <div className="flex items-center gap-1">
+      <div className="flex flex-col h-full bg-black/90">
+        {/* Toolbar - Glass morphism */}
+        <div
+          className="flex items-center justify-between p-2 border-b border-white/10"
+          style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
+        >
+          {/* Tools - Glass morphism palette */}
+          <div
+            className="flex items-center gap-1 px-2 py-1 rounded-xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
             <ToolButton tool="select" icon={MousePointer} label="Select" />
             <ToolButton tool="pen" icon={PenTool} label="Pen" />
             <div className="w-px h-6 bg-white/10 mx-1" />
@@ -672,22 +689,36 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
             <ToolButton tool="pan" icon={Hand} label="Pan" />
           </div>
 
-          {/* Color & Stroke */}
-          <div className="flex items-center gap-2">
+          {/* Color & Stroke - Glass morphism */}
+          <div
+            className="flex items-center gap-2 px-2 py-1 rounded-xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
             <div className="relative">
               <button
                 onClick={() => setShowColorPicker(!showColorPicker)}
                 className="flex items-center gap-1 p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <div
-                  className="w-5 h-5 rounded border border-white/20"
+                  className="w-5 h-5 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.2)]"
                   style={{ backgroundColor: activeColor }}
                 />
                 <Palette className="w-4 h-4 text-white/50" />
               </button>
               {showColorPicker && (
-                <div className="absolute top-full right-0 mt-1 p-2 bg-[#3c3c3e] rounded-lg shadow-xl border border-white/10 z-20">
-                  <div className="grid grid-cols-5 gap-1">
+                <div
+                  className="absolute top-full right-0 mt-2 p-3 rounded-xl shadow-2xl z-20"
+                  style={{
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                  }}
+                >
+                  <div className="grid grid-cols-5 gap-2">
                     {COLORS.map(color => (
                       <button
                         key={color}
@@ -695,20 +726,22 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
                           setActiveColor(color);
                           setShowColorPicker(false);
                         }}
-                        className={`w-6 h-6 rounded border transition-transform hover:scale-110 ${
-                          activeColor === color ? 'border-blue-500 ring-2 ring-blue-500' : 'border-white/20'
+                        className={`w-7 h-7 rounded-full transition-transform hover:scale-110 shadow-[0_0_0_1px_rgba(255,255,255,0.2)] ${
+                          activeColor === color ? 'ring-2 ring-white ring-offset-2 ring-offset-black' : ''
                         }`}
                         style={{ backgroundColor: color }}
                       />
                     ))}
                   </div>
-                  <div className="mt-2 flex items-center gap-1">
+                  <div className="mt-3 flex items-center gap-1">
                     {STROKE_WIDTHS.map(width => (
                       <button
                         key={width}
                         onClick={() => setStrokeWidth(width)}
-                        className={`flex-1 h-8 rounded flex items-center justify-center transition-colors ${
-                          strokeWidth === width ? 'bg-blue-500/20' : 'hover:bg-white/10'
+                        className={`flex-1 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                          strokeWidth === width
+                            ? 'bg-white/15 shadow-[0_0_0_1px_rgba(255,255,255,0.2)]'
+                            : 'hover:bg-white/10'
                         }`}
                       >
                         <div
@@ -730,27 +763,29 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               title="Zoom In"
             >
-              <ZoomIn className="w-4 h-4 text-white/70" />
+              <ZoomIn className="w-4 h-4 text-white/60" />
             </button>
-            <span className="text-white/50 text-xs w-12 text-center">{Math.round(zoom * 100)}%</span>
+            <span className="text-white/50 text-xs w-12 text-center font-medium">
+              {Math.round(zoom * 100)}%
+            </span>
             <button
               onClick={() => setZoom(z => Math.max(z * 0.8, 0.1))}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               title="Zoom Out"
             >
-              <ZoomOut className="w-4 h-4 text-white/70" />
+              <ZoomOut className="w-4 h-4 text-white/60" />
             </button>
             <button
               onClick={fitToScreen}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               title="Fit to Screen"
             >
-              <Maximize className="w-4 h-4 text-white/70" />
+              <Maximize className="w-4 h-4 text-white/60" />
             </button>
             <button
               onClick={() => setShowGrid(!showGrid)}
               className={`p-2 rounded-lg transition-colors ${
-                showGrid ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/10'
+                showGrid ? 'bg-white/15 text-white' : 'text-white/50 hover:bg-white/10'
               }`}
               title="Toggle Grid"
             >
@@ -759,7 +794,7 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
             <button
               onClick={() => setShowLayers(!showLayers)}
               className={`p-2 rounded-lg transition-colors ${
-                showLayers ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/10'
+                showLayers ? 'bg-white/15 text-white' : 'text-white/50 hover:bg-white/10'
               }`}
               title="Layers"
             >
@@ -770,14 +805,18 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               title="Export as Image"
             >
-              <Download className="w-4 h-4 text-white/70" />
+              <Download className="w-4 h-4 text-white/60" />
             </button>
           </div>
         </div>
 
         <div className="flex-1 flex">
-          {/* Canvas */}
-          <div ref={containerRef} className="flex-1 overflow-hidden relative bg-[#2c2c2e]">
+          {/* Canvas - Dark transparent background */}
+          <div
+            ref={containerRef}
+            className="flex-1 overflow-hidden relative"
+            style={{ background: 'rgba(10, 10, 12, 0.95)' }}
+          >
             <canvas
               ref={canvasRef}
               onMouseDown={handleMouseDown}
@@ -794,12 +833,20 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
               }`}
             />
 
-            {/* Selected element controls */}
+            {/* Selected element controls - Glass morphism */}
             {selectedElement && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-2 bg-[#3c3c3e] rounded-lg shadow-xl border border-white/10">
+              <div
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-2 rounded-xl shadow-2xl"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.7)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                }}
+              >
                 <button
                   onClick={deleteSelected}
-                  className="p-1.5 hover:bg-red-500/20 rounded transition-colors"
+                  className="p-1.5 hover:bg-red-500/20 rounded-lg transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4 text-red-400" />
@@ -808,23 +855,32 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
             )}
           </div>
 
-          {/* Layers Panel */}
+          {/* Layers Panel - Glass morphism */}
           {showLayers && (
-            <div className="w-56 border-l border-white/10 bg-[#2c2c2e] flex flex-col">
-              <div className="p-2 border-b border-white/10">
-                <span className="text-white/50 text-xs uppercase tracking-wider">Layers</span>
+            <div
+              className="w-56 border-l border-white/10 flex flex-col"
+              style={{
+                background: 'rgba(0, 0, 0, 0.6)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+              }}
+            >
+              <div className="p-3 border-b border-white/10">
+                <span className="text-white/50 text-xs uppercase tracking-wider font-medium">Layers</span>
               </div>
               <div className="flex-1 overflow-y-auto p-2">
                 {[...elements].reverse().map((el, i) => (
                   <div
                     key={el.id}
                     onClick={() => setSelectedElement(el.id)}
-                    className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm transition-colors ${
-                      selectedElement === el.id ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors ${
+                      selectedElement === el.id
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/60 hover:bg-white/10 hover:text-white/80'
                     }`}
                   >
                     <div
-                      className="w-3 h-3 rounded-full border border-white/20"
+                      className="w-3 h-3 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.2)]"
                       style={{ backgroundColor: el.color }}
                     />
                     <span className="capitalize">{el.type}</span>
@@ -836,15 +892,22 @@ const FreeformWindow: React.FC<FreeformWindowProps> = ({ onClose, onFocus }) => 
           )}
         </div>
 
-        {/* Board Tabs */}
-        <div className="flex items-center gap-1 p-2 border-t border-white/10 overflow-x-auto">
+        {/* Board Tabs - Glass morphism */}
+        <div
+          className="flex items-center gap-1 p-2 border-t border-white/10 overflow-x-auto"
+          style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
+        >
           {boards.map(board => (
             <div
               key={board.id}
-              className={`group flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm cursor-pointer transition-colors ${
+              className={`group flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm cursor-pointer transition-all ${
                 activeBoardId === board.id
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/50 hover:bg-white/5'
+                  ? 'bg-white/15 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)]'
+                  : 'text-white/50 hover:bg-white/10 hover:text-white/70'
               }`}
               onClick={() => setActiveBoardId(board.id)}
             >

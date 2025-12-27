@@ -166,25 +166,25 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
       initialSize={{ width: 800, height: 550 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1c1c1e]">
+      <div className="flex h-full bg-black/80 backdrop-blur-2xl">
         {/* Sidebar */}
-        <div className="w-56 border-r border-white/10 flex flex-col">
+        <div className="w-56 border-r border-white/[0.08] flex flex-col bg-white/[0.02]">
           {/* Word of the Day */}
-          <div className="p-3 border-b border-white/10">
-            <div className="flex items-center gap-2 text-amber-400 mb-2">
-              <Star className="w-4 h-4 fill-amber-400" />
-              <span className="text-xs uppercase tracking-wider">Word of the Day</span>
+          <div className="p-3 border-b border-white/[0.08]">
+            <div className="flex items-center gap-2 text-amber-400/90 mb-2">
+              <Star className="w-4 h-4 fill-amber-400/90" />
+              <span className="text-xs uppercase tracking-wider font-medium">Word of the Day</span>
             </div>
             <button
               onClick={() => {
                 setSearchTerm(wordOfDay.word);
                 searchWord(wordOfDay.word);
               }}
-              className="w-full text-left hover:bg-white/5 rounded-lg p-2 -mx-2 transition-colors"
+              className="w-full text-left hover:bg-white/[0.06] rounded-lg p-2.5 -mx-0.5 transition-all duration-200 border border-transparent hover:border-white/[0.08]"
             >
-              <p className="text-white font-medium">{wordOfDay.word}</p>
+              <p className="text-white/95 font-medium">{wordOfDay.word}</p>
               <p className="text-white/40 text-xs italic">{wordOfDay.partOfSpeech}</p>
-              <p className="text-white/60 text-sm mt-1 line-clamp-2">
+              <p className="text-white/60 text-sm mt-1 line-clamp-2 leading-relaxed">
                 {wordOfDay.definition}
               </p>
             </button>
@@ -195,10 +195,10 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
             <div className="p-3">
               <div className="flex items-center gap-2 text-white/40 mb-2">
                 <Clock className="w-4 h-4" />
-                <span className="text-xs uppercase tracking-wider">Recent Searches</span>
+                <span className="text-xs uppercase tracking-wider font-medium">Recent Searches</span>
               </div>
               {recentSearches.length > 0 ? (
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   {recentSearches.map((word, index) => (
                     <button
                       key={index}
@@ -206,28 +206,28 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
                         setSearchTerm(word);
                         searchWord(word);
                       }}
-                      className="w-full flex items-center justify-between text-left px-2 py-1.5 text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors group"
+                      className="w-full flex items-center justify-between text-left px-2.5 py-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-lg text-sm transition-all duration-200 group border border-transparent hover:border-white/[0.06]"
                     >
                       <span>{word}</span>
-                      <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-60 transition-opacity" />
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="text-white/30 text-sm px-2">No recent searches</p>
+                <p className="text-white/30 text-sm px-2.5">No recent searches</p>
               )}
             </div>
           </div>
 
           {/* Clear Recent */}
           {recentSearches.length > 0 && (
-            <div className="p-3 border-t border-white/10">
+            <div className="p-3 border-t border-white/[0.08]">
               <button
                 onClick={() => {
                   setRecentSearches([]);
                   localStorage.removeItem(STORAGE_KEY);
                 }}
-                className="w-full text-center text-white/40 hover:text-white/60 text-sm transition-colors"
+                className="w-full text-center text-white/40 hover:text-white/60 text-sm transition-colors py-1.5 rounded-lg hover:bg-white/[0.04]"
               >
                 Clear Recent Searches
               </button>
@@ -238,15 +238,15 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="p-4 border-b border-white/10">
+          <form onSubmit={handleSearch} className="p-4 border-b border-white/[0.08]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search for a word..."
-                className="w-full bg-white/10 text-white placeholder:text-white/40 pl-10 pr-10 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full bg-white/[0.08] backdrop-blur-xl text-white/95 placeholder:text-white/35 pl-11 pr-11 py-3 rounded-xl outline-none focus:ring-2 focus:ring-white/20 border border-white/[0.08] focus:border-white/[0.15] transition-all duration-200"
               />
               {searchTerm && (
                 <button
@@ -256,7 +256,7 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
                     setWordData(null);
                     setError(null);
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors p-0.5 rounded-full hover:bg-white/[0.08]"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -265,67 +265,72 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
           </form>
 
           {/* Results Area */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-5">
             {loading && (
               <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
+                  <span className="text-white/40 text-sm">Looking up definition...</span>
+                </div>
               </div>
             )}
 
             {error && (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <AlertCircle className="w-12 h-12 text-red-400 mb-4" />
-                <p className="text-white text-lg">{error}</p>
-                <p className="text-white/40 text-sm mt-2">
-                  Try checking your spelling or search for a different word
-                </p>
+                <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8">
+                  <AlertCircle className="w-12 h-12 text-red-400/80 mb-4 mx-auto" />
+                  <p className="text-white/90 text-lg font-medium">{error}</p>
+                  <p className="text-white/40 text-sm mt-2">
+                    Try checking your spelling or search for a different word
+                  </p>
+                </div>
               </div>
             )}
 
             {wordData && wordData.length > 0 && (
               <div className="space-y-6">
                 {wordData.map((entry, entryIndex) => (
-                  <div key={entryIndex}>
+                  <div key={entryIndex} className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6">
                     {/* Word Header */}
-                    <div className="flex items-center gap-4 mb-4">
-                      <h1 className="text-white text-3xl font-bold">{entry.word}</h1>
+                    <div className="flex items-center gap-4 mb-5">
+                      <h1 className="text-white/95 text-3xl font-semibold tracking-tight">{entry.word}</h1>
                       {entry.phonetic && (
-                        <span className="text-white/50 text-lg">{entry.phonetic}</span>
+                        <span className="text-white/45 text-lg font-light">{entry.phonetic}</span>
                       )}
                       {getAudioUrl(entry) && (
                         <button
                           onClick={() => playAudio(getAudioUrl(entry)!)}
-                          className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                          className="p-2.5 hover:bg-white/[0.08] rounded-full transition-all duration-200 border border-transparent hover:border-white/[0.08]"
                           title="Listen to pronunciation"
                         >
-                          <Volume2 className="w-5 h-5 text-blue-400" />
+                          <Volume2 className="w-5 h-5 text-blue-400/90" />
                         </button>
                       )}
                     </div>
 
                     {/* Meanings */}
                     {entry.meanings.map((meaning, meaningIndex) => (
-                      <div key={meaningIndex} className="mb-6">
+                      <div key={meaningIndex} className="mb-6 last:mb-0">
                         {/* Part of Speech */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <span className="text-blue-400 font-medium italic">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-blue-400/90 font-medium italic text-sm px-3 py-1 bg-blue-400/[0.08] rounded-full border border-blue-400/[0.15]">
                             {meaning.partOfSpeech}
                           </span>
-                          <div className="flex-1 h-px bg-white/10" />
+                          <div className="flex-1 h-px bg-gradient-to-r from-white/[0.08] to-transparent" />
                         </div>
 
                         {/* Definitions */}
-                        <div className="space-y-4 pl-4">
+                        <div className="space-y-4 pl-1">
                           {meaning.definitions.slice(0, 5).map((def, defIndex) => (
-                            <div key={defIndex}>
+                            <div key={defIndex} className="group">
                               <div className="flex gap-3">
-                                <span className="text-white/40 font-mono text-sm">
+                                <span className="text-white/30 font-mono text-sm mt-0.5 w-5 flex-shrink-0">
                                   {defIndex + 1}.
                                 </span>
                                 <div className="flex-1">
-                                  <p className="text-white">{def.definition}</p>
+                                  <p className="text-white/85 leading-relaxed">{def.definition}</p>
                                   {def.example && (
-                                    <p className="text-white/50 italic mt-1">
+                                    <p className="text-white/45 italic mt-2 pl-3 border-l-2 border-white/[0.1] leading-relaxed">
                                       "{def.example}"
                                     </p>
                                   )}
@@ -337,45 +342,39 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
 
                         {/* Synonyms */}
                         {meaning.synonyms.length > 0 && (
-                          <div className="mt-4 pl-4">
-                            <span className="text-white/40 text-sm">Synonyms: </span>
-                            <span className="text-green-400 text-sm">
-                              {meaning.synonyms.slice(0, 8).map((syn, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => {
-                                    setSearchTerm(syn);
-                                    searchWord(syn);
-                                  }}
-                                  className="hover:underline"
-                                >
-                                  {syn}
-                                  {i < Math.min(meaning.synonyms.length, 8) - 1 && ', '}
-                                </button>
-                              ))}
-                            </span>
+                          <div className="mt-5 pl-1 flex flex-wrap items-center gap-2">
+                            <span className="text-white/40 text-sm">Synonyms:</span>
+                            {meaning.synonyms.slice(0, 8).map((syn, i) => (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  setSearchTerm(syn);
+                                  searchWord(syn);
+                                }}
+                                className="text-emerald-400/80 text-sm hover:text-emerald-300 transition-colors px-2 py-0.5 rounded-md hover:bg-emerald-400/[0.08] border border-transparent hover:border-emerald-400/[0.15]"
+                              >
+                                {syn}
+                              </button>
+                            ))}
                           </div>
                         )}
 
                         {/* Antonyms */}
                         {meaning.antonyms.length > 0 && (
-                          <div className="mt-2 pl-4">
-                            <span className="text-white/40 text-sm">Antonyms: </span>
-                            <span className="text-red-400 text-sm">
-                              {meaning.antonyms.slice(0, 8).map((ant, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => {
-                                    setSearchTerm(ant);
-                                    searchWord(ant);
-                                  }}
-                                  className="hover:underline"
-                                >
-                                  {ant}
-                                  {i < Math.min(meaning.antonyms.length, 8) - 1 && ', '}
-                                </button>
-                              ))}
-                            </span>
+                          <div className="mt-3 pl-1 flex flex-wrap items-center gap-2">
+                            <span className="text-white/40 text-sm">Antonyms:</span>
+                            {meaning.antonyms.slice(0, 8).map((ant, i) => (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  setSearchTerm(ant);
+                                  searchWord(ant);
+                                }}
+                                className="text-rose-400/80 text-sm hover:text-rose-300 transition-colors px-2 py-0.5 rounded-md hover:bg-rose-400/[0.08] border border-transparent hover:border-rose-400/[0.15]"
+                              >
+                                {ant}
+                              </button>
+                            ))}
                           </div>
                         )}
                       </div>
@@ -387,11 +386,13 @@ const DictionaryWindow: React.FC<DictionaryWindowProps> = ({ onClose, onFocus })
 
             {!loading && !error && !wordData && (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <BookOpen className="w-16 h-16 text-white/20 mb-4" />
-                <p className="text-white/40 text-lg">Search for a word</p>
-                <p className="text-white/30 text-sm mt-1">
-                  Type a word above to see its definition
-                </p>
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-10">
+                  <BookOpen className="w-16 h-16 text-white/20 mb-5 mx-auto" />
+                  <p className="text-white/50 text-lg font-medium">Search for a word</p>
+                  <p className="text-white/30 text-sm mt-2">
+                    Type a word above to see its definition
+                  </p>
+                </div>
               </div>
             )}
           </div>

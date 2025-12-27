@@ -2,6 +2,7 @@
  * Stocks App
  *
  * Stock ticker and watchlist app for zOS.
+ * Black glass UI with glass morphism effects.
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -213,7 +214,7 @@ const LineChart: React.FC<{
       {showGrid && (
         <div className="absolute inset-0 flex flex-col justify-between">
           {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="border-t border-white/5 w-full" />
+            <div key={i} className="border-t border-white/[0.03] w-full" />
           ))}
         </div>
       )}
@@ -224,7 +225,7 @@ const LineChart: React.FC<{
       >
         <defs>
           <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+            <stop offset="0%" stopColor={color} stopOpacity="0.2" />
             <stop offset="100%" stopColor={color} stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -342,15 +343,15 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#0d0d0d]">
+      <div className="flex h-full bg-black/80 backdrop-blur-2xl">
         {/* Watchlist Sidebar */}
-        <div className="w-64 border-r border-white/10 flex flex-col">
+        <div className="w-64 border-r border-white/[0.08] flex flex-col bg-black/40 backdrop-blur-xl">
           {/* Header */}
-          <div className="p-3 border-b border-white/10 flex items-center justify-between">
-            <h2 className="text-white font-medium">Watchlist</h2>
+          <div className="p-3 border-b border-white/[0.08] flex items-center justify-between">
+            <h2 className="text-white/90 font-medium text-sm tracking-wide">Watchlist</h2>
             <button
               onClick={() => setShowSearch(!showSearch)}
-              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-white/[0.08] rounded-lg transition-all duration-200 border border-transparent hover:border-white/[0.1]"
             >
               {showSearch ? (
                 <X className="w-4 h-4 text-white/50" />
@@ -362,15 +363,15 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
 
           {/* Search */}
           {showSearch && (
-            <div className="p-2 border-b border-white/10">
+            <div className="p-2 border-b border-white/[0.08]">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search stocks..."
-                  className="w-full bg-white/10 text-white placeholder:text-white/40 pl-8 pr-3 py-1.5 rounded text-sm outline-none"
+                  className="w-full bg-white/[0.06] backdrop-blur-sm text-white/90 placeholder:text-white/30 pl-8 pr-3 py-2 rounded-lg text-sm outline-none border border-white/[0.08] focus:border-white/20 focus:bg-white/[0.08] transition-all duration-200"
                   autoFocus
                 />
               </div>
@@ -380,10 +381,10 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                     <button
                       key={stock.symbol}
                       onClick={() => addToWatchlist(stock.symbol)}
-                      className="w-full flex items-center justify-between p-2 hover:bg-white/5 rounded text-left"
+                      className="w-full flex items-center justify-between p-2 hover:bg-white/[0.06] rounded-lg text-left transition-all duration-200 border border-transparent hover:border-white/[0.08]"
                     >
                       <div>
-                        <p className="text-white text-sm font-medium">{stock.symbol}</p>
+                        <p className="text-white/90 text-sm font-medium">{stock.symbol}</p>
                         <p className="text-white/40 text-xs truncate">{stock.name}</p>
                       </div>
                       <Plus className="w-4 h-4 text-green-400" />
@@ -404,20 +405,22 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                 <div
                   key={symbol}
                   onClick={() => setSelectedStock(symbol)}
-                  className={`group p-3 cursor-pointer border-b border-white/5 transition-colors ${
-                    selectedStock === symbol ? 'bg-white/10' : 'hover:bg-white/5'
+                  className={`group p-3 cursor-pointer border-b border-white/[0.04] transition-all duration-200 ${
+                    selectedStock === symbol 
+                      ? 'bg-white/[0.08] border-l-2 border-l-blue-400' 
+                      : 'hover:bg-white/[0.04] border-l-2 border-l-transparent'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-white font-medium">{stock.symbol}</p>
+                        <p className="text-white/90 font-medium text-sm">{stock.symbol}</p>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             removeFromWatchlist(symbol);
                           }}
-                          className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-opacity"
+                          className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-all duration-200"
                         >
                           <X className="w-3 h-3 text-white/40" />
                         </button>
@@ -425,8 +428,8 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                       <p className="text-white/40 text-xs truncate">{stock.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-white font-medium">${stock.price.toFixed(2)}</p>
-                      <p className={`text-xs flex items-center justify-end gap-0.5 ${
+                      <p className="text-white/90 font-medium text-sm">${stock.price.toFixed(2)}</p>
+                      <p className={`text-xs flex items-center justify-end gap-0.5 font-medium ${
                         isPositive ? 'text-green-400' : 'text-red-400'
                       }`}>
                         {isPositive ? (
@@ -442,7 +445,7 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                   <div className="mt-2 h-8">
                     <LineChart
                       data={stock.historicalData.slice(-30)}
-                      color={isPositive ? '#22c55e' : '#ef4444'}
+                      color={isPositive ? '#34d399' : '#f87171'}
                       height={32}
                       showGrid={false}
                     />
@@ -454,25 +457,25 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-black/20">
           {selected ? (
             <>
               {/* Stock Header */}
-              <div className="p-4 border-b border-white/10">
+              <div className="p-5 border-b border-white/[0.08] bg-black/30 backdrop-blur-xl">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h1 className="text-white text-2xl font-bold">{selected.name}</h1>
-                    <p className="text-white/50">{selected.symbol}</p>
+                    <h1 className="text-white/95 text-2xl font-semibold tracking-tight">{selected.name}</h1>
+                    <p className="text-white/40 text-sm mt-0.5">{selected.symbol}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-white text-3xl font-bold">${selected.price.toFixed(2)}</p>
-                    <p className={`text-lg flex items-center justify-end gap-1 ${
+                    <p className="text-white text-3xl font-bold tracking-tight">${selected.price.toFixed(2)}</p>
+                    <p className={`text-base flex items-center justify-end gap-1 font-semibold mt-1 ${
                       selected.change >= 0 ? 'text-green-400' : 'text-red-400'
                     }`}>
                       {selected.change >= 0 ? (
-                        <TrendingUp className="w-5 h-5" />
+                        <TrendingUp className="w-4 h-4" />
                       ) : (
-                        <TrendingDown className="w-5 h-5" />
+                        <TrendingDown className="w-4 h-4" />
                       )}
                       {selected.change >= 0 ? '+' : ''}{selected.change.toFixed(2)} ({selected.changePercent.toFixed(2)}%)
                     </p>
@@ -481,17 +484,17 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
               </div>
 
               {/* Chart */}
-              <div className="p-4 border-b border-white/10">
+              <div className="p-5 border-b border-white/[0.08]">
                 {/* Time Range Selector */}
-                <div className="flex gap-2 mb-4">
+                <div className="flex gap-1 mb-4 p-1 bg-white/[0.04] rounded-lg w-fit backdrop-blur-sm border border-white/[0.06]">
                   {(['1D', '1W', '1M', '3M', '1Y', 'ALL'] as TimeRange[]).map((range) => (
                     <button
                       key={range}
                       onClick={() => setTimeRange(range)}
-                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                      className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
                         timeRange === range
-                          ? 'bg-blue-500 text-white'
-                          : 'text-white/50 hover:text-white hover:bg-white/10'
+                          ? 'bg-white/[0.12] text-white shadow-sm border border-white/[0.1]'
+                          : 'text-white/50 hover:text-white/80 hover:bg-white/[0.06]'
                       }`}
                     >
                       {range}
@@ -503,19 +506,19 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                 <div className="pl-10">
                   <LineChart
                     data={getDataForRange(selected.historicalData)}
-                    color={selected.change >= 0 ? '#22c55e' : '#ef4444'}
+                    color={selected.change >= 0 ? '#34d399' : '#f87171'}
                     height={200}
                   />
                 </div>
               </div>
 
               {/* Stats and News */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-5">
                 <div className="grid grid-cols-2 gap-6">
                   {/* Key Stats */}
                   <div>
-                    <h3 className="text-white font-medium mb-3">Key Statistics</h3>
-                    <div className="grid grid-cols-2 gap-3">
+                    <h3 className="text-white/80 font-medium mb-3 text-sm tracking-wide">Key Statistics</h3>
+                    <div className="grid grid-cols-2 gap-2">
                       {[
                         { label: 'Open', value: `$${selected.open.toFixed(2)}` },
                         { label: 'Previous Close', value: `$${selected.previousClose.toFixed(2)}` },
@@ -524,9 +527,12 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
                         { label: 'Volume', value: selected.volume },
                         { label: 'Market Cap', value: `$${selected.marketCap}` },
                       ].map((stat) => (
-                        <div key={stat.label} className="bg-white/5 rounded-lg p-3">
+                        <div 
+                          key={stat.label} 
+                          className="bg-white/[0.04] backdrop-blur-sm rounded-xl p-3 border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition-all duration-200"
+                        >
                           <p className="text-white/40 text-xs">{stat.label}</p>
-                          <p className="text-white font-medium">{stat.value}</p>
+                          <p className="text-white/90 font-medium text-sm mt-0.5">{stat.value}</p>
                         </div>
                       ))}
                     </div>
@@ -534,22 +540,22 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
 
                   {/* News */}
                   <div>
-                    <h3 className="text-white font-medium mb-3">Related News</h3>
+                    <h3 className="text-white/80 font-medium mb-3 text-sm tracking-wide">Related News</h3>
                     <div className="space-y-2">
                       {mockNews.slice(0, 4).map((news) => (
                         <a
                           key={news.id}
                           href={news.url}
-                          className="block bg-white/5 rounded-lg p-3 hover:bg-white/10 transition-colors group"
+                          className="block bg-white/[0.04] backdrop-blur-sm rounded-xl p-3 border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/[0.12] transition-all duration-200 group"
                         >
-                          <p className="text-white text-sm line-clamp-2 group-hover:text-blue-400 transition-colors">
+                          <p className="text-white/80 text-sm line-clamp-2 group-hover:text-white transition-colors duration-200">
                             {news.title}
                           </p>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-2 mt-1.5">
                             <span className="text-white/40 text-xs">{news.source}</span>
-                            <span className="text-white/20">|</span>
+                            <span className="text-white/20 text-xs">|</span>
                             <span className="text-white/40 text-xs">{news.time}</span>
-                            <ExternalLink className="w-3 h-3 text-white/20 ml-auto" />
+                            <ExternalLink className="w-3 h-3 text-white/20 ml-auto group-hover:text-white/40 transition-colors duration-200" />
                           </div>
                         </a>
                       ))}
@@ -561,9 +567,9 @@ const StocksWindow: React.FC<StocksWindowProps> = ({ onClose, onFocus }) => {
           ) : (
             <div className="flex-1 flex items-center justify-center text-white/30">
               <div className="text-center">
-                <TrendingUp className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <p className="text-lg">No stock selected</p>
-                <p className="text-sm mt-1">Add stocks to your watchlist to get started</p>
+                <TrendingUp className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-lg font-medium">No stock selected</p>
+                <p className="text-sm mt-1 text-white/20">Add stocks to your watchlist to get started</p>
               </div>
             </div>
           )}

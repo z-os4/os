@@ -2,11 +2,12 @@
  * Mail App
  *
  * Email client for zOS following macOS Mail patterns.
+ * Unified black glass UI with transparency, backdrop blur, and glass morphism.
  */
 
 import React, { useState } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Inbox, Send, Archive, Trash2, Star, Edit3, Mail as MailIcon } from 'lucide-react';
+import { Inbox, Send, Archive, Trash2, Star, Edit3, Mail as MailIcon, Search, Reply, Forward, MoreHorizontal } from 'lucide-react';
 
 interface MailWindowProps {
   onClose: () => void;
@@ -52,99 +53,166 @@ const MailWindow: React.FC<MailWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
-        <div className="w-56 bg-[#2c2c2e] border-r border-white/10 flex flex-col">
+      <div className="flex h-full bg-black/80 backdrop-blur-xl">
+        {/* Sidebar - Dark glass with transparency */}
+        <div className="w-56 bg-black/40 backdrop-blur-2xl border-r border-white/[0.08] flex flex-col">
           {/* Compose button */}
-          <div className="p-3">
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+          <div className="p-3 border-b border-white/[0.06]">
+            <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-sm text-white/90 rounded-lg transition-all duration-200 border border-white/[0.1] hover:border-white/[0.15] shadow-lg shadow-black/20">
               <Edit3 className="w-4 h-4" />
-              <span>Compose</span>
+              <span className="font-medium text-sm">Compose</span>
             </button>
           </div>
 
           {/* Folders */}
-          <div className="flex-1 p-2">
+          <div className="flex-1 p-2 space-y-0.5">
             {folders.map((folder) => (
               <button
                 key={folder.id}
                 onClick={() => setSelectedFolder(folder.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  selectedFolder === folder.id ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  selectedFolder === folder.id 
+                    ? 'bg-white/[0.12] text-white border border-white/[0.1] shadow-sm' 
+                    : 'text-white/60 hover:bg-white/[0.06] hover:text-white/80 border border-transparent'
                 }`}
               >
-                <folder.icon className="w-4 h-4" />
+                <folder.icon className={`w-4 h-4 ${selectedFolder === folder.id ? 'text-white' : 'text-white/50'}`} />
                 <span className="flex-1 text-left text-sm">{folder.label}</span>
                 {folder.count > 0 && (
-                  <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
+                    selectedFolder === folder.id 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-white/10 text-white/60'
+                  }`}>
                     {folder.count}
                   </span>
                 )}
               </button>
             ))}
           </div>
+
+          {/* Bottom section - Account info */}
+          <div className="p-3 border-t border-white/[0.06]">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/[0.1] flex items-center justify-center">
+                <span className="text-xs font-medium text-white/80">Z</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-white/70 truncate">zOS User</p>
+                <p className="text-[10px] text-white/40 truncate">user@zos.local</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Email List */}
-        <div className="w-72 border-r border-white/10 flex flex-col">
-          <div className="p-3 border-b border-white/10">
-            <input
-              type="text"
-              placeholder="Search Mail"
-              className="w-full px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/30 outline-none focus:border-blue-500/50"
-            />
+        {/* Email List - Glass panel */}
+        <div className="w-72 bg-black/30 backdrop-blur-xl border-r border-white/[0.08] flex flex-col">
+          {/* Search bar */}
+          <div className="p-3 border-b border-white/[0.06]">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <input
+                type="text"
+                placeholder="Search Mail"
+                className="w-full pl-9 pr-3 py-2 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white/90 text-sm placeholder:text-white/25 outline-none focus:border-white/[0.15] focus:bg-white/[0.08] transition-all duration-200"
+              />
+            </div>
           </div>
+          
+          {/* Email list */}
           <div className="flex-1 overflow-y-auto">
-            {mockEmails.map((email) => (
+            {mockEmails.map((emailItem) => (
               <button
-                key={email.id}
-                onClick={() => setSelectedEmail(email.id)}
-                className={`w-full p-3 border-b border-white/5 text-left transition-colors ${
-                  selectedEmail === email.id ? 'bg-blue-500/20' : 'hover:bg-white/5'
+                key={emailItem.id}
+                onClick={() => setSelectedEmail(emailItem.id)}
+                className={`w-full p-3 border-b border-white/[0.04] text-left transition-all duration-200 ${
+                  selectedEmail === emailItem.id 
+                    ? 'bg-white/[0.1] border-l-2 border-l-white/40' 
+                    : 'hover:bg-white/[0.05] border-l-2 border-l-transparent'
                 }`}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className={`w-2 h-2 rounded-full ${email.read ? 'bg-transparent' : 'bg-blue-500'}`} />
-                  <span className={`text-sm flex-1 truncate ${email.read ? 'text-white/70' : 'text-white font-semibold'}`}>
-                    {email.from}
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${emailItem.read ? 'bg-transparent' : 'bg-white/70'}`} />
+                  <span className={`text-sm flex-1 truncate ${emailItem.read ? 'text-white/60' : 'text-white font-medium'}`}>
+                    {emailItem.from}
                   </span>
-                  {email.starred && <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />}
+                  {emailItem.starred && <Star className="w-3.5 h-3.5 text-amber-400/80 fill-amber-400/80 flex-shrink-0" />}
                 </div>
-                <p className={`text-sm truncate mb-1 ${email.read ? 'text-white/50' : 'text-white/80'}`}>
-                  {email.subject}
+                <p className={`text-sm truncate mb-1 ${emailItem.read ? 'text-white/40' : 'text-white/70'}`}>
+                  {emailItem.subject}
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="text-xs text-white/40 truncate flex-1">{email.preview}</p>
-                  <span className="text-xs text-white/30">{email.date}</span>
+                  <p className="text-xs text-white/30 truncate flex-1">{emailItem.preview}</p>
+                  <span className="text-[10px] text-white/25 flex-shrink-0">{emailItem.date}</span>
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Email Content */}
-        <div className="flex-1 flex flex-col">
+        {/* Email Content - Main glass panel */}
+        <div className="flex-1 flex flex-col bg-black/20 backdrop-blur-xl">
           {email ? (
             <>
-              <div className="p-4 border-b border-white/10">
-                <h2 className="text-white text-lg font-semibold mb-2">{email.subject}</h2>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-semibold">
+              {/* Email header */}
+              <div className="p-5 border-b border-white/[0.06]">
+                <div className="flex items-start justify-between mb-4">
+                  <h2 className="text-white/90 text-lg font-semibold">{email.subject}</h2>
+                  <div className="flex items-center gap-1">
+                    <button className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white/80 transition-all">
+                      <Reply className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white/80 transition-all">
+                      <Forward className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 rounded-lg hover:bg-white/[0.08] text-white/50 hover:text-white/80 transition-all">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/15 to-white/5 border border-white/[0.1] flex items-center justify-center text-white/80 text-sm font-semibold shadow-lg shadow-black/20">
                     {email.from[0]}
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">{email.from}</p>
-                    <p className="text-white/40 text-xs">{email.date}</p>
+                    <p className="text-white/90 text-sm font-medium">{email.from}</p>
+                    <p className="text-white/35 text-xs">To: me | {email.date}</p>
                   </div>
                 </div>
               </div>
-              <div className="flex-1 p-4 overflow-y-auto">
-                <p className="text-white/70 leading-relaxed">{email.preview}</p>
+              
+              {/* Email body */}
+              <div className="flex-1 p-5 overflow-y-auto">
+                <div className="bg-white/[0.03] rounded-xl border border-white/[0.06] p-5">
+                  <p className="text-white/70 leading-relaxed text-sm">{email.preview}</p>
+                  <p className="text-white/50 leading-relaxed text-sm mt-4">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                  </p>
+                  <p className="text-white/50 leading-relaxed text-sm mt-4">
+                    Best regards,<br />
+                    <span className="text-white/60">{email.from}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Quick reply */}
+              <div className="p-4 border-t border-white/[0.06]">
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="Reply to this email..."
+                    className="flex-1 px-4 py-2.5 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white/90 text-sm placeholder:text-white/25 outline-none focus:border-white/[0.15] focus:bg-white/[0.08] transition-all duration-200"
+                  />
+                  <button className="px-4 py-2.5 bg-white/[0.1] hover:bg-white/[0.15] text-white/80 hover:text-white rounded-lg transition-all duration-200 border border-white/[0.1] hover:border-white/[0.15] text-sm font-medium">
+                    Send
+                  </button>
+                </div>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-white/30">
-              Select an email to read
+            <div className="flex-1 flex flex-col items-center justify-center text-white/25">
+              <MailIcon className="w-16 h-16 mb-4 opacity-30" />
+              <p className="text-sm">Select an email to read</p>
             </div>
           )}
         </div>

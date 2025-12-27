@@ -116,10 +116,11 @@ interface CalculatorWindowProps {
 const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus }) => {
   const calc = useCalculator();
 
-  const buttonClass = "flex items-center justify-center text-2xl font-light rounded-full transition-all active:scale-95";
-  const numberButton = `${buttonClass} bg-[#505050] hover:bg-[#6a6a6a] text-white`;
-  const operatorButton = `${buttonClass} bg-[#ff9f0a] hover:bg-[#ffb340] text-white`;
-  const functionButton = `${buttonClass} bg-[#a5a5a5] hover:bg-[#c5c5c5] text-black`;
+  // Glass morphism button styles
+  const buttonBase = "flex items-center justify-center text-xl font-medium rounded-xl transition-all duration-150 active:scale-95 backdrop-blur-md border border-white/10";
+  const numberButton = `${buttonBase} bg-white/10 hover:bg-white/20 text-white`;
+  const operatorButton = `${buttonBase} bg-orange-500/80 hover:bg-orange-500 text-white border-orange-400/30`;
+  const functionButton = `${buttonBase} bg-white/20 hover:bg-white/30 text-white`;
 
   const formatDisplay = (value: string) => {
     const num = parseFloat(value);
@@ -136,19 +137,19 @@ const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus })
       onClose={onClose}
       onFocus={onFocus}
       initialPosition={{ x: 200, y: 100 }}
-      initialSize={{ width: 240, height: 360 }}
+      initialSize={{ width: 260, height: 380 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-[#1c1c1c] select-none">
+      <div className="flex flex-col h-full bg-black/80 backdrop-blur-xl select-none">
         {/* Display */}
-        <div className="flex-shrink-0 h-24 flex items-end justify-end px-6 pb-2">
-          <span className="text-white text-5xl font-light truncate">
+        <div className="flex-shrink-0 h-24 flex items-end justify-end px-5 pb-3 border-b border-white/10">
+          <span className="text-white text-5xl font-light tracking-tight truncate">
             {formatDisplay(calc.display)}
           </span>
         </div>
 
         {/* Buttons Grid */}
-        <div className="flex-1 grid grid-cols-4 gap-[1px] p-[1px]">
+        <div className="flex-1 grid grid-cols-4 gap-2 p-3">
           {/* Row 1 */}
           <button className={functionButton} onClick={calc.clear}>
             {calc.previousValue ? 'C' : 'AC'}
@@ -156,7 +157,7 @@ const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus })
           <button className={functionButton} onClick={calc.toggleSign}>+/-</button>
           <button className={functionButton} onClick={calc.inputPercent}>%</button>
           <button
-            className={`${operatorButton} ${calc.operation === '/' && calc.waitingForOperand ? 'bg-white text-[#ff9f0a]' : ''}`}
+            className={`${operatorButton} ${calc.operation === '/' && calc.waitingForOperand ? 'bg-white text-orange-500 border-white/30' : ''}`}
             onClick={() => calc.performOperation('/')}
           >/</button>
 
@@ -165,7 +166,7 @@ const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus })
           <button className={numberButton} onClick={() => calc.inputDigit('8')}>8</button>
           <button className={numberButton} onClick={() => calc.inputDigit('9')}>9</button>
           <button
-            className={`${operatorButton} ${calc.operation === '*' && calc.waitingForOperand ? 'bg-white text-[#ff9f0a]' : ''}`}
+            className={`${operatorButton} ${calc.operation === '*' && calc.waitingForOperand ? 'bg-white text-orange-500 border-white/30' : ''}`}
             onClick={() => calc.performOperation('*')}
           >×</button>
 
@@ -174,7 +175,7 @@ const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus })
           <button className={numberButton} onClick={() => calc.inputDigit('5')}>5</button>
           <button className={numberButton} onClick={() => calc.inputDigit('6')}>6</button>
           <button
-            className={`${operatorButton} ${calc.operation === '-' && calc.waitingForOperand ? 'bg-white text-[#ff9f0a]' : ''}`}
+            className={`${operatorButton} ${calc.operation === '-' && calc.waitingForOperand ? 'bg-white text-orange-500 border-white/30' : ''}`}
             onClick={() => calc.performOperation('-')}
           >−</button>
 
@@ -183,7 +184,7 @@ const CalculatorWindow: React.FC<CalculatorWindowProps> = ({ onClose, onFocus })
           <button className={numberButton} onClick={() => calc.inputDigit('2')}>2</button>
           <button className={numberButton} onClick={() => calc.inputDigit('3')}>3</button>
           <button
-            className={`${operatorButton} ${calc.operation === '+' && calc.waitingForOperand ? 'bg-white text-[#ff9f0a]' : ''}`}
+            className={`${operatorButton} ${calc.operation === '+' && calc.waitingForOperand ? 'bg-white text-orange-500 border-white/30' : ''}`}
             onClick={() => calc.performOperation('+')}
           >+</button>
 
@@ -215,7 +216,7 @@ export const CalculatorManifest = {
   category: 'utilities' as const,
   window: {
     type: 'system' as const,
-    defaultSize: { width: 240, height: 360 },
+    defaultSize: { width: 260, height: 380 },
     resizable: false,
     showInDock: true,
   },

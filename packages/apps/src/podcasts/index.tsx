@@ -134,42 +134,45 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
         <div>
           <button
             onClick={() => setSelectedShow(null)}
-            className="text-purple-400 hover:text-purple-300 text-sm mb-4 flex items-center gap-1"
+            className="text-white/70 hover:text-white text-sm mb-4 flex items-center gap-1 transition-colors"
           >
             Back to Library
           </button>
           <div className="flex gap-6 mb-6">
-            <img src={selectedShow.cover} alt="" className="w-32 h-32 rounded-lg shadow-lg" />
+            <div className="relative">
+              <img src={selectedShow.cover} alt="" className="w-32 h-32 rounded-xl shadow-2xl" />
+              <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+            </div>
             <div>
-              <h2 className="text-white text-2xl font-bold">{selectedShow.title}</h2>
+              <h2 className="text-white text-2xl font-semibold">{selectedShow.title}</h2>
               <p className="text-white/60">{selectedShow.author}</p>
               <p className="text-white/40 text-sm mt-2">{selectedShow.episodeCount} episodes</p>
             </div>
           </div>
-          <h3 className="text-white font-semibold mb-4">Episodes</h3>
+          <h3 className="text-white/90 font-medium mb-4">Episodes</h3>
           <div className="space-y-2">
             {showEpisodes.map((episode) => (
               <div
                 key={episode.id}
                 onClick={() => setSelectedEpisode(episode)}
-                className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer group"
+                className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] backdrop-blur-sm cursor-pointer group transition-all"
               >
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     playEpisode(episode);
                   }}
-                  className="p-2 bg-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-2 bg-white/10 hover:bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-all"
                 >
                   <Play className="w-4 h-4 text-white" />
                 </button>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white truncate">{episode.title}</p>
-                  <p className="text-white/50 text-sm truncate">{episode.description}</p>
+                  <p className="text-white/90 truncate">{episode.title}</p>
+                  <p className="text-white/40 text-sm truncate">{episode.description}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-white/40 text-sm">{episode.date}</p>
-                  <p className="text-white/40 text-sm">{episode.duration}</p>
+                  <p className="text-white/30 text-sm">{episode.date}</p>
+                  <p className="text-white/30 text-sm">{episode.duration}</p>
                 </div>
               </div>
             ))}
@@ -180,39 +183,42 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
         <div>
           <button
             onClick={() => setSelectedEpisode(null)}
-            className="text-purple-400 hover:text-purple-300 text-sm mb-4 flex items-center gap-1"
+            className="text-white/70 hover:text-white text-sm mb-4 flex items-center gap-1 transition-colors"
           >
             Back
           </button>
           <div className="flex gap-6 mb-6">
-            <img src={selectedEpisode.cover} alt="" className="w-32 h-32 rounded-lg shadow-lg" />
+            <div className="relative">
+              <img src={selectedEpisode.cover} alt="" className="w-32 h-32 rounded-xl shadow-2xl" />
+              <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+            </div>
             <div>
-              <p className="text-white/60 text-sm">{selectedEpisode.showTitle}</p>
-              <h2 className="text-white text-2xl font-bold">{selectedEpisode.title}</h2>
-              <p className="text-white/40 text-sm mt-2">{selectedEpisode.date} - {selectedEpisode.duration}</p>
+              <p className="text-white/50 text-sm">{selectedEpisode.showTitle}</p>
+              <h2 className="text-white text-2xl font-semibold">{selectedEpisode.title}</h2>
+              <p className="text-white/30 text-sm mt-2">{selectedEpisode.date} - {selectedEpisode.duration}</p>
               <button
                 onClick={() => playEpisode(selectedEpisode)}
-                className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center gap-2 transition-colors"
+                className="mt-4 px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full flex items-center gap-2 transition-all backdrop-blur-sm"
               >
                 <Play className="w-4 h-4" />
                 Play Episode
               </button>
             </div>
           </div>
-          <div className="mb-6">
-            <h3 className="text-white font-semibold mb-2">Show Notes</h3>
-            <p className="text-white/70">{selectedEpisode.description}</p>
+          <div className="mb-6 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+            <h3 className="text-white/90 font-medium mb-2">Show Notes</h3>
+            <p className="text-white/60">{selectedEpisode.description}</p>
           </div>
           {selectedEpisode.chapters && (
-            <div>
-              <h3 className="text-white font-semibold mb-2">Chapters</h3>
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+              <h3 className="text-white/90 font-medium mb-3">Chapters</h3>
               <div className="space-y-1">
                 {selectedEpisode.chapters.map((chapter, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-4 p-2 rounded hover:bg-white/5 cursor-pointer"
+                    className="flex items-center gap-4 p-2 rounded-lg hover:bg-white/[0.05] cursor-pointer transition-colors"
                   >
-                    <span className="text-purple-400 text-sm w-12">{chapter.time}</span>
+                    <span className="text-white/50 text-sm w-12 font-mono">{chapter.time}</span>
                     <span className="text-white/70">{chapter.title}</span>
                   </div>
                 ))}
@@ -223,33 +229,34 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
       ) : (
         // Library grid
         <div>
-          <h2 className="text-white text-2xl font-bold mb-4">Your Library</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <h2 className="text-white text-2xl font-semibold mb-6">Your Library</h2>
+          <div className="grid grid-cols-3 gap-5">
             {mockShows.map((show) => (
               <div
                 key={show.id}
                 onClick={() => setSelectedShow(show)}
                 className="group cursor-pointer"
               >
-                <div className="relative mb-2">
+                <div className="relative mb-3 rounded-xl overflow-hidden bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm transition-all group-hover:border-white/20 group-hover:bg-white/[0.06]">
                   <img
                     src={show.cover}
                     alt=""
-                    className="w-full aspect-square rounded-lg shadow-lg group-hover:shadow-xl transition-shadow"
+                    className="w-full aspect-square object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       const ep = mockEpisodes.find((ep) => ep.showId === show.id);
                       if (ep) playEpisode(ep);
                     }}
-                    className="absolute bottom-2 right-2 p-3 bg-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    className="absolute bottom-3 right-3 p-3 bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-xl"
                   >
                     <Play className="w-5 h-5 text-white" />
                   </button>
                 </div>
-                <p className="text-white font-medium truncate">{show.title}</p>
-                <p className="text-white/50 text-sm truncate">{show.author}</p>
+                <p className="text-white/90 font-medium truncate">{show.title}</p>
+                <p className="text-white/40 text-sm truncate">{show.author}</p>
               </div>
             ))}
           </div>
@@ -260,29 +267,32 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
 
   const renderBrowseView = () => (
     <div className="flex-1 overflow-y-auto p-6">
-      <h2 className="text-white text-2xl font-bold mb-4">Browse</h2>
-      <h3 className="text-white/70 font-semibold mb-3">Popular Podcasts</h3>
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <h2 className="text-white text-2xl font-semibold mb-6">Browse</h2>
+      <h3 className="text-white/60 font-medium mb-3">Popular Podcasts</h3>
+      <div className="grid grid-cols-2 gap-3 mb-8">
         {popularPodcasts.map((show) => (
           <div
             key={show.id}
-            className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer group"
+            className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] backdrop-blur-sm cursor-pointer group transition-all"
           >
-            <img src={show.cover} alt="" className="w-16 h-16 rounded-lg" />
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{show.title}</p>
-              <p className="text-white/50 text-sm truncate">{show.author}</p>
+            <div className="relative">
+              <img src={show.cover} alt="" className="w-16 h-16 rounded-lg" />
+              <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10" />
             </div>
-            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-white/50" />
+            <div className="flex-1 min-w-0">
+              <p className="text-white/90 font-medium truncate">{show.title}</p>
+              <p className="text-white/40 text-sm truncate">{show.author}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white/50 transition-colors" />
           </div>
         ))}
       </div>
-      <h3 className="text-white/70 font-semibold mb-3">Categories</h3>
+      <h3 className="text-white/60 font-medium mb-3">Categories</h3>
       <div className="grid grid-cols-3 gap-3">
         {['Technology', 'Business', 'Science', 'Arts', 'Sports', 'News', 'Comedy', 'Education', 'Health'].map((cat) => (
           <button
             key={cat}
-            className="p-4 bg-white/5 hover:bg-white/10 rounded-lg text-white transition-colors"
+            className="p-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] rounded-xl text-white/80 hover:text-white transition-all backdrop-blur-sm"
           >
             {cat}
           </button>
@@ -294,13 +304,13 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
   const renderSearchView = () => (
     <div className="flex-1 overflow-y-auto p-6">
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search podcasts..."
-          className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full pl-12 pr-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/[0.08] backdrop-blur-sm transition-all"
         />
       </div>
       {searchQuery ? (
@@ -310,19 +320,22 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
             .map((show) => (
               <div
                 key={show.id}
-                className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer"
+                className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] backdrop-blur-sm cursor-pointer transition-all"
               >
-                <img src={show.cover} alt="" className="w-12 h-12 rounded-lg" />
+                <div className="relative">
+                  <img src={show.cover} alt="" className="w-12 h-12 rounded-lg" />
+                  <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10" />
+                </div>
                 <div>
-                  <p className="text-white">{show.title}</p>
-                  <p className="text-white/50 text-sm">{show.author}</p>
+                  <p className="text-white/90">{show.title}</p>
+                  <p className="text-white/40 text-sm">{show.author}</p>
                 </div>
               </div>
             ))}
         </div>
       ) : (
-        <div className="text-center text-white/40 mt-12">
-          <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+        <div className="text-center text-white/30 mt-16">
+          <Search className="w-16 h-16 mx-auto mb-4 opacity-30" />
           <p>Search for podcasts, episodes, or topics</p>
         </div>
       )}
@@ -338,15 +351,17 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 900, height: 650 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-gradient-to-b from-[#1a1020] to-[#0d0810]">
+      <div className="flex flex-col h-full bg-black/80 backdrop-blur-2xl">
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-56 bg-black/30 border-r border-white/10 flex flex-col p-4">
-            <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Menu</h3>
+          <div className="w-56 bg-white/[0.02] border-r border-white/[0.06] flex flex-col p-4 backdrop-blur-xl">
+            <h3 className="text-white/30 text-xs uppercase tracking-wider mb-3 px-3">Menu</h3>
             <button
               onClick={() => { setSidebarView('library'); setSelectedShow(null); setSelectedEpisode(null); }}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                sidebarView === 'library' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5'
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                sidebarView === 'library' 
+                  ? 'bg-white/10 text-white border border-white/10' 
+                  : 'text-white/60 hover:bg-white/[0.05] hover:text-white/80'
               }`}
             >
               <Library className="w-4 h-4" />
@@ -354,8 +369,10 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
             </button>
             <button
               onClick={() => setSidebarView('browse')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                sidebarView === 'browse' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5'
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                sidebarView === 'browse' 
+                  ? 'bg-white/10 text-white border border-white/10' 
+                  : 'text-white/60 hover:bg-white/[0.05] hover:text-white/80'
               }`}
             >
               <Compass className="w-4 h-4" />
@@ -363,54 +380,61 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
             </button>
             <button
               onClick={() => setSidebarView('search')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                sidebarView === 'search' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5'
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                sidebarView === 'search' 
+                  ? 'bg-white/10 text-white border border-white/10' 
+                  : 'text-white/60 hover:bg-white/[0.05] hover:text-white/80'
               }`}
             >
               <Search className="w-4 h-4" />
               Search
             </button>
 
-            <h3 className="text-white/40 text-xs uppercase tracking-wider mt-6 mb-2">Recently Played</h3>
+            <h3 className="text-white/30 text-xs uppercase tracking-wider mt-8 mb-3 px-3">Recently Played</h3>
             {mockEpisodes.slice(0, 3).map((ep) => (
               <button
                 key={ep.id}
                 onClick={() => playEpisode(ep)}
-                className="flex items-center gap-2 px-3 py-2 text-left text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-left text-white/50 hover:bg-white/[0.05] hover:text-white/70 rounded-lg text-sm transition-all"
               >
-                <Clock className="w-4 h-4 flex-shrink-0" />
+                <Clock className="w-4 h-4 flex-shrink-0 opacity-50" />
                 <span className="truncate">{ep.title}</span>
               </button>
             ))}
           </div>
 
           {/* Main Content */}
-          {sidebarView === 'library' && renderLibraryView()}
-          {sidebarView === 'browse' && renderBrowseView()}
-          {sidebarView === 'search' && renderSearchView()}
+          <div className="flex-1 overflow-hidden">
+            {sidebarView === 'library' && renderLibraryView()}
+            {sidebarView === 'browse' && renderBrowseView()}
+            {sidebarView === 'search' && renderSearchView()}
+          </div>
         </div>
 
         {/* Now Playing Bar */}
-        <div className="h-20 bg-black/50 border-t border-white/10 flex items-center px-4 gap-4">
+        <div className="h-20 bg-white/[0.03] border-t border-white/[0.08] backdrop-blur-xl flex items-center px-4 gap-4">
           {/* Episode Info */}
           <div className="flex items-center gap-3 w-64">
-            <img src={currentEpisode.cover} alt="" className="w-12 h-12 rounded shadow-lg" />
+            <div className="relative">
+              <img src={currentEpisode.cover} alt="" className="w-12 h-12 rounded-lg shadow-xl" />
+              <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10" />
+            </div>
             <div className="min-w-0">
-              <p className="text-white font-medium truncate text-sm">{currentEpisode.title}</p>
-              <p className="text-white/50 text-xs truncate">{currentEpisode.showTitle}</p>
+              <p className="text-white/90 font-medium truncate text-sm">{currentEpisode.title}</p>
+              <p className="text-white/40 text-xs truncate">{currentEpisode.showTitle}</p>
             </div>
           </div>
 
           {/* Controls */}
-          <div className="flex-1 flex flex-col items-center gap-1">
-            <div className="flex items-center gap-3">
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <SkipBack className="w-5 h-5 text-white" />
+          <div className="flex-1 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-4">
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-colors">
+                <SkipBack className="w-5 h-5 text-white/70" />
               </button>
-              <span className="text-white/50 text-xs">15s</span>
+              <span className="text-white/30 text-xs font-mono">15s</span>
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="p-3 bg-purple-500 rounded-full hover:bg-purple-600 transition-colors"
+                className="p-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full transition-all backdrop-blur-sm"
               >
                 {isPlaying ? (
                   <Pause className="w-5 h-5 text-white" />
@@ -418,33 +442,33 @@ const PodcastsWindow: React.FC<PodcastsWindowProps> = ({ onClose, onFocus }) => 
                   <Play className="w-5 h-5 text-white ml-0.5" />
                 )}
               </button>
-              <span className="text-white/50 text-xs">30s</span>
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <SkipForward className="w-5 h-5 text-white" />
+              <span className="text-white/30 text-xs font-mono">30s</span>
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-colors">
+                <SkipForward className="w-5 h-5 text-white/70" />
               </button>
             </div>
-            <div className="flex items-center gap-2 w-full max-w-md">
-              <span className="text-white/50 text-xs w-10 text-right">11:23</span>
-              <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer">
+            <div className="flex items-center gap-3 w-full max-w-md">
+              <span className="text-white/40 text-xs w-10 text-right font-mono">11:23</span>
+              <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer group">
                 <div
-                  className="h-full bg-purple-500 rounded-full"
+                  className="h-full bg-white/40 group-hover:bg-white/60 rounded-full transition-colors"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <span className="text-white/50 text-xs w-10">{currentEpisode.duration}</span>
+              <span className="text-white/40 text-xs w-10 font-mono">{currentEpisode.duration}</span>
             </div>
           </div>
 
           {/* Playback Speed */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setPlaybackSpeed(playbackSpeed === 2 ? 0.5 : playbackSpeed + 0.5)}
-              className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded text-white text-sm transition-colors"
+              className="px-3 py-1.5 bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] rounded-lg text-white/70 hover:text-white text-sm transition-all backdrop-blur-sm font-mono"
             >
               {playbackSpeed}x
             </button>
-            <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <MoreHorizontal className="w-5 h-5 text-white/50" />
+            <button className="p-2 hover:bg-white/[0.08] rounded-full transition-colors">
+              <MoreHorizontal className="w-5 h-5 text-white/40" />
             </button>
           </div>
         </div>

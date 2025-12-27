@@ -161,21 +161,23 @@ const RemindersWindow: React.FC<RemindersWindowProps> = ({ onClose, onFocus }) =
       initialSize={{ width: 600, height: 480 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1c1c1e]">
-        {/* Sidebar */}
-        <div className="w-52 border-r border-white/10 p-3">
+      <div className="flex h-full bg-black/60 backdrop-blur-xl">
+        {/* Sidebar - Dark glass with transparency */}
+        <div className="w-52 bg-black/40 backdrop-blur-md border-r border-white/[0.08] p-3">
           <div className="space-y-1">
             {lists.map(list => (
               <button
                 key={list.id}
                 onClick={() => setSelectedList(list.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  selectedList === list.id ? 'bg-white/10' : 'hover:bg-white/5'
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                  selectedList === list.id 
+                    ? 'bg-white/[0.12] backdrop-blur-sm border border-white/[0.1] shadow-lg shadow-black/20' 
+                    : 'hover:bg-white/[0.06] border border-transparent'
                 }`}
               >
-                <div className={`w-3 h-3 rounded-full ${list.color}`} />
-                <span className="flex-1 text-left text-white text-sm">{list.name}</span>
-                <span className="text-white/40 text-xs">
+                <div className={`w-3 h-3 rounded-full ${list.color} shadow-lg`} />
+                <span className="flex-1 text-left text-white/90 text-sm font-medium">{list.name}</span>
+                <span className="text-white/40 text-xs font-medium bg-white/[0.06] px-1.5 py-0.5 rounded">
                   {list.reminders.filter(r => !r.completed).length}
                 </span>
               </button>
@@ -183,24 +185,24 @@ const RemindersWindow: React.FC<RemindersWindowProps> = ({ onClose, onFocus }) =
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
+        {/* Main Content - Glass panel */}
+        <div className="flex-1 flex flex-col bg-black/20">
           {currentList && (
             <>
               {/* Header */}
-              <div className="p-4 border-b border-white/10">
+              <div className="p-4 border-b border-white/[0.08] bg-white/[0.02]">
                 <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full ${currentList.color}`} />
-                  <h2 className="text-white text-xl font-semibold">{currentList.name}</h2>
+                  <div className={`w-4 h-4 rounded-full ${currentList.color} shadow-lg`} />
+                  <h2 className="text-white text-xl font-semibold tracking-tight">{currentList.name}</h2>
                 </div>
-                <p className="text-white/40 text-sm mt-1">
+                <p className="text-white/40 text-sm mt-1.5 font-medium">
                   {completedCount} of {totalCount} completed
                 </p>
               </div>
 
-              {/* Add Reminder */}
-              <div className="p-4 border-b border-white/10">
-                <div className="flex items-center gap-2">
+              {/* Add Reminder - Glass input */}
+              <div className="p-4 border-b border-white/[0.08]">
+                <div className="flex items-center gap-3 bg-white/[0.06] backdrop-blur-sm rounded-lg px-3 py-2.5 border border-white/[0.08] focus-within:border-white/[0.15] focus-within:bg-white/[0.08] transition-all duration-200">
                   <Plus className="w-5 h-5 text-white/40" />
                   <input
                     type="text"
@@ -214,44 +216,44 @@ const RemindersWindow: React.FC<RemindersWindowProps> = ({ onClose, onFocus }) =
               </div>
 
               {/* Reminders List */}
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto p-2">
                 {currentList.reminders.map(reminder => (
                   <div
                     key={reminder.id}
-                    className="group flex items-start gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors"
+                    className="group flex items-start gap-3 px-3 py-3 mb-1.5 rounded-lg bg-white/[0.04] backdrop-blur-sm border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/[0.1] transition-all duration-200"
                   >
                     <button
                       onClick={() => toggleReminder(reminder.id)}
-                      className="mt-0.5"
+                      className="mt-0.5 transition-transform duration-200 hover:scale-110"
                     >
                       {reminder.completed ? (
-                        <CheckCircle2 className={`w-5 h-5 ${currentList.color.replace('bg-', 'text-')}`} />
+                        <CheckCircle2 className={`w-5 h-5 ${currentList.color.replace('bg-', 'text-')} drop-shadow-lg`} />
                       ) : (
                         <Circle className="w-5 h-5 text-white/30 hover:text-white/50" />
                       )}
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm ${reminder.completed ? 'text-white/40 line-through' : 'text-white'}`}>
+                      <p className={`text-sm font-medium ${reminder.completed ? 'text-white/40 line-through' : 'text-white/90'}`}>
                         {reminder.text}
                       </p>
                       {reminder.dueDate && (
-                        <div className="flex items-center gap-1 mt-1 text-white/40 text-xs">
+                        <div className="flex items-center gap-1.5 mt-1.5 text-white/40 text-xs">
                           <Calendar className="w-3 h-3" />
-                          <span>{reminder.dueDate}</span>
+                          <span className="font-medium">{reminder.dueDate}</span>
                         </div>
                       )}
                     </div>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => cyclePriority(reminder.id)}
-                        className={`p-1 rounded hover:bg-white/10 ${getPriorityColor(reminder.priority)}`}
+                        className={`p-1.5 rounded-md hover:bg-white/[0.1] ${getPriorityColor(reminder.priority)} transition-all duration-200`}
                         title={`Priority: ${reminder.priority}`}
                       >
                         <Flag className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => deleteReminder(reminder.id)}
-                        className="p-1 rounded hover:bg-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="p-1.5 rounded-md hover:bg-red-500/20 opacity-0 group-hover:opacity-100 transition-all duration-200"
                       >
                         <Trash2 className="w-4 h-4 text-red-400" />
                       </button>
@@ -261,9 +263,11 @@ const RemindersWindow: React.FC<RemindersWindowProps> = ({ onClose, onFocus }) =
 
                 {currentList.reminders.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-full text-white/30">
-                    <CheckCircle2 className="w-12 h-12 mb-3" />
-                    <p className="text-lg">No reminders</p>
-                    <p className="text-sm">Add a reminder above to get started</p>
+                    <div className="p-6 rounded-2xl bg-white/[0.04] border border-white/[0.06] backdrop-blur-sm">
+                      <CheckCircle2 className="w-12 h-12 mb-4 mx-auto text-white/20" />
+                      <p className="text-lg font-medium text-white/50">No reminders</p>
+                      <p className="text-sm mt-1 text-white/30">Add a reminder above to get started</p>
+                    </div>
                   </div>
                 )}
               </div>

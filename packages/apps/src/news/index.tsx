@@ -232,17 +232,17 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
     <div className="flex-1 overflow-y-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-white text-2xl font-bold">
+          <h2 className="text-white/90 text-2xl font-semibold tracking-tight">
             {categories.find((c) => c.id === activeCategory)?.label}
           </h2>
           {activeCategory === 'today' && (
-            <p className="text-white/50 text-sm mt-1">Thursday, December 26, 2024</p>
+            <p className="text-white/40 text-sm mt-1">Thursday, December 26, 2024</p>
           )}
         </div>
         {activeCategory === 'today' && (
-          <div className="flex items-center gap-2 text-amber-400">
-            <TrendingUp className="w-5 h-5" />
-            <span className="text-sm font-medium">Trending</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <TrendingUp className="w-4 h-4 text-white/60" />
+            <span className="text-sm font-medium text-white/60">Trending</span>
           </div>
         )}
       </div>
@@ -261,21 +261,21 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
           onClick={() => setSelectedArticle(filteredArticles[0])}
           className="mb-6 cursor-pointer group"
         >
-          <div className="relative rounded-xl overflow-hidden">
+          <div className="relative rounded-2xl overflow-hidden bg-black/20 backdrop-blur-xl border border-white/10 shadow-2xl">
             <img
               src={filteredArticles[0].image}
               alt=""
-              className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="text-xs text-white/60 uppercase tracking-wider">
+              <span className="text-xs text-white/50 uppercase tracking-wider font-medium">
                 {filteredArticles[0].source}
               </span>
-              <h3 className="text-white text-xl font-bold mt-1 group-hover:text-blue-300 transition-colors">
+              <h3 className="text-white/95 text-xl font-semibold mt-1 group-hover:text-white transition-colors">
                 {filteredArticles[0].title}
               </h3>
-              <p className="text-white/70 text-sm mt-2 line-clamp-2">
+              <p className="text-white/60 text-sm mt-2 line-clamp-2">
                 {filteredArticles[0].excerpt}
               </p>
             </div>
@@ -289,23 +289,26 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
           <div
             key={article.id}
             onClick={() => setSelectedArticle(article)}
-            className="group cursor-pointer bg-white/5 rounded-xl overflow-hidden hover:bg-white/10 transition-colors"
+            className="group cursor-pointer bg-black/30 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 hover:bg-black/40 transition-all duration-300 shadow-lg"
           >
-            <img
-              src={article.image}
-              alt=""
-              className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+            <div className="relative">
+              <img
+                src={article.image}
+                alt=""
+                className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            </div>
             <div className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs text-white/50">{article.source}</span>
-                <span className="text-white/30">-</span>
-                <span className="text-xs text-white/50">{article.date}</span>
+                <span className="text-xs text-white/40">{article.source}</span>
+                <span className="text-white/20">-</span>
+                <span className="text-xs text-white/40">{article.date}</span>
               </div>
-              <h4 className="text-white font-medium line-clamp-2 group-hover:text-blue-300 transition-colors">
+              <h4 className="text-white/90 font-medium line-clamp-2 group-hover:text-white transition-colors">
                 {article.title}
               </h4>
-              <div className="flex items-center gap-2 mt-3 text-white/40 text-xs">
+              <div className="flex items-center gap-2 mt-3 text-white/30 text-xs">
                 <Clock className="w-3 h-3" />
                 {article.readTime}
               </div>
@@ -317,32 +320,32 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
       {/* For You Section */}
       {activeCategory === 'today' && (
         <div className="mt-8">
-          <h3 className="text-white font-semibold mb-4">For You</h3>
+          <h3 className="text-white/80 font-semibold mb-4">For You</h3>
           <div className="space-y-3">
             {mockArticles.slice(4).map((article) => (
               <div
                 key={article.id}
                 onClick={() => setSelectedArticle(article)}
-                className="flex gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-colors"
+                className="flex gap-4 p-3 rounded-xl bg-black/30 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:bg-black/40 cursor-pointer transition-all duration-300"
               >
                 <img
                   src={article.image}
                   alt=""
-                  className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                  className="w-20 h-20 object-cover rounded-lg flex-shrink-0 opacity-80"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-white/50">{article.source}</span>
+                    <span className="text-xs text-white/40">{article.source}</span>
                   </div>
-                  <h4 className="text-white font-medium line-clamp-2">{article.title}</h4>
+                  <h4 className="text-white/90 font-medium line-clamp-2">{article.title}</h4>
                   <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs text-white/40">{article.readTime}</span>
+                    <span className="text-xs text-white/30">{article.readTime}</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleSaveArticle(article.id);
                       }}
-                      className={`p-1 rounded hover:bg-white/10 ${isArticleSaved(article.id) ? 'text-blue-400' : 'text-white/40'}`}
+                      className={`p-1 rounded hover:bg-white/10 transition-colors ${isArticleSaved(article.id) ? 'text-white/70' : 'text-white/30'}`}
                     >
                       <Bookmark className="w-3 h-3" fill={isArticleSaved(article.id) ? 'currentColor' : 'none'} />
                     </button>
@@ -366,12 +369,12 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
           <img
             src={selectedArticle.image}
             alt=""
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20" />
           <button
             onClick={() => setSelectedArticle(null)}
-            className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-black/50 hover:bg-black/70 rounded-full text-white text-sm transition-colors backdrop-blur-sm"
+            className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/20 hover:bg-black/60 hover:border-white/30 rounded-full text-white/80 text-sm transition-all duration-300"
           >
             <ChevronLeft className="w-4 h-4" />
             Back
@@ -381,44 +384,44 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
         {/* Article Content */}
         <div className="px-8 pb-8 -mt-16 relative">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-blue-400 text-sm font-medium">{selectedArticle.source}</span>
-            <span className="text-white/30">-</span>
-            <span className="text-white/50 text-sm">{selectedArticle.date}</span>
+            <span className="text-white/60 text-sm font-medium">{selectedArticle.source}</span>
+            <span className="text-white/20">-</span>
+            <span className="text-white/40 text-sm">{selectedArticle.date}</span>
           </div>
 
-          <h1 className="text-white text-3xl font-bold leading-tight mb-4">
+          <h1 className="text-white/95 text-3xl font-semibold leading-tight mb-4">
             {selectedArticle.title}
           </h1>
 
           <div className="flex items-center gap-4 mb-6">
-            <span className="text-white/50 text-sm flex items-center gap-1">
+            <span className="text-white/40 text-sm flex items-center gap-1">
               <Clock className="w-4 h-4" />
               {selectedArticle.readTime}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => toggleSaveArticle(selectedArticle.id)}
-                className={`p-2 rounded-full hover:bg-white/10 transition-colors ${
-                  isArticleSaved(selectedArticle.id) ? 'text-blue-400' : 'text-white/50'
+                className={`p-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 ${
+                  isArticleSaved(selectedArticle.id) ? 'text-white/80' : 'text-white/40'
                 }`}
               >
                 <Bookmark
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill={isArticleSaved(selectedArticle.id) ? 'currentColor' : 'none'}
                 />
               </button>
-              <button className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
-                <Share2 className="w-5 h-5" />
+              <button className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/40 transition-all duration-300">
+                <Share2 className="w-4 h-4" />
               </button>
-              <button className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
-                <ExternalLink className="w-5 h-5" />
+              <button className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/40 transition-all duration-300">
+                <ExternalLink className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           <div className="prose prose-invert max-w-none">
             {selectedArticle.content.split('\n\n').map((paragraph, idx) => (
-              <p key={idx} className="text-white/80 leading-relaxed mb-4">
+              <p key={idx} className="text-white/70 leading-relaxed mb-4">
                 {paragraph}
               </p>
             ))}
@@ -426,7 +429,7 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
 
           {/* Related Articles */}
           <div className="mt-8 pt-6 border-t border-white/10">
-            <h3 className="text-white font-semibold mb-4">Related Stories</h3>
+            <h3 className="text-white/80 font-semibold mb-4">Related Stories</h3>
             <div className="grid grid-cols-2 gap-4">
               {mockArticles
                 .filter((a) => a.id !== selectedArticle.id && a.category === selectedArticle.category)
@@ -435,16 +438,16 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
                   <div
                     key={article.id}
                     onClick={() => setSelectedArticle(article)}
-                    className="flex gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition-colors"
+                    className="flex gap-3 p-3 rounded-xl bg-black/30 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:bg-black/40 cursor-pointer transition-all duration-300"
                   >
                     <img
                       src={article.image}
                       alt=""
-                      className="w-16 h-16 object-cover rounded flex-shrink-0"
+                      className="w-16 h-16 object-cover rounded-lg flex-shrink-0 opacity-80"
                     />
                     <div>
-                      <p className="text-white text-sm font-medium line-clamp-2">{article.title}</p>
-                      <p className="text-white/40 text-xs mt-1">{article.source}</p>
+                      <p className="text-white/90 text-sm font-medium line-clamp-2">{article.title}</p>
+                      <p className="text-white/30 text-xs mt-1">{article.source}</p>
                     </div>
                   </div>
                 ))}
@@ -464,20 +467,20 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 950, height: 700 }}
       windowType="system"
     >
-      <div className="flex h-full bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d]">
+      <div className="flex h-full bg-black/80 backdrop-blur-2xl">
         {/* Sidebar */}
-        <div className="w-56 bg-black/30 border-r border-white/10 flex flex-col p-4">
-          <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Categories</h3>
+        <div className="w-56 bg-black/40 backdrop-blur-xl border-r border-white/10 flex flex-col p-4">
+          <h3 className="text-white/30 text-xs uppercase tracking-wider font-medium mb-3 px-3">Categories</h3>
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategory(cat.id); setSelectedArticle(null); }}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-300 ${
                   activeCategory === cat.id
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/70 hover:bg-white/5'
+                    ? 'bg-white/10 text-white/90 border border-white/15'
+                    : 'text-white/50 hover:bg-white/5 hover:text-white/70 border border-transparent'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -486,7 +489,7 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
             );
           })}
 
-          <h3 className="text-white/40 text-xs uppercase tracking-wider mt-6 mb-2">Saved</h3>
+          <h3 className="text-white/30 text-xs uppercase tracking-wider font-medium mt-6 mb-3 px-3">Saved</h3>
           <div className="space-y-1">
             {savedArticles.length > 0 ? (
               mockArticles
@@ -496,14 +499,14 @@ const NewsWindow: React.FC<NewsWindowProps> = ({ onClose, onFocus }) => {
                   <button
                     key={article.id}
                     onClick={() => setSelectedArticle(article)}
-                    className="w-full text-left px-3 py-2 text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors"
+                    className="w-full text-left px-3 py-2 text-white/50 hover:bg-white/5 hover:text-white/70 rounded-xl text-sm transition-all duration-300 border border-transparent hover:border-white/10"
                   >
                     <p className="truncate">{article.title}</p>
-                    <p className="text-white/40 text-xs truncate">{article.source}</p>
+                    <p className="text-white/30 text-xs truncate">{article.source}</p>
                   </button>
                 ))
             ) : (
-              <p className="px-3 py-2 text-white/40 text-sm">No saved articles</p>
+              <p className="px-3 py-2 text-white/30 text-sm">No saved articles</p>
             )}
           </div>
         </div>

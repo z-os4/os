@@ -2,6 +2,7 @@
  * Contacts App
  *
  * Address book application for zOS with contact management.
+ * Black glass UI with macOS dark mode aesthetics.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -312,14 +313,16 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
+      <div className="flex h-full bg-black/90">
         {/* Sidebar - Groups */}
-        <div className="w-48 bg-[#2c2c2e] border-r border-white/10 flex flex-col">
-          <div className="p-2 border-b border-white/10">
+        <div className="w-48 bg-white/[0.03] backdrop-blur-xl border-r border-white/[0.08] flex flex-col">
+          <div className="p-2 border-b border-white/[0.08]">
             <button
               onClick={() => setSelectedGroup(null)}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                !selectedGroup ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                !selectedGroup
+                  ? 'bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
+                  : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -329,13 +332,15 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
           </div>
 
           <div className="flex-1 overflow-y-auto p-2">
-            <h3 className="text-white/40 text-xs uppercase tracking-wider px-3 py-2">Groups</h3>
+            <h3 className="text-white/40 text-[10px] uppercase tracking-wider px-3 py-2 font-medium">Groups</h3>
             {groups.map(group => (
               <button
                 key={group.id}
                 onClick={() => setSelectedGroup(group.id)}
-                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  selectedGroup === group.id ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${
+                  selectedGroup === group.id
+                    ? 'bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
+                    : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
                 }`}
               >
                 <Tag className="w-4 h-4" />
@@ -345,8 +350,8 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
             ))}
           </div>
 
-          <div className="p-2 border-t border-white/10">
-            <button className="w-full flex items-center gap-2 px-3 py-2 text-white/50 hover:text-white/70 text-sm rounded-lg hover:bg-white/5 transition-colors">
+          <div className="p-2 border-t border-white/[0.08]">
+            <button className="w-full flex items-center gap-2 px-3 py-2 text-white/50 hover:text-white/80 text-sm rounded-lg hover:bg-white/[0.05] transition-all duration-200">
               <Plus className="w-4 h-4" />
               <span>New Group</span>
             </button>
@@ -354,9 +359,9 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
         </div>
 
         {/* Contact List */}
-        <div className="w-64 bg-[#252527] border-r border-white/10 flex flex-col">
+        <div className="w-64 bg-white/[0.02] backdrop-blur-xl border-r border-white/[0.08] flex flex-col">
           {/* Search */}
-          <div className="p-2 border-b border-white/10">
+          <div className="p-2 border-b border-white/[0.08]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <input
@@ -364,7 +369,7 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search contacts..."
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                className="w-full bg-white/[0.06] backdrop-blur border border-white/[0.1] rounded-lg pl-9 pr-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all duration-200"
               />
             </div>
           </div>
@@ -377,8 +382,8 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
               return (
                 <div key={letter}>
-                  <div className="sticky top-0 bg-[#252527] px-3 py-1 border-b border-white/5">
-                    <span className="text-white/40 text-xs font-medium">{letter}</span>
+                  <div className="sticky top-0 bg-black/80 backdrop-blur-sm px-3 py-1 border-b border-white/[0.05]">
+                    <span className="text-white/50 text-xs font-medium">{letter}</span>
                   </div>
                   {contactsForLetter.map(contact => (
                     <button
@@ -387,23 +392,25 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
                         setSelectedContact(contact);
                         setIsEditing(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
-                        selectedContact?.id === contact.id ? 'bg-blue-500/20' : 'hover:bg-white/5'
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-all duration-200 ${
+                        selectedContact?.id === contact.id
+                          ? 'bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
+                          : 'hover:bg-white/[0.05]'
                       }`}
                     >
                       {contact.photo ? (
                         <img
                           src={contact.photo}
                           alt=""
-                          className="w-8 h-8 rounded-full object-cover"
+                          className="w-8 h-8 rounded-full object-cover ring-1 ring-white/10"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-white/80 text-sm font-medium ring-1 ring-white/10">
                           {contact.firstName.charAt(0)}{contact.lastName.charAt(0)}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm truncate">
+                        <p className="text-white/90 text-sm truncate">
                           {contact.lastName}, {contact.firstName}
                         </p>
                         {contact.company && (
@@ -411,7 +418,7 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
                         )}
                       </div>
                       {contact.favorite && (
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                        <Star className="w-3 h-3 text-amber-400 fill-amber-400 flex-shrink-0" />
                       )}
                     </button>
                   ))}
@@ -427,8 +434,8 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
           </div>
 
           {/* Add Contact Button */}
-          <div className="p-2 border-t border-white/10">
-            <button className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors text-sm">
+          <div className="p-2 border-t border-white/[0.08]">
+            <button className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white/[0.08] hover:bg-white/[0.12] text-white/90 rounded-lg transition-all duration-200 text-sm border border-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
               <Plus className="w-4 h-4" />
               <span>Add Contact</span>
             </button>
@@ -436,123 +443,127 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
         </div>
 
         {/* Contact Detail */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-white/[0.01]">
           {selectedContact ? (
             <>
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/10">
-                <div className="flex items-center gap-4">
-                  {selectedContact.photo ? (
-                    <img
-                      src={selectedContact.photo}
-                      alt=""
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-medium">
-                      {selectedContact.firstName.charAt(0)}{selectedContact.lastName.charAt(0)}
-                    </div>
-                  )}
-                  <div>
-                    {isEditing ? (
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={editForm.firstName || ''}
-                          onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                          className="bg-white/5 border border-white/20 rounded px-2 py-1 text-white text-lg"
-                          placeholder="First Name"
-                        />
-                        <input
-                          type="text"
-                          value={editForm.lastName || ''}
-                          onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                          className="bg-white/5 border border-white/20 rounded px-2 py-1 text-white text-lg"
-                          placeholder="Last Name"
-                        />
-                      </div>
-                    ) : (
-                      <h2 className="text-white text-xl font-medium">
-                        {selectedContact.firstName} {selectedContact.lastName}
-                      </h2>
-                    )}
-                    {selectedContact.company && !isEditing && (
-                      <p className="text-white/50 flex items-center gap-1">
-                        <Building className="w-4 h-4" />
-                        {selectedContact.company}
-                      </p>
-                    )}
-                    {isEditing && (
-                      <input
-                        type="text"
-                        value={editForm.company || ''}
-                        onChange={(e) => setEditForm({ ...editForm, company: e.target.value })}
-                        className="mt-2 bg-white/5 border border-white/20 rounded px-2 py-1 text-white/70 text-sm w-full"
-                        placeholder="Company"
+              {/* Header - Glass Card */}
+              <div className="m-4 mb-0 p-4 rounded-xl bg-white/[0.05] backdrop-blur-xl border border-white/[0.1] shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {selectedContact.photo ? (
+                      <img
+                        src={selectedContact.photo}
+                        alt=""
+                        className="w-16 h-16 rounded-full object-cover ring-2 ring-white/20 shadow-lg"
                       />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-white text-2xl font-medium ring-2 ring-white/20 shadow-lg">
+                        {selectedContact.firstName.charAt(0)}{selectedContact.lastName.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      {isEditing ? (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={editForm.firstName || ''}
+                            onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                            className="bg-white/[0.08] border border-white/[0.15] rounded-lg px-3 py-1.5 text-white text-lg focus:outline-none focus:border-white/30 transition-all"
+                            placeholder="First Name"
+                          />
+                          <input
+                            type="text"
+                            value={editForm.lastName || ''}
+                            onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                            className="bg-white/[0.08] border border-white/[0.15] rounded-lg px-3 py-1.5 text-white text-lg focus:outline-none focus:border-white/30 transition-all"
+                            placeholder="Last Name"
+                          />
+                        </div>
+                      ) : (
+                        <h2 className="text-white text-xl font-medium">
+                          {selectedContact.firstName} {selectedContact.lastName}
+                        </h2>
+                      )}
+                      {selectedContact.company && !isEditing && (
+                        <p className="text-white/50 flex items-center gap-1.5 mt-0.5">
+                          <Building className="w-4 h-4" />
+                          {selectedContact.company}
+                        </p>
+                      )}
+                      {isEditing && (
+                        <input
+                          type="text"
+                          value={editForm.company || ''}
+                          onChange={(e) => setEditForm({ ...editForm, company: e.target.value })}
+                          className="mt-2 bg-white/[0.08] border border-white/[0.15] rounded-lg px-3 py-1.5 text-white/70 text-sm w-full focus:outline-none focus:border-white/30 transition-all"
+                          placeholder="Company"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {isEditing ? (
+                      <>
+                        <button
+                          onClick={cancelEditing}
+                          className="p-2 hover:bg-white/[0.08] rounded-lg transition-all duration-200"
+                          title="Cancel"
+                        >
+                          <X className="w-5 h-5 text-white/50" />
+                        </button>
+                        <button
+                          onClick={saveEditing}
+                          className="p-2 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg transition-all duration-200 border border-emerald-500/30"
+                          title="Save"
+                        >
+                          <Check className="w-5 h-5 text-emerald-400" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => toggleFavorite(selectedContact.id)}
+                          className="p-2 hover:bg-white/[0.08] rounded-lg transition-all duration-200"
+                          title={selectedContact.favorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                        >
+                          <Star className={`w-5 h-5 ${selectedContact.favorite ? 'text-amber-400 fill-amber-400' : 'text-white/50'}`} />
+                        </button>
+                        <button
+                          onClick={startEditing}
+                          className="p-2 hover:bg-white/[0.08] rounded-lg transition-all duration-200"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-5 h-5 text-white/50" />
+                        </button>
+                        <button
+                          onClick={() => deleteContact(selectedContact.id)}
+                          className="p-2 hover:bg-red-500/20 rounded-lg transition-all duration-200"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-5 h-5 text-red-400/70" />
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {isEditing ? (
-                    <>
-                      <button
-                        onClick={cancelEditing}
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                        title="Cancel"
-                      >
-                        <X className="w-5 h-5 text-white/50" />
-                      </button>
-                      <button
-                        onClick={saveEditing}
-                        className="p-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg transition-colors"
-                        title="Save"
-                      >
-                        <Check className="w-5 h-5 text-green-400" />
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => toggleFavorite(selectedContact.id)}
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                        title={selectedContact.favorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                      >
-                        <Star className={`w-5 h-5 ${selectedContact.favorite ? 'text-yellow-500 fill-yellow-500' : 'text-white/50'}`} />
-                      </button>
-                      <button
-                        onClick={startEditing}
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-5 h-5 text-white/50" />
-                      </button>
-                      <button
-                        onClick={() => deleteContact(selectedContact.id)}
-                        className="p-2 hover:bg-red-500/20 rounded-lg transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-5 h-5 text-red-400" />
-                      </button>
-                    </>
-                  )}
-                </div>
               </div>
 
-              {/* Contact Details */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* Contact Details - Glass Cards */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {/* Phone Numbers */}
                 {selectedContact.phones.length > 0 && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Phone</h3>
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Phone</h3>
                     <div className="space-y-2">
                       {selectedContact.phones.map((phone, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5">
-                          {getPhoneIcon(phone.type)}
+                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.05] transition-all duration-200">
+                          <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center">
+                            {getPhoneIcon(phone.type)}
+                          </div>
                           <div>
                             <a
                               href={`tel:${phone.number}`}
-                              className="text-blue-400 hover:underline"
+                              className="text-white/90 hover:text-white transition-colors"
                             >
                               {phone.number}
                             </a>
@@ -566,16 +577,18 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
                 {/* Emails */}
                 {selectedContact.emails.length > 0 && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Email</h3>
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Email</h3>
                     <div className="space-y-2">
                       {selectedContact.emails.map((email, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5">
-                          {getEmailIcon(email.type)}
+                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.05] transition-all duration-200">
+                          <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center">
+                            {getEmailIcon(email.type)}
+                          </div>
                           <div>
                             <a
                               href={`mailto:${email.address}`}
-                              className="text-blue-400 hover:underline"
+                              className="text-white/90 hover:text-white transition-colors"
                             >
                               {email.address}
                             </a>
@@ -589,12 +602,14 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
                 {/* Addresses */}
                 {selectedContact.addresses.length > 0 && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Address</h3>
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Address</h3>
                     <div className="space-y-2">
                       {selectedContact.addresses.map((address, index) => (
-                        <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5">
-                          <MapPin className="w-4 h-4 mt-0.5 text-white/50" />
+                        <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/[0.05] transition-all duration-200">
+                          <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <MapPin className="w-4 h-4 text-white/60" />
+                          </div>
                           <div>
                             <p className="text-white/80">{address.street}</p>
                             <p className="text-white/80">{address.city}, {address.state} {address.zip}</p>
@@ -609,14 +624,16 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
                 {/* Social Profiles */}
                 {selectedContact.socialProfiles.length > 0 && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Social</h3>
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Social</h3>
                     <div className="space-y-2">
                       {selectedContact.socialProfiles.map((profile, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5">
-                          <Globe className="w-4 h-4 text-white/50" />
+                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.05] transition-all duration-200">
+                          <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center">
+                            <Globe className="w-4 h-4 text-white/60" />
+                          </div>
                           <div>
-                            <p className="text-blue-400">{profile.username}</p>
+                            <p className="text-white/90">{profile.username}</p>
                             <p className="text-white/40 text-xs capitalize">{profile.type}</p>
                           </div>
                         </div>
@@ -627,9 +644,9 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
                 {/* Notes */}
                 {selectedContact.notes && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Notes</h3>
-                    <p className="text-white/70 text-sm p-2 bg-white/5 rounded-lg">
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Notes</h3>
+                    <p className="text-white/70 text-sm leading-relaxed">
                       {selectedContact.notes}
                     </p>
                   </div>
@@ -637,13 +654,13 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
 
                 {/* Labels */}
                 {selectedContact.labels.length > 0 && (
-                  <div>
-                    <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Labels</h3>
+                  <div className="p-4 rounded-xl bg-white/[0.04] backdrop-blur border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <h3 className="text-white/40 text-[10px] uppercase tracking-wider mb-3 font-medium">Labels</h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedContact.labels.map((label, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full"
+                          className="px-3 py-1 bg-white/[0.08] text-white/80 text-xs rounded-full border border-white/[0.1]"
                         >
                           {label}
                         </span>
@@ -656,9 +673,11 @@ const ContactsWindow: React.FC<ContactsWindowProps> = ({ onClose, onFocus }) => 
           ) : (
             <div className="flex-1 flex items-center justify-center text-white/30">
               <div className="text-center">
-                <User className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <p className="text-lg">Select a contact</p>
-                <p className="text-sm mt-2">Choose from the list or add a new one</p>
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/[0.05] flex items-center justify-center border border-white/[0.1]">
+                  <User className="w-10 h-10 opacity-40" />
+                </div>
+                <p className="text-lg text-white/50">Select a contact</p>
+                <p className="text-sm mt-2 text-white/30">Choose from the list or add a new one</p>
               </div>
             </div>
           )}

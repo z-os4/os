@@ -2,6 +2,7 @@
  * Console App
  *
  * System log viewer for zOS following macOS Console patterns.
+ * Black glass UI with backdrop blur and glass morphism.
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -158,19 +159,19 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
 
   const getTypeIcon = (type: LogType) => {
     switch (type) {
-      case 'info': return <Info className="w-4 h-4 text-blue-400" />;
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-400" />;
-      case 'error': return <AlertCircle className="w-4 h-4 text-red-400" />;
-      case 'fault': return <XCircle className="w-4 h-4 text-red-600" />;
+      case 'info': return <Info className="w-4 h-4 text-blue-400/80" />;
+      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-400/90" />;
+      case 'error': return <AlertCircle className="w-4 h-4 text-red-400/90" />;
+      case 'fault': return <XCircle className="w-4 h-4 text-red-500" />;
     }
   };
 
   const getTypeColor = (type: LogType) => {
     switch (type) {
-      case 'info': return 'text-white/70';
-      case 'warning': return 'text-yellow-400';
-      case 'error': return 'text-red-400';
-      case 'fault': return 'text-red-600 font-semibold';
+      case 'info': return 'text-white/60';
+      case 'warning': return 'text-yellow-300/90';
+      case 'error': return 'text-red-400/90';
+      case 'fault': return 'text-red-500 font-medium';
     }
   };
 
@@ -239,32 +240,32 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 1000, height: 650 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
-        <div className="w-48 bg-black/30 border-r border-white/10 flex flex-col">
-          <div className="p-2 border-b border-white/10">
-            <span className="text-xs text-white/50 uppercase tracking-wider px-2">Categories</span>
+      <div className="flex h-full bg-black/80">
+        {/* Sidebar - Glass with backdrop blur */}
+        <div className="w-48 bg-white/[0.03] backdrop-blur-xl border-r border-white/[0.08] flex flex-col">
+          <div className="p-3 border-b border-white/[0.06]">
+            <span className="text-[10px] text-white/40 uppercase tracking-widest font-medium">Categories</span>
           </div>
-          <div className="flex-1 overflow-y-auto p-2">
+          <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
             {categories.map(category => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
+                  "w-full flex items-center justify-between px-3 py-2 rounded-md text-[13px] transition-all duration-150",
                   selectedCategory === category.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-white/[0.08] text-white/90 shadow-sm"
+                    : "text-white/50 hover:bg-white/[0.04] hover:text-white/70"
                 )}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <category.icon className={cn(
                     "w-4 h-4",
-                    selectedCategory === category.id ? "text-blue-400" : "text-white/50"
+                    selectedCategory === category.id ? "text-blue-400/90" : "text-white/40"
                   )} />
                   <span>{category.label}</span>
                 </div>
-                <span className="text-xs text-white/40">{category.count}</span>
+                <span className="text-[11px] text-white/30 tabular-nums">{category.count}</span>
               </button>
             ))}
           </div>
@@ -272,17 +273,17 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-          {/* Toolbar */}
-          <div className="flex items-center gap-2 p-2 border-b border-white/10 bg-[#252525]">
+          {/* Toolbar - Glass morphism filter bar */}
+          <div className="flex items-center gap-2 p-2 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-md">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search logs..."
-                className="w-full pl-9 pr-3 py-1.5 bg-black/30 border border-white/10 rounded-lg text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                className="w-full pl-9 pr-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13px] text-white/80 placeholder:text-white/25 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all font-mono"
               />
             </div>
 
@@ -290,8 +291,10 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={cn(
-                "p-2 rounded-lg transition-colors",
-                showFilters ? "bg-blue-500/20 text-blue-400" : "hover:bg-white/10 text-white/50"
+                "p-2 rounded-md transition-all duration-150",
+                showFilters 
+                  ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" 
+                  : "hover:bg-white/[0.06] text-white/40 hover:text-white/60 border border-transparent"
               )}
               title="Filters"
             >
@@ -302,8 +305,10 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
             <button
               onClick={() => setAutoScroll(!autoScroll)}
               className={cn(
-                "p-2 rounded-lg transition-colors",
-                autoScroll ? "bg-green-500/20 text-green-400" : "hover:bg-white/10 text-white/50"
+                "p-2 rounded-md transition-all duration-150",
+                autoScroll 
+                  ? "bg-green-500/15 text-green-400 border border-green-500/25" 
+                  : "hover:bg-white/[0.06] text-white/40 hover:text-white/60 border border-transparent"
               )}
               title={autoScroll ? "Auto-scroll on" : "Auto-scroll off"}
             >
@@ -313,7 +318,7 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
             {/* Clear */}
             <button
               onClick={clearLogs}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/50 hover:text-red-400"
+              className="p-2 hover:bg-white/[0.06] rounded-md transition-all duration-150 text-white/40 hover:text-red-400 border border-transparent"
               title="Clear logs"
             >
               <Trash2 className="w-4 h-4" />
@@ -322,22 +327,22 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
             {/* Export */}
             <button
               onClick={exportLogs}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/50 hover:text-white"
+              className="p-2 hover:bg-white/[0.06] rounded-md transition-all duration-150 text-white/40 hover:text-white/70 border border-transparent"
               title="Export logs"
             >
               <Download className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Filters row */}
+          {/* Filters row - Glass morphism */}
           {showFilters && (
-            <div className="flex items-center gap-4 p-2 border-b border-white/10 bg-[#252525]">
+            <div className="flex items-center gap-6 px-3 py-2 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-md">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-white/50">Process:</span>
+                <span className="text-[11px] text-white/40 uppercase tracking-wide">Process</span>
                 <select
                   value={processFilter}
                   onChange={(e) => setProcessFilter(e.target.value)}
-                  className="bg-black/30 border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-blue-500/50"
+                  className="bg-white/[0.04] border border-white/[0.08] rounded-md px-2.5 py-1 text-[12px] text-white/70 focus:outline-none focus:border-white/20 font-mono cursor-pointer"
                 >
                   <option value="">All</option>
                   {uniqueProcesses.map(p => (
@@ -346,11 +351,11 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
                 </select>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-white/50">Type:</span>
+                <span className="text-[11px] text-white/40 uppercase tracking-wide">Type</span>
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value as LogType | '')}
-                  className="bg-black/30 border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-blue-500/50"
+                  className="bg-white/[0.04] border border-white/[0.08] rounded-md px-2.5 py-1 text-[12px] text-white/70 focus:outline-none focus:border-white/20 font-mono cursor-pointer"
                 >
                   <option value="">All</option>
                   <option value="info">Info</option>
@@ -362,18 +367,18 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
             </div>
           )}
 
-          {/* Log entries */}
+          {/* Log entries - Monospace light text */}
           <div
             ref={logContainerRef}
-            className="flex-1 overflow-auto font-mono text-xs"
+            className="flex-1 overflow-auto font-mono text-[12px] bg-black/40"
           >
             <table className="w-full">
-              <thead className="sticky top-0 bg-[#252525] text-white/50 border-b border-white/10">
+              <thead className="sticky top-0 bg-black/70 backdrop-blur-sm text-white/40 border-b border-white/[0.06]">
                 <tr>
-                  <th className="text-left p-2 font-medium w-20">Time</th>
-                  <th className="text-left p-2 font-medium w-6"></th>
-                  <th className="text-left p-2 font-medium w-32">Process</th>
-                  <th className="text-left p-2 font-medium">Message</th>
+                  <th className="text-left px-3 py-2 font-medium w-20 text-[11px] uppercase tracking-wide">Time</th>
+                  <th className="text-left px-2 py-2 font-medium w-6"></th>
+                  <th className="text-left px-2 py-2 font-medium w-32 text-[11px] uppercase tracking-wide">Process</th>
+                  <th className="text-left px-3 py-2 font-medium text-[11px] uppercase tracking-wide">Message</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,65 +387,67 @@ const ConsoleWindow: React.FC<ConsoleWindowProps> = ({ onClose, onFocus }) => {
                     key={log.id}
                     onClick={() => setSelectedLog(log)}
                     className={cn(
-                      "border-b border-white/5 cursor-pointer transition-colors",
-                      selectedLog?.id === log.id ? "bg-blue-500/20" : "hover:bg-white/5"
+                      "border-b border-white/[0.03] cursor-pointer transition-all duration-100",
+                      selectedLog?.id === log.id 
+                        ? "bg-blue-500/15" 
+                        : "hover:bg-white/[0.03]"
                     )}
                   >
-                    <td className="p-2 text-white/40">{formatTime(log.timestamp)}</td>
-                    <td className="p-2">{getTypeIcon(log.type)}</td>
-                    <td className="p-2 text-purple-400">{log.process}</td>
-                    <td className={cn("p-2", getTypeColor(log.type))}>{log.message}</td>
+                    <td className="px-3 py-1.5 text-white/35 tabular-nums">{formatTime(log.timestamp)}</td>
+                    <td className="px-2 py-1.5">{getTypeIcon(log.type)}</td>
+                    <td className="px-2 py-1.5 text-purple-400/80">{log.process}</td>
+                    <td className={cn("px-3 py-1.5", getTypeColor(log.type))}>{log.message}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
             {filteredLogs.length === 0 && (
-              <div className="flex items-center justify-center h-32 text-white/30">
+              <div className="flex items-center justify-center h-32 text-white/25 text-[13px]">
                 No log entries match your filters
               </div>
             )}
           </div>
 
-          {/* Detail panel */}
+          {/* Detail panel - Glass morphism */}
           {selectedLog && (
-            <div className="border-t border-white/10 bg-[#252525] p-3">
+            <div className="border-t border-white/[0.06] bg-white/[0.02] backdrop-blur-md p-3">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 mt-0.5">
                   {getTypeIcon(selectedLog.type)}
                 </div>
                 <div className="flex-1 min-w-0 space-y-2">
-                  <div className="flex items-center gap-4 text-xs">
-                    <span className="text-white/50">
-                      <Clock className="w-3 h-3 inline mr-1" />
+                  <div className="flex items-center gap-4 text-[11px]">
+                    <span className="text-white/40 flex items-center gap-1.5">
+                      <Clock className="w-3 h-3" />
                       {formatFullDate(selectedLog.timestamp)}
                     </span>
-                    <span className="text-purple-400">{selectedLog.process}</span>
+                    <span className="text-purple-400/80 font-mono">{selectedLog.process}</span>
                     <span className={cn(
-                      "px-2 py-0.5 rounded-full text-xs",
-                      selectedLog.type === 'info' && "bg-blue-500/20 text-blue-400",
-                      selectedLog.type === 'warning' && "bg-yellow-500/20 text-yellow-400",
-                      selectedLog.type === 'error' && "bg-red-500/20 text-red-400",
-                      selectedLog.type === 'fault' && "bg-red-600/20 text-red-600"
+                      "px-2 py-0.5 rounded text-[10px] uppercase tracking-wide font-medium",
+                      selectedLog.type === 'info' && "bg-blue-500/15 text-blue-400/80 border border-blue-500/20",
+                      selectedLog.type === 'warning' && "bg-yellow-500/15 text-yellow-400/90 border border-yellow-500/20",
+                      selectedLog.type === 'error' && "bg-red-500/15 text-red-400/90 border border-red-500/20",
+                      selectedLog.type === 'fault' && "bg-red-600/20 text-red-500 border border-red-500/25"
                     )}>
                       {selectedLog.type}
                     </span>
                   </div>
-                  <p className="text-sm text-white font-mono">{selectedLog.message}</p>
+                  <p className="text-[13px] text-white/70 font-mono leading-relaxed">{selectedLog.message}</p>
                   {selectedLog.subsystem && (
-                    <p className="text-xs text-white/40">Subsystem: {selectedLog.subsystem}</p>
+                    <p className="text-[11px] text-white/30 font-mono">Subsystem: {selectedLog.subsystem}</p>
                   )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* Status bar */}
-          <div className="flex items-center justify-between px-3 py-1.5 border-t border-white/10 bg-[#252525] text-xs text-white/50">
-            <span>{filteredLogs.length} entries</span>
-            <div className="flex items-center gap-2">
+          {/* Status bar - Subtle glass */}
+          <div className="flex items-center justify-between px-3 py-1.5 border-t border-white/[0.06] bg-white/[0.02] text-[11px] text-white/40 font-mono">
+            <span className="tabular-nums">{filteredLogs.length} entries</span>
+            <div className="flex items-center gap-3">
               {autoScroll && (
-                <span className="flex items-center gap-1 text-green-400">
+                <span className="flex items-center gap-1.5 text-green-400/70">
                   <ArrowDown className="w-3 h-3" />
                   Auto-scroll
                 </span>

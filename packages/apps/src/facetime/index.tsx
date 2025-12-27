@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Video, Phone, Mic, MicOff, VideoOff, PhoneOff, Plus, Search } from 'lucide-react';
+import { Video, Phone, Mic, MicOff, VideoOff, PhoneOff, Plus, Search, Users, Grid3X3 } from 'lucide-react';
 
 interface FaceTimeWindowProps {
   onClose: () => void;
@@ -37,44 +37,59 @@ const FaceTimeWindow: React.FC<FaceTimeWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 700, height: 500 }}
       windowType="system"
     >
-      <div className="h-full bg-[#1e1e1e]">
+      <div className="h-full bg-black/80 backdrop-blur-2xl">
         {!isInCall ? (
           <div className="h-full flex flex-col">
-            {/* Header */}
-            <div className="p-4 border-b border-white/10">
-              <div className="flex items-center gap-2 mb-4">
+            {/* Header - Glass Panel */}
+            <div className="p-4 bg-white/[0.03] border-b border-white/[0.08]">
+              <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                   <input
                     type="text"
                     placeholder="Enter name, email, or number"
-                    className="w-full pl-9 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 outline-none focus:border-green-500/50"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.06] border border-white/[0.1] rounded-xl text-white/90 placeholder:text-white/30 outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all backdrop-blur-sm"
                   />
                 </div>
-                <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors flex items-center gap-2">
+                <button className="px-4 py-2.5 bg-emerald-500/90 hover:bg-emerald-500 text-white rounded-xl transition-all flex items-center gap-2 font-medium shadow-lg shadow-emerald-500/20 backdrop-blur-sm">
                   <Video className="w-4 h-4" />
                   <span>New FaceTime</span>
                 </button>
               </div>
+              
+              {/* Tab Bar */}
+              <div className="flex items-center gap-1">
+                <button className="px-4 py-1.5 bg-white/[0.1] text-white/90 rounded-lg text-sm font-medium transition-all">
+                  All
+                </button>
+                <button className="px-4 py-1.5 text-white/50 hover:text-white/70 hover:bg-white/[0.05] rounded-lg text-sm font-medium transition-all">
+                  Missed
+                </button>
+              </div>
             </div>
 
-            {/* Recent Calls */}
+            {/* Recent Calls - Glass List */}
             <div className="flex-1 overflow-y-auto p-4">
-              <h3 className="text-white/40 text-sm uppercase tracking-wider mb-3">Recent</h3>
-              <div className="space-y-2">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-white/40 text-xs uppercase tracking-wider font-medium">Recent</h3>
+                <button className="p-1.5 hover:bg-white/[0.06] rounded-lg transition-all">
+                  <Grid3X3 className="w-4 h-4 text-white/40" />
+                </button>
+              </div>
+              <div className="space-y-1">
                 {recentCalls.map((call) => (
                   <div
                     key={call.id}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.06] transition-all cursor-pointer group border border-transparent hover:border-white/[0.08]"
                   >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-lg shadow-lg shadow-emerald-500/20">
                       {call.avatar}
                     </div>
-                    <div className="flex-1">
-                      <p className={`font-medium ${call.missed ? 'text-red-400' : 'text-white'}`}>
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-medium truncate ${call.missed ? 'text-red-400' : 'text-white/90'}`}>
                         {call.name}
                       </p>
-                      <div className="flex items-center gap-2 text-white/50 text-sm">
+                      <div className="flex items-center gap-2 text-white/40 text-sm">
                         {call.type === 'video' ? (
                           <Video className="w-3 h-3" />
                         ) : (
@@ -83,69 +98,105 @@ const FaceTimeWindow: React.FC<FaceTimeWindowProps> = ({ onClose, onFocus }) => 
                         <span>{call.time}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => setIsInCall(true)}
-                        className="p-2 hover:bg-green-500/20 rounded-full transition-colors"
+                        className="p-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-full transition-all border border-emerald-500/30"
                       >
-                        <Video className="w-5 h-5 text-green-400" />
+                        <Video className="w-4 h-4 text-emerald-400" />
                       </button>
-                      <button className="p-2 hover:bg-green-500/20 rounded-full transition-colors">
-                        <Phone className="w-5 h-5 text-green-400" />
+                      <button className="p-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-full transition-all border border-emerald-500/30">
+                        <Phone className="w-4 h-4 text-emerald-400" />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Create Link - Glass Footer */}
+            <div className="p-4 border-t border-white/[0.06] bg-white/[0.02]">
+              <button className="w-full py-3 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] rounded-xl text-white/70 hover:text-white/90 transition-all flex items-center justify-center gap-2 font-medium backdrop-blur-sm">
+                <Plus className="w-4 h-4" />
+                <span>Create Link</span>
+              </button>
+            </div>
           </div>
         ) : (
-          /* In Call View */
-          <div className="h-full flex flex-col bg-black relative">
-            {/* Video Feed (simulated) */}
-            <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+          /* In Call View - Full Glass Interface */
+          <div className="h-full flex flex-col relative overflow-hidden">
+            {/* Video Feed Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              {/* Simulated ambient glow */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+            </div>
+            
+            {/* Main Content */}
+            <div className="flex-1 flex items-center justify-center relative z-10">
               <div className="text-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-semibold text-4xl mx-auto mb-4">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-5xl mx-auto mb-5 shadow-2xl shadow-emerald-500/30 ring-4 ring-white/10">
                   S
                 </div>
-                <p className="text-white text-xl font-medium">Sarah Chen</p>
-                <p className="text-white/50 text-sm">00:45</p>
+                <p className="text-white text-2xl font-medium mb-1">Sarah Chen</p>
+                <p className="text-white/50 text-sm font-medium">00:45</p>
               </div>
             </div>
 
-            {/* Self View */}
-            <div className="absolute top-4 right-4 w-32 h-24 rounded-lg bg-gray-800 border border-white/20 flex items-center justify-center">
+            {/* Self View - Glass Panel */}
+            <div className="absolute top-4 right-4 w-36 h-28 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/[0.15] flex items-center justify-center overflow-hidden shadow-2xl">
               {isVideoOff ? (
-                <VideoOff className="w-8 h-8 text-white/30" />
+                <div className="flex flex-col items-center gap-2">
+                  <VideoOff className="w-6 h-6 text-white/30" />
+                  <span className="text-white/30 text-xs">Camera Off</span>
+                </div>
               ) : (
-                <span className="text-white/50 text-xs">Your camera</span>
+                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                  <span className="text-white/40 text-xs">Your camera</span>
+                </div>
               )}
             </div>
 
-            {/* Call Controls */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4">
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className={`p-4 rounded-full transition-colors ${
-                  isMuted ? 'bg-white text-black' : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
-              </button>
-              <button
-                onClick={() => setIsInCall(false)}
-                className="p-4 bg-red-500 hover:bg-red-600 rounded-full transition-colors"
-              >
-                <PhoneOff className="w-6 h-6 text-white" />
-              </button>
-              <button
-                onClick={() => setIsVideoOff(!isVideoOff)}
-                className={`p-4 rounded-full transition-colors ${
-                  isVideoOff ? 'bg-white text-black' : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                {isVideoOff ? <VideoOff className="w-6 h-6" /> : <Video className="w-6 h-6" />}
-              </button>
+            {/* Participant Count - Glass Pill */}
+            <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/[0.1] rounded-full flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 text-white/60" />
+              <span className="text-white/80 text-sm font-medium">2</span>
+            </div>
+
+            {/* Call Controls - Glass Bar */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+              <div className="flex items-center justify-center gap-3">
+                {/* Mute Button */}
+                <button
+                  onClick={() => setIsMuted(!isMuted)}
+                  className={`p-4 rounded-full transition-all backdrop-blur-xl border shadow-lg ${
+                    isMuted 
+                      ? 'bg-white text-black border-white/50 shadow-white/20' 
+                      : 'bg-white/[0.15] text-white border-white/[0.15] hover:bg-white/[0.25]'
+                  }`}
+                >
+                  {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+                </button>
+                
+                {/* End Call Button */}
+                <button
+                  onClick={() => setIsInCall(false)}
+                  className="p-4 bg-red-500 hover:bg-red-600 rounded-full transition-all shadow-lg shadow-red-500/30 border border-red-400/30"
+                >
+                  <PhoneOff className="w-6 h-6 text-white" />
+                </button>
+                
+                {/* Video Toggle Button */}
+                <button
+                  onClick={() => setIsVideoOff(!isVideoOff)}
+                  className={`p-4 rounded-full transition-all backdrop-blur-xl border shadow-lg ${
+                    isVideoOff 
+                      ? 'bg-white text-black border-white/50 shadow-white/20' 
+                      : 'bg-white/[0.15] text-white border-white/[0.15] hover:bg-white/[0.25]'
+                  }`}
+                >
+                  {isVideoOff ? <VideoOff className="w-6 h-6" /> : <Video className="w-6 h-6" />}
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Zap } from 'lucide-react';
 
 interface HanzoAIWindowProps {
   onClose: () => void;
@@ -23,6 +23,15 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,19 +77,26 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 500, height: 600 }}
       windowType="default"
     >
-      <div className="flex flex-col h-full bg-gradient-to-br from-[#1a1a2e] to-[#16213e]">
-        {/* Header */}
-        <div className="flex items-center gap-3 p-4 border-b border-white/10">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+      <div className="flex flex-col h-full bg-black/90 backdrop-blur-xl">
+        {/* Header - Glass panel */}
+        <div className="flex items-center gap-3 p-4 border-b border-white/10 bg-white/5 backdrop-blur-md">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            {/* Status indicator */}
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-black/90" />
           </div>
           <div>
-            <h2 className="text-white font-medium">Hanzo AI</h2>
-            <p className="text-xs text-white/50">Always ready to help</p>
+            <h2 className="text-white font-medium flex items-center gap-2">
+              Hanzo AI
+              <Zap className="w-3 h-3 text-cyan-400" />
+            </h2>
+            <p className="text-xs text-white/40">Online • Ready to assist</p>
           </div>
         </div>
 
-        {/* Messages */}
+        {/* Messages - Glass container */}
         <div className="flex-1 overflow-auto p-4 space-y-4">
           {messages.map((message) => (
             <div
@@ -89,57 +105,63 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                 message.role === 'user'
-                  ? 'bg-blue-500/20'
-                  : 'bg-gradient-to-br from-orange-400 to-pink-600'
+                  ? 'bg-white/10 backdrop-blur-sm border border-white/20'
+                  : 'bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 shadow-lg shadow-cyan-500/10'
               }`}>
                 {message.role === 'user'
-                  ? <User className="w-4 h-4 text-blue-400" />
+                  ? <User className="w-4 h-4 text-white/80" />
                   : <Bot className="w-4 h-4 text-white" />
                 }
               </div>
-              <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+              <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white/10 text-white/90'
+                  ? 'bg-white/10 backdrop-blur-md border border-white/10 text-white'
+                  : 'bg-white/5 backdrop-blur-md border border-white/10 text-white/90'
               }`}>
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
             </div>
           ))}
           {isTyping && (
             <div className="flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/10">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-white/10 rounded-2xl px-4 py-3">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3">
+                <div className="flex gap-1.5">
+                  <span className="w-2 h-2 bg-cyan-400/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-blue-400/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-purple-400/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t border-white/10">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Hanzo AI anything..."
-              className="flex-1 h-10 px-4 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30"
-            />
+        {/* Input - Glass panel */}
+        <form onSubmit={handleSubmit} className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-md">
+          <div className="flex gap-3">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask Hanzo AI anything..."
+                className="w-full h-11 px-4 pr-12 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+              />
+            </div>
             <button
               type="submit"
               disabled={!input.trim()}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+              className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-90 hover:shadow-lg hover:shadow-cyan-500/20 transition-all active:scale-95"
             >
               <Send className="w-4 h-4 text-white" />
             </button>
           </div>
+          <p className="text-[10px] text-white/20 text-center mt-2">
+            Powered by Hanzo AI • Press Enter to send
+          </p>
         </form>
       </div>
     </ZWindow>

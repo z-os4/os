@@ -2,6 +2,7 @@
  * Voice Memos App
  *
  * Audio recording app for zOS using Web Audio API and MediaRecorder.
+ * Black glass UI with glass morphism effects.
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
@@ -281,11 +282,11 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
       initialSize={{ width: 700, height: 500 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1c1c1e]">
-        {/* Recordings List */}
-        <div className="w-64 border-r border-white/10 flex flex-col">
-          <div className="p-3 border-b border-white/10">
-            <h2 className="text-white font-medium">All Recordings</h2>
+      <div className="flex h-full bg-black/80 backdrop-blur-2xl">
+        {/* Recordings List - Glass sidebar */}
+        <div className="w-64 border-r border-white/10 flex flex-col bg-white/[0.02]">
+          <div className="p-3 border-b border-white/10 bg-white/[0.03]">
+            <h2 className="text-white/90 font-medium">All Recordings</h2>
             <p className="text-white/40 text-xs mt-1">{recordings.length} recordings</p>
           </div>
 
@@ -302,8 +303,10 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                   setPlaybackProgress(0);
                   setSelectedRecording(recording.id);
                 }}
-                className={`group p-3 cursor-pointer border-b border-white/5 transition-colors ${
-                  selectedRecording === recording.id ? 'bg-white/10' : 'hover:bg-white/5'
+                className={`group p-3 cursor-pointer border-b border-white/[0.06] transition-all duration-200 ${
+                  selectedRecording === recording.id
+                    ? 'bg-white/[0.08] backdrop-blur-xl'
+                    : 'hover:bg-white/[0.04]'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -314,7 +317,7 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && saveRename()}
-                        className="flex-1 bg-white/10 text-white text-sm px-2 py-1 rounded outline-none"
+                        className="flex-1 bg-white/10 backdrop-blur-sm text-white/90 text-sm px-2 py-1 rounded border border-white/20 outline-none focus:border-white/40"
                         autoFocus
                       />
                       <button
@@ -322,7 +325,7 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                           e.stopPropagation();
                           saveRename();
                         }}
-                        className="p-1 hover:bg-white/10 rounded"
+                        className="p-1 hover:bg-white/10 rounded transition-colors"
                       >
                         <Check className="w-3 h-3 text-green-400" />
                       </button>
@@ -331,21 +334,21 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                           e.stopPropagation();
                           setEditingName(null);
                         }}
-                        className="p-1 hover:bg-white/10 rounded"
+                        className="p-1 hover:bg-white/10 rounded transition-colors"
                       >
                         <X className="w-3 h-3 text-red-400" />
                       </button>
                     </div>
                   ) : (
                     <>
-                      <p className="text-white text-sm truncate flex-1">{recording.name}</p>
+                      <p className="text-white/90 text-sm truncate flex-1">{recording.name}</p>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             startRename(recording.id, recording.name);
                           }}
-                          className="p-1 hover:bg-white/10 rounded"
+                          className="p-1 hover:bg-white/10 rounded transition-colors"
                         >
                           <Edit3 className="w-3 h-3 text-white/50" />
                         </button>
@@ -354,7 +357,7 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                             e.stopPropagation();
                             setShowDeleteConfirm(recording.id);
                           }}
-                          className="p-1 hover:bg-white/10 rounded"
+                          className="p-1 hover:bg-white/10 rounded transition-colors"
                         >
                           <Trash2 className="w-3 h-3 text-white/50" />
                         </button>
@@ -372,7 +375,11 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                   {recording.waveform.slice(0, 30).map((height, i) => (
                     <div
                       key={i}
-                      className="flex-1 bg-red-500/60 rounded-full"
+                      className={`flex-1 rounded-full transition-colors ${
+                        selectedRecording === recording.id
+                          ? 'bg-red-500/70'
+                          : 'bg-white/20'
+                      }`}
                       style={{ height: `${height * 100}%` }}
                     />
                   ))}
@@ -381,25 +388,25 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
             ))}
           </div>
 
-          {/* Record Button */}
-          <div className="p-4 border-t border-white/10 flex flex-col items-center">
+          {/* Record Button - Glass morphism */}
+          <div className="p-4 border-t border-white/10 flex flex-col items-center bg-white/[0.02]">
             {isRecording && (
-              <div className="text-red-500 font-mono text-lg mb-2">
+              <div className="text-red-400 font-mono text-lg mb-2 animate-pulse">
                 {formatDuration(recordingTime)}
               </div>
             )}
             <button
               onClick={isRecording ? stopRecording : startRecording}
-              className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+              className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg ${
                 isRecording
-                  ? 'bg-red-600 hover:bg-red-700 animate-pulse'
-                  : 'bg-red-500 hover:bg-red-600'
+                  ? 'bg-red-500/80 hover:bg-red-500/90 backdrop-blur-xl border border-red-400/30 animate-pulse shadow-red-500/30'
+                  : 'bg-white/10 hover:bg-white/15 backdrop-blur-xl border border-white/20 hover:border-white/30'
               }`}
             >
               {isRecording ? (
                 <Square className="w-6 h-6 text-white fill-white" />
               ) : (
-                <Mic className="w-8 h-8 text-white" />
+                <Mic className="w-8 h-8 text-red-400" />
               )}
             </button>
             <p className="text-white/40 text-xs mt-2">
@@ -408,13 +415,13 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
           </div>
         </div>
 
-        {/* Playback Area */}
-        <div className="flex-1 flex flex-col">
+        {/* Playback Area - Main glass panel */}
+        <div className="flex-1 flex flex-col bg-white/[0.01]">
           {selected ? (
             <>
               {/* Header */}
-              <div className="p-4 border-b border-white/10">
-                <h2 className="text-white text-xl font-medium">{selected.name}</h2>
+              <div className="p-4 border-b border-white/10 bg-white/[0.02]">
+                <h2 className="text-white/90 text-xl font-medium">{selected.name}</h2>
                 <p className="text-white/40 text-sm mt-1">{formatDate(selected.date)}</p>
               </div>
 
@@ -422,7 +429,7 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
               <div className="flex-1 flex items-center justify-center p-6">
                 <div className="w-full max-w-lg">
                   {/* Large waveform */}
-                  <div className="flex items-center gap-1 h-32 mb-4">
+                  <div className="flex items-center gap-1 h-32 mb-4 p-4 rounded-xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.06]">
                     {selected.waveform.map((height, i) => {
                       const progress = (i / selected.waveform.length) * 100;
                       const isPlayed = progress <= playbackProgress;
@@ -430,14 +437,14 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                       return (
                         <div
                           key={i}
-                          className={`flex-1 rounded-full transition-colors ${
+                          className={`flex-1 rounded-full transition-colors duration-150 ${
                             isTrimming
                               ? inTrimRange
-                                ? 'bg-red-500'
-                                : 'bg-white/20'
+                                ? 'bg-red-500/80'
+                                : 'bg-white/10'
                               : isPlayed
-                              ? 'bg-red-500'
-                              : 'bg-white/30'
+                              ? 'bg-red-500/80'
+                              : 'bg-white/20'
                           }`}
                           style={{ height: `${height * 100}%` }}
                         />
@@ -445,16 +452,16 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                     })}
                   </div>
 
-                  {/* Progress bar */}
-                  <div className="relative h-1 bg-white/20 rounded-full mb-2">
+                  {/* Progress bar - glass style */}
+                  <div className="relative h-1.5 bg-white/10 rounded-full mb-2 backdrop-blur-sm overflow-hidden">
                     <div
-                      className="absolute h-full bg-red-500 rounded-full"
+                      className="absolute h-full bg-gradient-to-r from-red-500/80 to-red-400/80 rounded-full transition-all duration-100"
                       style={{ width: `${playbackProgress}%` }}
                     />
                   </div>
 
                   {/* Time display */}
-                  <div className="flex justify-between text-white/40 text-xs">
+                  <div className="flex justify-between text-white/50 text-xs font-mono">
                     <span>
                       {formatDuration((playbackProgress / 100) * selected.duration)}
                     </span>
@@ -463,65 +470,65 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                 </div>
               </div>
 
-              {/* Playback Controls */}
-              <div className="p-4 border-t border-white/10">
+              {/* Playback Controls - Glass morphism */}
+              <div className="p-4 border-t border-white/10 bg-white/[0.02]">
                 <div className="flex items-center justify-center gap-4">
                   {/* Skip back */}
                   <button
                     onClick={() => skip(-15)}
-                    className="p-3 hover:bg-white/10 rounded-full transition-colors relative"
+                    className="p-3 hover:bg-white/10 rounded-full transition-all border border-transparent hover:border-white/10 relative backdrop-blur-sm"
                     title="Skip back 15s"
                   >
-                    <SkipBack className="w-5 h-5 text-white" />
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/50">
+                    <SkipBack className="w-5 h-5 text-white/80" />
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/40 font-mono">
                       15
                     </span>
                   </button>
 
-                  {/* Play/Pause */}
+                  {/* Play/Pause - Main glass button */}
                   <button
                     onClick={togglePlayback}
                     disabled={!selected.audioUrl}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all backdrop-blur-xl shadow-lg ${
                       selected.audioUrl
-                        ? 'bg-red-500 hover:bg-red-600'
-                        : 'bg-white/10 cursor-not-allowed'
+                        ? 'bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 shadow-white/5'
+                        : 'bg-white/5 border border-white/10 cursor-not-allowed'
                     }`}
                   >
                     {isPlaying ? (
-                      <Pause className="w-6 h-6 text-white" />
+                      <Pause className="w-6 h-6 text-white/90" />
                     ) : (
-                      <Play className="w-6 h-6 text-white ml-1" />
+                      <Play className="w-6 h-6 text-white/90 ml-1" />
                     )}
                   </button>
 
                   {/* Skip forward */}
                   <button
                     onClick={() => skip(15)}
-                    className="p-3 hover:bg-white/10 rounded-full transition-colors relative"
+                    className="p-3 hover:bg-white/10 rounded-full transition-all border border-transparent hover:border-white/10 relative backdrop-blur-sm"
                     title="Skip forward 15s"
                   >
-                    <SkipForward className="w-5 h-5 text-white" />
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/50">
+                    <SkipForward className="w-5 h-5 text-white/80" />
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/40 font-mono">
                       15
                     </span>
                   </button>
                 </div>
 
-                {/* Speed and Trim */}
-                <div className="flex items-center justify-center gap-4 mt-4">
+                {/* Speed and Trim - Glass pill buttons */}
+                <div className="flex items-center justify-center gap-3 mt-4">
                   <button
                     onClick={cyclePlaybackSpeed}
-                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-white text-sm transition-colors"
+                    className="px-4 py-1.5 bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-sm rounded-full text-white/80 text-sm transition-all border border-white/10 hover:border-white/20 font-mono"
                   >
                     {playbackSpeed}x
                   </button>
                   <button
                     onClick={() => setIsTrimming(!isTrimming)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm transition-all backdrop-blur-sm border ${
                       isTrimming
-                        ? 'bg-red-500/20 text-red-400'
-                        : 'bg-white/10 hover:bg-white/20 text-white'
+                        ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                        : 'bg-white/[0.08] hover:bg-white/[0.12] text-white/80 border-white/10 hover:border-white/20'
                     }`}
                   >
                     <Scissors className="w-4 h-4" />
@@ -529,37 +536,37 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                   </button>
                 </div>
 
-                {/* Trim controls */}
+                {/* Trim controls - Glass panel */}
                 {isTrimming && (
-                  <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                    <div className="flex items-center gap-4 mb-2">
+                  <div className="mt-4 p-4 bg-white/[0.05] backdrop-blur-sm rounded-xl border border-white/10">
+                    <div className="flex items-center gap-4 mb-3">
                       <div className="flex-1">
-                        <label className="text-white/40 text-xs">Start</label>
+                        <label className="text-white/50 text-xs font-medium">Start</label>
                         <input
                           type="range"
                           min="0"
                           max="100"
                           value={trimStart}
                           onChange={(e) => setTrimStart(Number(e.target.value))}
-                          className="w-full"
+                          className="w-full mt-1 accent-red-500"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="text-white/40 text-xs">End</label>
+                        <label className="text-white/50 text-xs font-medium">End</label>
                         <input
                           type="range"
                           min="0"
                           max="100"
                           value={trimEnd}
                           onChange={(e) => setTrimEnd(Number(e.target.value))}
-                          className="w-full"
+                          className="w-full mt-1 accent-red-500"
                         />
                       </div>
                     </div>
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setIsTrimming(false)}
-                        className="px-3 py-1 text-white/60 hover:text-white text-sm"
+                        className="px-4 py-1.5 text-white/60 hover:text-white/90 text-sm transition-colors"
                       >
                         Cancel
                       </button>
@@ -568,7 +575,7 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
                           // In a real app, we'd apply the trim here
                           setIsTrimming(false);
                         }}
-                        className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded"
+                        className="px-4 py-1.5 bg-red-500/80 hover:bg-red-500/90 backdrop-blur-sm text-white text-sm rounded-lg transition-all border border-red-400/30"
                       >
                         Apply Trim
                       </button>
@@ -578,34 +585,36 @@ const VoiceMemosWindow: React.FC<VoiceMemosWindowProps> = ({ onClose, onFocus })
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-white/30">
-              <div className="text-center">
-                <Mic className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <p className="text-lg">No recording selected</p>
-                <p className="text-sm mt-1">Select a recording or tap record</p>
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center p-8 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.06]">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center">
+                  <Mic className="w-10 h-10 text-white/20" />
+                </div>
+                <p className="text-white/50 text-lg">No recording selected</p>
+                <p className="text-white/30 text-sm mt-1">Select a recording or tap record</p>
               </div>
             </div>
           )}
         </div>
 
-        {/* Delete Confirmation Modal */}
+        {/* Delete Confirmation Modal - Glass overlay */}
         {showDeleteConfirm && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <div className="bg-[#2c2c2e] rounded-xl p-4 max-w-sm w-full mx-4 shadow-xl">
-              <h3 className="text-white font-medium mb-2">Delete Recording?</h3>
-              <p className="text-white/60 text-sm mb-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-black/80 backdrop-blur-2xl rounded-2xl p-5 max-w-sm w-full mx-4 shadow-2xl border border-white/10">
+              <h3 className="text-white/90 font-medium mb-2">Delete Recording?</h3>
+              <p className="text-white/50 text-sm mb-5">
                 This recording will be permanently deleted. This action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="px-4 py-2 text-white/60 hover:text-white transition-colors"
+                  className="px-4 py-2 text-white/60 hover:text-white/90 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => deleteRecording(showDeleteConfirm)}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                  className="px-4 py-2 bg-red-500/80 hover:bg-red-500/90 backdrop-blur-sm text-white rounded-lg transition-all border border-red-400/30"
                 >
                   Delete
                 </button>

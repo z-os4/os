@@ -2,6 +2,7 @@
  * TextEdit App
  *
  * Rich text editor for zOS following macOS TextEdit patterns.
+ * Black glass UI with glassmorphism design.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -57,6 +58,14 @@ const TextEditWindow: React.FC<TextEditWindowProps> = ({ onClose, onFocus }) => 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
   const charCount = content.length;
 
+  // Toolbar button style helper
+  const toolbarBtnClass = (active: boolean) =>
+    `p-1.5 rounded transition-all duration-150 ${
+      active
+        ? 'bg-white/20 text-white shadow-inner'
+        : 'text-white/70 hover:bg-white/10 hover:text-white'
+    }`;
+
   return (
     <ZWindow
       title="TextEdit"
@@ -66,112 +75,109 @@ const TextEditWindow: React.FC<TextEditWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 700, height: 500 }}
       windowType="textpad"
     >
-      <div className="flex flex-col h-full bg-white dark:bg-[#1e1e1e]">
-        {/* Toolbar */}
-        <div className="flex items-center gap-1 px-3 py-2 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#2c2c2e]">
+      <div className="flex flex-col h-full bg-black/80">
+        {/* Glassmorphism Toolbar */}
+        <div
+          className="flex items-center gap-1 px-3 py-2 border-b border-white/10"
+          style={{
+            background: 'rgba(30, 30, 30, 0.7)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
+        >
           {/* Undo/Redo */}
-          <button className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors">
-            <Undo className="w-4 h-4 text-gray-600 dark:text-white/70" />
+          <button className={toolbarBtnClass(false)}>
+            <Undo className="w-4 h-4" />
           </button>
-          <button className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors">
-            <Redo className="w-4 h-4 text-gray-600 dark:text-white/70" />
+          <button className={toolbarBtnClass(false)}>
+            <Redo className="w-4 h-4" />
           </button>
 
-          <div className="w-px h-5 bg-gray-300 dark:bg-white/20 mx-1" />
+          <div className="w-px h-5 bg-white/20 mx-1" />
 
           {/* Font Controls */}
           <select
             value={fontFamily}
             onChange={(e) => setFontFamily(e.target.value)}
-            className="px-2 py-1 text-sm bg-transparent border border-gray-300 dark:border-white/20 rounded text-gray-700 dark:text-white/70 outline-none"
+            className="px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white/80 outline-none hover:bg-white/10 transition-colors cursor-pointer"
+            style={{ backdropFilter: 'blur(10px)' }}
           >
-            <option value="system-ui">System</option>
-            <option value="serif">Serif</option>
-            <option value="monospace">Mono</option>
+            <option value="system-ui" className="bg-neutral-900">System</option>
+            <option value="serif" className="bg-neutral-900">Serif</option>
+            <option value="monospace" className="bg-neutral-900">Mono</option>
           </select>
           <select
             value={fontSize}
             onChange={(e) => setFontSize(Number(e.target.value))}
-            className="px-2 py-1 text-sm bg-transparent border border-gray-300 dark:border-white/20 rounded text-gray-700 dark:text-white/70 outline-none w-16"
+            className="px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white/80 outline-none w-16 hover:bg-white/10 transition-colors cursor-pointer"
+            style={{ backdropFilter: 'blur(10px)' }}
           >
             {[10, 12, 14, 16, 18, 20, 24, 28, 32].map((size) => (
-              <option key={size} value={size}>{size}</option>
+              <option key={size} value={size} className="bg-neutral-900">{size}</option>
             ))}
           </select>
 
-          <div className="w-px h-5 bg-gray-300 dark:bg-white/20 mx-1" />
+          <div className="w-px h-5 bg-white/20 mx-1" />
 
           {/* Text Formatting */}
           <button
             onClick={() => setIsBold(!isBold)}
-            className={`p-1.5 rounded transition-colors ${
-              isBold ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(isBold)}
           >
-            <Bold className={`w-4 h-4 ${isBold ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <Bold className="w-4 h-4" />
           </button>
           <button
             onClick={() => setIsItalic(!isItalic)}
-            className={`p-1.5 rounded transition-colors ${
-              isItalic ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(isItalic)}
           >
-            <Italic className={`w-4 h-4 ${isItalic ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <Italic className="w-4 h-4" />
           </button>
           <button
             onClick={() => setIsUnderline(!isUnderline)}
-            className={`p-1.5 rounded transition-colors ${
-              isUnderline ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(isUnderline)}
           >
-            <Underline className={`w-4 h-4 ${isUnderline ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <Underline className="w-4 h-4" />
           </button>
 
-          <div className="w-px h-5 bg-gray-300 dark:bg-white/20 mx-1" />
+          <div className="w-px h-5 bg-white/20 mx-1" />
 
           {/* Alignment */}
           <button
             onClick={() => setAlignment('left')}
-            className={`p-1.5 rounded transition-colors ${
-              alignment === 'left' ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(alignment === 'left')}
           >
-            <AlignLeft className={`w-4 h-4 ${alignment === 'left' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <AlignLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => setAlignment('center')}
-            className={`p-1.5 rounded transition-colors ${
-              alignment === 'center' ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(alignment === 'center')}
           >
-            <AlignCenter className={`w-4 h-4 ${alignment === 'center' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <AlignCenter className="w-4 h-4" />
           </button>
           <button
             onClick={() => setAlignment('right')}
-            className={`p-1.5 rounded transition-colors ${
-              alignment === 'right' ? 'bg-blue-100 dark:bg-blue-500/30' : 'hover:bg-gray-200 dark:hover:bg-white/10'
-            }`}
+            className={toolbarBtnClass(alignment === 'right')}
           >
-            <AlignRight className={`w-4 h-4 ${alignment === 'right' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-white/70'}`} />
+            <AlignRight className="w-4 h-4" />
           </button>
 
-          <div className="w-px h-5 bg-gray-300 dark:bg-white/20 mx-1" />
+          <div className="w-px h-5 bg-white/20 mx-1" />
 
           {/* Lists */}
-          <button className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors">
-            <List className="w-4 h-4 text-gray-600 dark:text-white/70" />
+          <button className={toolbarBtnClass(false)}>
+            <List className="w-4 h-4" />
           </button>
-          <button className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors">
-            <ListOrdered className="w-4 h-4 text-gray-600 dark:text-white/70" />
+          <button className={toolbarBtnClass(false)}>
+            <ListOrdered className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Editor */}
-        <div className="flex-1 overflow-hidden">
+        {/* Editor Area - Dark with subtle texture */}
+        <div className="flex-1 overflow-hidden bg-[#0d0d0d]">
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full h-full p-6 resize-none outline-none bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-white/90 leading-relaxed"
+            className="w-full h-full p-6 resize-none outline-none bg-transparent text-white/90 leading-relaxed placeholder-white/30 selection:bg-white/20"
             style={{
               fontFamily,
               fontSize: `${fontSize}px`,
@@ -179,15 +185,23 @@ const TextEditWindow: React.FC<TextEditWindowProps> = ({ onClose, onFocus }) => 
               fontStyle: isItalic ? 'italic' : 'normal',
               textDecoration: isUnderline ? 'underline' : 'none',
               textAlign: alignment,
+              caretColor: 'rgba(255, 255, 255, 0.8)',
             }}
             placeholder="Start typing..."
           />
         </div>
 
-        {/* Status Bar */}
-        <div className="flex items-center justify-between px-4 py-1.5 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#2c2c2e] text-gray-500 dark:text-white/40 text-xs">
+        {/* Glass Status Bar */}
+        <div
+          className="flex items-center justify-between px-4 py-1.5 border-t border-white/10 text-white/50 text-xs"
+          style={{
+            background: 'rgba(30, 30, 30, 0.6)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
+        >
           <span>{wordCount} words, {charCount} characters</span>
-          <span>TextEdit</span>
+          <span className="text-white/30">TextEdit</span>
         </div>
       </div>
     </ZWindow>

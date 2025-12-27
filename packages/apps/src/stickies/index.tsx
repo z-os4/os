@@ -16,13 +16,14 @@ interface StickyNote {
   createdAt: Date;
 }
 
+// Glass morphism colors with subtle tints
 const COLORS = [
-  { id: 'yellow', bg: 'bg-yellow-200', text: 'text-yellow-900', border: 'border-yellow-300' },
-  { id: 'pink', bg: 'bg-pink-200', text: 'text-pink-900', border: 'border-pink-300' },
-  { id: 'green', bg: 'bg-green-200', text: 'text-green-900', border: 'border-green-300' },
-  { id: 'blue', bg: 'bg-blue-200', text: 'text-blue-900', border: 'border-blue-300' },
-  { id: 'purple', bg: 'bg-purple-200', text: 'text-purple-900', border: 'border-purple-300' },
-  { id: 'orange', bg: 'bg-orange-200', text: 'text-orange-900', border: 'border-orange-300' },
+  { id: 'yellow', bg: 'bg-yellow-500/10', tint: 'bg-yellow-400/5', text: 'text-yellow-100/90', border: 'border-yellow-400/20', dot: 'bg-yellow-400' },
+  { id: 'pink', bg: 'bg-pink-500/10', tint: 'bg-pink-400/5', text: 'text-pink-100/90', border: 'border-pink-400/20', dot: 'bg-pink-400' },
+  { id: 'green', bg: 'bg-emerald-500/10', tint: 'bg-emerald-400/5', text: 'text-emerald-100/90', border: 'border-emerald-400/20', dot: 'bg-emerald-400' },
+  { id: 'blue', bg: 'bg-blue-500/10', tint: 'bg-blue-400/5', text: 'text-blue-100/90', border: 'border-blue-400/20', dot: 'bg-blue-400' },
+  { id: 'purple', bg: 'bg-purple-500/10', tint: 'bg-purple-400/5', text: 'text-purple-100/90', border: 'border-purple-400/20', dot: 'bg-purple-400' },
+  { id: 'orange', bg: 'bg-orange-500/10', tint: 'bg-orange-400/5', text: 'text-orange-100/90', border: 'border-orange-400/20', dot: 'bg-orange-400' },
 ];
 
 const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => {
@@ -96,16 +97,16 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
       initialPosition={{ x: 300, y: 100 }}
       initialSize={{ width: 700, height: 500 }}
     >
-      <div className="flex h-full bg-[#2a2a2a]">
+      <div className="flex h-full bg-black/80 backdrop-blur-xl">
         {/* Sidebar - Note list */}
-        <div className="w-48 bg-[#1e1e1e] border-r border-white/10 flex flex-col">
-          <div className="p-2 border-b border-white/10">
+        <div className="w-52 bg-white/[0.02] border-r border-white/[0.08] flex flex-col backdrop-blur-md">
+          <div className="p-3 border-b border-white/[0.06]">
             <button
               onClick={addNote}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/80 hover:bg-white/[0.1] hover:border-white/[0.15] transition-all backdrop-blur-sm"
             >
               <Plus className="w-4 h-4" />
-              New Note
+              <span className="text-sm font-medium">New Note</span>
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2">
@@ -116,17 +117,20 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
                   key={note.id}
                   onClick={() => setSelectedNote(note.id)}
                   className={cn(
-                    "w-full p-2 rounded-lg text-left transition-all",
+                    "w-full p-3 rounded-xl text-left transition-all backdrop-blur-sm border",
                     colors.bg,
-                    colors.text,
-                    selectedNote === note.id ? "ring-2 ring-blue-500" : ""
+                    colors.border,
+                    "hover:bg-white/[0.08]",
+                    selectedNote === note.id 
+                      ? "ring-1 ring-white/30 border-white/20 bg-white/[0.08]" 
+                      : ""
                   )}
                 >
-                  <div className="flex items-start justify-between gap-1">
-                    <p className="text-xs line-clamp-3 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-xs text-white/70 line-clamp-3 flex-1 leading-relaxed">
                       {note.content || 'Empty note'}
                     </p>
-                    {note.pinned && <Pin className="w-3 h-3 flex-shrink-0" />}
+                    {note.pinned && <Pin className="w-3 h-3 text-white/50 flex-shrink-0" />}
                   </div>
                 </button>
               );
@@ -139,16 +143,18 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
           {selectedNoteData ? (
             <>
               {/* Toolbar */}
-              <div className="flex items-center justify-between p-2 border-b border-white/10 bg-[#252525]">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center justify-between p-3 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-md">
+                <div className="flex items-center gap-1.5">
                   {COLORS.map(color => (
                     <button
                       key={color.id}
                       onClick={() => changeColor(selectedNoteData.id, color.id)}
                       className={cn(
-                        "w-5 h-5 rounded-full border-2 transition-transform hover:scale-110",
-                        color.bg,
-                        selectedNoteData.color === color.id ? "border-white ring-2 ring-white/50" : "border-transparent"
+                        "w-5 h-5 rounded-full transition-all hover:scale-110",
+                        color.dot,
+                        selectedNoteData.color === color.id 
+                          ? "ring-2 ring-white/60 ring-offset-1 ring-offset-black/50" 
+                          : "opacity-60 hover:opacity-100"
                       )}
                     />
                   ))}
@@ -157,8 +163,10 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
                   <button
                     onClick={() => togglePin(selectedNoteData.id)}
                     className={cn(
-                      "p-1.5 rounded hover:bg-white/10 transition-colors",
-                      selectedNoteData.pinned ? "text-yellow-400" : "text-white/50"
+                      "p-2 rounded-lg transition-all",
+                      selectedNoteData.pinned 
+                        ? "text-yellow-400 bg-yellow-400/10" 
+                        : "text-white/40 hover:text-white/70 hover:bg-white/[0.06]"
                     )}
                     title={selectedNoteData.pinned ? "Unpin note" : "Pin note"}
                   >
@@ -166,7 +174,7 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
                   </button>
                   <button
                     onClick={() => deleteNote(selectedNoteData.id)}
-                    className="p-1.5 rounded hover:bg-red-500/20 text-white/50 hover:text-red-400 transition-colors"
+                    className="p-2 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all"
                     title="Delete note"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -174,28 +182,33 @@ const StickiesWindow: React.FC<StickiesWindowProps> = ({ onClose, onFocus }) => 
                 </div>
               </div>
 
-              {/* Note editor */}
-              <div className={cn("flex-1 p-0", getColorClasses(selectedNoteData.color).bg)}>
+              {/* Note editor - Glass card */}
+              <div className={cn(
+                "flex-1 m-3 rounded-xl border backdrop-blur-md overflow-hidden",
+                getColorClasses(selectedNoteData.color).bg,
+                getColorClasses(selectedNoteData.color).border
+              )}>
                 <textarea
                   value={selectedNoteData.content}
                   onChange={(e) => updateNote(selectedNoteData.id, e.target.value)}
                   placeholder="Type your note here..."
                   className={cn(
                     "w-full h-full p-4 resize-none border-none outline-none bg-transparent",
-                    getColorClasses(selectedNoteData.color).text,
-                    "placeholder:opacity-50"
+                    "text-white/90 placeholder:text-white/30",
+                    "selection:bg-white/20"
                   )}
                   style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
                 />
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-white/30">
-              <div className="text-center">
-                <p>No note selected</p>
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center p-8 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+                <StickyNote className="w-12 h-12 mx-auto mb-4 text-white/20" />
+                <p className="text-white/40 mb-3">No note selected</p>
                 <button
                   onClick={addNote}
-                  className="mt-2 text-yellow-400 hover:underline"
+                  className="text-sm text-white/60 hover:text-white/90 transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
                 >
                   Create a new note
                 </button>

@@ -2,11 +2,12 @@
  * Notes App
  *
  * Note-taking app for zOS following macOS Notes patterns.
+ * Black glass UI with transparency and backdrop blur.
  */
 
 import React, { useState, useEffect } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Plus, Trash2, Palette, StickyNote } from 'lucide-react';
+import { Plus, Trash2, Palette, StickyNote, Search } from 'lucide-react';
 
 interface NotesWindowProps {
   onClose: () => void;
@@ -20,21 +21,22 @@ interface StickyNote {
   createdAt: Date;
 }
 
+// Glass-friendly accent colors (subtle, translucent)
 const noteColors = [
-  { name: 'Yellow', bg: 'bg-yellow-200', text: 'text-yellow-900' },
-  { name: 'Pink', bg: 'bg-pink-200', text: 'text-pink-900' },
-  { name: 'Blue', bg: 'bg-blue-200', text: 'text-blue-900' },
-  { name: 'Green', bg: 'bg-green-200', text: 'text-green-900' },
-  { name: 'Purple', bg: 'bg-purple-200', text: 'text-purple-900' },
-  { name: 'Orange', bg: 'bg-orange-200', text: 'text-orange-900' },
+  { name: 'White', accent: 'bg-white/20', ring: 'ring-white/40', dot: 'bg-white/60' },
+  { name: 'Blue', accent: 'bg-blue-400/20', ring: 'ring-blue-400/40', dot: 'bg-blue-400/60' },
+  { name: 'Purple', accent: 'bg-purple-400/20', ring: 'ring-purple-400/40', dot: 'bg-purple-400/60' },
+  { name: 'Pink', accent: 'bg-pink-400/20', ring: 'ring-pink-400/40', dot: 'bg-pink-400/60' },
+  { name: 'Green', accent: 'bg-emerald-400/20', ring: 'ring-emerald-400/40', dot: 'bg-emerald-400/60' },
+  { name: 'Orange', accent: 'bg-orange-400/20', ring: 'ring-orange-400/40', dot: 'bg-orange-400/60' },
 ];
 
 const STORAGE_KEY = 'zos-notes';
 
 const defaultNotes: StickyNote[] = [
-  { id: '1', content: 'Welcome to Notes!\n\nClick + to add a new note.', color: 'Yellow', createdAt: new Date() },
-  { id: '2', content: 'Remember to:\n- Check emails\n- Review PRs\n- Deploy updates', color: 'Pink', createdAt: new Date() },
-  { id: '3', content: 'Ideas:\n- New terminal features\n- Better animations\n- More themes', color: 'Blue', createdAt: new Date() },
+  { id: '1', content: 'Welcome to Notes!\n\nClick + to add a new note.', color: 'White', createdAt: new Date() },
+  { id: '2', content: 'Remember to:\n- Check emails\n- Review PRs\n- Deploy updates', color: 'Blue', createdAt: new Date() },
+  { id: '3', content: 'Ideas:\n- New terminal features\n- Better animations\n- More themes', color: 'Purple', createdAt: new Date() },
 ];
 
 const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
@@ -56,6 +58,7 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
   });
   const [selectedNote, setSelectedNote] = useState<string | null>(null);
   const [showColorPicker, setShowColorPicker] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Persist notes to localStorage
   useEffect(() => {
@@ -70,7 +73,7 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
     const newNote: StickyNote = {
       id: Date.now().toString(),
       content: '',
-      color: noteColors[Math.floor(Math.random() * noteColors.length)].name,
+      color: 'White',
       createdAt: new Date(),
     };
     setNotes([newNote, ...notes]);
@@ -110,6 +113,10 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
     });
   };
 
+  const filteredNotes = notes.filter(note =>
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <ZWindow
       title="Notes"
@@ -119,40 +126,57 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 700, height: 500 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#2c2c2e]">
+      {/* Main glass container */}
+      <div className="flex h-full bg-black/60 backdrop-blur-2xl">
         {/* Sidebar - Notes List */}
-        <div className="w-56 border-r border-white/10 flex flex-col">
+        <div className="w-56 border-r border-white/[0.08] flex flex-col bg-white/[0.02]">
+          {/* Search Bar */}
+          <div className="p-3 border-b border-white/[0.08]">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search"
+                className="w-full pl-8 pr-3 py-1.5 bg-white/[0.06] border border-white/[0.08] rounded-lg text-sm text-white/90 placeholder:text-white/30 outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all"
+              />
+            </div>
+          </div>
+
           {/* Toolbar */}
-          <div className="flex items-center justify-between p-2 border-b border-white/10">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.08]">
             <button
               onClick={addNote}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-white/[0.08] rounded-md transition-colors group"
               title="New Note"
             >
-              <Plus className="w-5 h-5 text-white/70" />
+              <Plus className="w-4 h-4 text-white/50 group-hover:text-white/80" />
             </button>
-            <span className="text-white/50 text-xs">{notes.length} notes</span>
+            <span className="text-white/30 text-xs font-medium">{filteredNotes.length} notes</span>
           </div>
 
           {/* Notes List */}
           <div className="flex-1 overflow-y-auto">
-            {notes.map((note) => {
+            {filteredNotes.map((note) => {
               const colors = getColorClasses(note.color);
               return (
                 <div
                   key={note.id}
                   onClick={() => setSelectedNote(note.id)}
-                  className={`group p-3 cursor-pointer border-b border-white/5 transition-colors ${
-                    selectedNote === note.id ? 'bg-white/10' : 'hover:bg-white/5'
+                  className={`group px-3 py-2.5 cursor-pointer border-b border-white/[0.04] transition-all ${
+                    selectedNote === note.id 
+                      ? 'bg-white/[0.1] border-l-2 border-l-white/40' 
+                      : 'hover:bg-white/[0.05] border-l-2 border-l-transparent'
                   }`}
                 >
-                  <div className="flex items-start gap-2">
-                    <div className={`w-3 h-3 rounded-full ${colors.bg} flex-shrink-0 mt-1`} />
+                  <div className="flex items-start gap-2.5">
+                    <div className={`w-2 h-2 rounded-full ${colors.dot} flex-shrink-0 mt-1.5`} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm truncate">
+                      <p className="text-white/90 text-sm font-medium truncate leading-tight">
                         {note.content.split('\n')[0] || 'New Note'}
                       </p>
-                      <p className="text-white/40 text-xs mt-1">
+                      <p className="text-white/30 text-xs mt-1 font-light">
                         {formatDate(note.createdAt)}
                       </p>
                     </div>
@@ -161,9 +185,9 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
                         e.stopPropagation();
                         deleteNote(note.id);
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/[0.1] rounded transition-all"
                     >
-                      <Trash2 className="w-3 h-3 text-white/50" />
+                      <Trash2 className="w-3 h-3 text-white/40 hover:text-red-400" />
                     </button>
                   </div>
                 </div>
@@ -173,28 +197,28 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
         </div>
 
         {/* Main Content - Note Editor */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col bg-black/20">
           {selectedNote ? (
             <>
               {/* Note Header */}
-              <div className="flex items-center justify-between p-3 border-b border-white/10">
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.08] bg-white/[0.02]">
                 <div className="relative">
                   <button
                     onClick={() => setShowColorPicker(showColorPicker === selectedNote ? null : selectedNote)}
-                    className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-white/[0.08] rounded-md transition-colors group"
                   >
-                    <div className={`w-4 h-4 rounded-full ${getColorClasses(notes.find(n => n.id === selectedNote)?.color || 'Yellow').bg}`} />
-                    <Palette className="w-4 h-4 text-white/50" />
+                    <div className={`w-3 h-3 rounded-full ${getColorClasses(notes.find(n => n.id === selectedNote)?.color || 'White').dot}`} />
+                    <Palette className="w-3.5 h-3.5 text-white/40 group-hover:text-white/60" />
                   </button>
 
                   {showColorPicker === selectedNote && (
-                    <div className="absolute top-full left-0 mt-1 bg-[#3c3c3e] rounded-lg shadow-xl border border-white/10 p-2 z-10">
-                      <div className="flex gap-1">
+                    <div className="absolute top-full left-0 mt-1.5 bg-black/80 backdrop-blur-xl rounded-lg shadow-2xl border border-white/[0.12] p-2.5 z-10">
+                      <div className="flex gap-1.5">
                         {noteColors.map((color) => (
                           <button
                             key={color.name}
                             onClick={() => changeColor(selectedNote, color.name)}
-                            className={`w-6 h-6 rounded-full ${color.bg} hover:ring-2 ring-white/50 transition-all`}
+                            className={`w-6 h-6 rounded-full ${color.dot} hover:ring-2 ${color.ring} transition-all hover:scale-110`}
                             title={color.name}
                           />
                         ))}
@@ -204,10 +228,10 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
                 </div>
                 <button
                   onClick={() => deleteNote(selectedNote)}
-                  className="p-2 hover:bg-red-500/20 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-red-500/20 rounded-md transition-colors group"
                   title="Delete Note"
                 >
-                  <Trash2 className="w-4 h-4 text-red-400" />
+                  <Trash2 className="w-4 h-4 text-white/40 group-hover:text-red-400" />
                 </button>
               </div>
 
@@ -217,12 +241,12 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
                 if (!note) return null;
                 const colors = getColorClasses(note.color);
                 return (
-                  <div className={`flex-1 ${colors.bg}`}>
+                  <div className={`flex-1 ${colors.accent} transition-colors`}>
                     <textarea
                       value={note.content}
                       onChange={(e) => updateNote(note.id, e.target.value)}
                       placeholder="Start typing..."
-                      className={`w-full h-full p-4 bg-transparent ${colors.text} placeholder:opacity-50 resize-none outline-none text-base leading-relaxed font-medium`}
+                      className="w-full h-full p-5 bg-transparent text-white/90 placeholder:text-white/25 resize-none outline-none text-base leading-relaxed font-light selection:bg-white/20"
                       autoFocus
                     />
                   </div>
@@ -230,10 +254,13 @@ const NotesWindow: React.FC<NotesWindowProps> = ({ onClose, onFocus }) => {
               })()}
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-white/30">
+            <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <p className="text-lg mb-2">No note selected</p>
-                <p className="text-sm">Select a note or click + to create one</p>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
+                  <StickyNote className="w-8 h-8 text-white/20" />
+                </div>
+                <p className="text-white/40 text-base font-light mb-1">No note selected</p>
+                <p className="text-white/25 text-sm font-light">Select a note or click + to create one</p>
               </div>
             </div>
           )}

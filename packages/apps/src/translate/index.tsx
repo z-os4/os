@@ -2,6 +2,7 @@
  * Translate App
  *
  * Translation interface with two-panel layout for zOS.
+ * Unified black glass UI with macOS dark mode aesthetics.
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -219,13 +220,13 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/90 text-sm transition-colors"
+        className="flex items-center gap-1.5 px-4 py-2 bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-md rounded-xl text-white/90 text-sm font-medium transition-all duration-200 border border-white/[0.08] hover:border-white/[0.15] shadow-sm"
       >
         {getLanguageName(value)}
         <ChevronDown className="w-4 h-4 text-white/50" />
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-[#3c3c3e] rounded-lg shadow-xl border border-white/10 py-1 z-20 max-h-64 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-2 w-52 bg-black/80 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/[0.12] py-1.5 z-20 max-h-64 overflow-y-auto">
           {LANGUAGES.filter(l => !excludeAuto || l.code !== 'auto').map(lang => (
             <button
               key={lang.code}
@@ -233,10 +234,10 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
                 onChange(lang.code);
                 setIsOpen(false);
               }}
-              className={`w-full px-3 py-1.5 text-left text-sm transition-colors ${
+              className={`w-full px-4 py-2 text-left text-sm transition-all duration-150 ${
                 value === lang.code
-                  ? 'bg-blue-500/20 text-blue-400'
-                  : 'text-white/70 hover:bg-white/5'
+                  ? 'bg-white/[0.12] text-white'
+                  : 'text-white/70 hover:bg-white/[0.08] hover:text-white/90'
               }`}
             >
               {lang.name}
@@ -256,15 +257,15 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
       initialSize={{ width: 800, height: 500 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-[#1e1e1e]">
+      <div className="flex flex-col h-full bg-black/60 backdrop-blur-2xl">
         {/* Tabs */}
-        <div className="flex items-center border-b border-white/10">
+        <div className="flex items-center border-b border-white/[0.08] bg-black/20">
           <button
             onClick={() => setActiveTab('translate')}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={`px-5 py-3 text-sm font-medium transition-all duration-200 ${
               activeTab === 'translate'
-                ? 'text-white border-b-2 border-blue-500'
-                : 'text-white/50 hover:text-white/70'
+                ? 'text-white border-b-2 border-white/80 bg-white/[0.05]'
+                : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -274,10 +275,10 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
           </button>
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={`px-5 py-3 text-sm font-medium transition-all duration-200 ${
               activeTab === 'history'
-                ? 'text-white border-b-2 border-blue-500'
-                : 'text-white/50 hover:text-white/70'
+                ? 'text-white border-b-2 border-white/80 bg-white/[0.05]'
+                : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -287,10 +288,10 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
           </button>
           <button
             onClick={() => setActiveTab('favorites')}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={`px-5 py-3 text-sm font-medium transition-all duration-200 ${
               activeTab === 'favorites'
-                ? 'text-white border-b-2 border-blue-500'
-                : 'text-white/50 hover:text-white/70'
+                ? 'text-white border-b-2 border-white/80 bg-white/[0.05]'
+                : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -303,7 +304,7 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
         {activeTab === 'translate' ? (
           <div className="flex-1 flex flex-col">
             {/* Language Selector Bar */}
-            <div className="flex items-center justify-center gap-4 p-3 border-b border-white/10">
+            <div className="flex items-center justify-center gap-4 p-4 border-b border-white/[0.08] bg-black/20">
               <LanguageDropdown
                 value={sourceLang}
                 onChange={setSourceLang}
@@ -313,7 +314,7 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
               <button
                 onClick={swapLanguages}
                 disabled={sourceLang === 'auto'}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2.5 hover:bg-white/[0.1] rounded-xl transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed border border-transparent hover:border-white/[0.1]"
                 title="Swap languages"
               >
                 <ArrowLeftRight className="w-5 h-5 text-white/70" />
@@ -328,81 +329,81 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
             </div>
 
             {/* Translation Panels */}
-            <div className="flex-1 flex">
-              {/* Source Panel */}
-              <div className="flex-1 flex flex-col border-r border-white/10">
+            <div className="flex-1 flex gap-3 p-3">
+              {/* Source Panel - Glass morphism box */}
+              <div className="flex-1 flex flex-col bg-white/[0.04] backdrop-blur-xl rounded-2xl border border-white/[0.08] overflow-hidden shadow-lg">
                 <div className="flex-1 p-4">
                   <textarea
                     value={sourceText}
                     onChange={e => setSourceText(e.target.value)}
                     placeholder="Enter text to translate..."
-                    className="w-full h-full bg-transparent text-white text-lg resize-none outline-none placeholder:text-white/30"
+                    className="w-full h-full bg-transparent text-white/95 text-lg resize-none outline-none placeholder:text-white/25 leading-relaxed"
                     autoFocus
                   />
                 </div>
-                <div className="flex items-center justify-between px-4 py-2 border-t border-white/10">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06] bg-black/20">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => speak(sourceText, sourceLang)}
                       disabled={!sourceText}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
+                      className="p-2 hover:bg-white/[0.1] rounded-lg transition-all duration-200 disabled:opacity-30"
                       title="Listen"
                     >
-                      <Volume2 className="w-4 h-4 text-white/70" />
+                      <Volume2 className="w-4 h-4 text-white/60" />
                     </button>
                     <button
                       onClick={() => copyToClipboard(sourceText, true)}
                       disabled={!sourceText}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
+                      className="p-2 hover:bg-white/[0.1] rounded-lg transition-all duration-200 disabled:opacity-30"
                       title="Copy"
                     >
                       {copiedSource ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-emerald-400" />
                       ) : (
-                        <Copy className="w-4 h-4 text-white/70" />
+                        <Copy className="w-4 h-4 text-white/60" />
                       )}
                     </button>
                   </div>
-                  <span className="text-white/30 text-xs">{sourceText.length} characters</span>
+                  <span className="text-white/25 text-xs font-medium">{sourceText.length} characters</span>
                 </div>
               </div>
 
-              {/* Target Panel */}
-              <div className="flex-1 flex flex-col bg-white/5">
+              {/* Target Panel - Glass morphism box */}
+              <div className="flex-1 flex flex-col bg-white/[0.06] backdrop-blur-xl rounded-2xl border border-white/[0.1] overflow-hidden shadow-lg">
                 <div className="flex-1 p-4">
                   {isTranslating ? (
-                    <div className="flex items-center gap-2 text-white/50">
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white/70 rounded-full animate-spin" />
-                      Translating...
+                    <div className="flex items-center gap-3 text-white/50">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                      <span className="text-sm">Translating...</span>
                     </div>
                   ) : (
-                    <p className="text-white text-lg whitespace-pre-wrap">
+                    <p className="text-white/95 text-lg whitespace-pre-wrap leading-relaxed">
                       {translatedText || (
-                        <span className="text-white/30">Translation will appear here...</span>
+                        <span className="text-white/25">Translation will appear here...</span>
                       )}
                     </p>
                   )}
                 </div>
-                <div className="flex items-center justify-between px-4 py-2 border-t border-white/10">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06] bg-black/20">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => speak(translatedText, targetLang)}
                       disabled={!translatedText}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
+                      className="p-2 hover:bg-white/[0.1] rounded-lg transition-all duration-200 disabled:opacity-30"
                       title="Listen"
                     >
-                      <Volume2 className="w-4 h-4 text-white/70" />
+                      <Volume2 className="w-4 h-4 text-white/60" />
                     </button>
                     <button
                       onClick={() => copyToClipboard(translatedText, false)}
                       disabled={!translatedText}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
+                      className="p-2 hover:bg-white/[0.1] rounded-lg transition-all duration-200 disabled:opacity-30"
                       title="Copy"
                     >
                       {copiedTarget ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-emerald-400" />
                       ) : (
-                        <Copy className="w-4 h-4 text-white/70" />
+                        <Copy className="w-4 h-4 text-white/60" />
                       )}
                     </button>
                     <button
@@ -417,15 +418,15 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
                         }
                       }}
                       disabled={!translatedText}
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
+                      className="p-2 hover:bg-white/[0.1] rounded-lg transition-all duration-200 disabled:opacity-30"
                       title="Favorite"
                     >
                       <Star
                         className={`w-4 h-4 ${
                           history.find(t => t.sourceText === sourceText && t.targetLang === targetLang)
                             ?.favorite
-                            ? 'text-yellow-500 fill-yellow-500'
-                            : 'text-white/70'
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-white/60'
                         }`}
                       />
                     </button>
@@ -436,50 +437,54 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
           </div>
         ) : (
           // History or Favorites list
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto p-3">
             {(activeTab === 'history' ? history : favorites).length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-white/30">
                 {activeTab === 'history' ? (
                   <>
-                    <Clock className="w-12 h-12 mb-4 opacity-50" />
-                    <p>No translation history yet</p>
+                    <div className="w-16 h-16 mb-4 rounded-2xl bg-white/[0.05] backdrop-blur-xl border border-white/[0.08] flex items-center justify-center">
+                      <Clock className="w-8 h-8 opacity-50" />
+                    </div>
+                    <p className="text-sm font-medium">No translation history yet</p>
                   </>
                 ) : (
                   <>
-                    <Star className="w-12 h-12 mb-4 opacity-50" />
-                    <p>No favorite translations</p>
+                    <div className="w-16 h-16 mb-4 rounded-2xl bg-white/[0.05] backdrop-blur-xl border border-white/[0.08] flex items-center justify-center">
+                      <Star className="w-8 h-8 opacity-50" />
+                    </div>
+                    <p className="text-sm font-medium">No favorite translations</p>
                   </>
                 )}
               </div>
             ) : (
-              <div className="p-4 space-y-2">
+              <div className="space-y-2">
                 {(activeTab === 'history' ? history : favorites).map(t => (
                   <div
                     key={t.id}
-                    className="group p-3 bg-white/5 hover:bg-white/10 rounded-lg cursor-pointer transition-colors"
+                    className="group p-4 bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-xl rounded-xl border border-white/[0.06] hover:border-white/[0.1] cursor-pointer transition-all duration-200"
                     onClick={() => loadTranslation(t)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 text-xs text-white/40 mb-1">
+                        <div className="flex items-center gap-2 text-xs text-white/40 mb-2 font-medium">
                           <span>{getLanguageName(t.sourceLang)}</span>
-                          <span>→</span>
+                          <ArrowLeftRight className="w-3 h-3" />
                           <span>{getLanguageName(t.targetLang)}</span>
                         </div>
                         <p className="text-white/90 text-sm truncate">{t.sourceText}</p>
                         <p className="text-white/50 text-sm truncate mt-1">{t.translatedText}</p>
                       </div>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <button
                           onClick={e => {
                             e.stopPropagation();
                             toggleFavorite(t.id);
                           }}
-                          className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                          className="p-2 hover:bg-white/[0.1] rounded-lg transition-colors"
                         >
                           <Star
                             className={`w-4 h-4 ${
-                              t.favorite ? 'text-yellow-500 fill-yellow-500' : 'text-white/50'
+                              t.favorite ? 'text-amber-400 fill-amber-400' : 'text-white/50'
                             }`}
                           />
                         </button>
@@ -488,7 +493,7 @@ const TranslateWindow: React.FC<TranslateWindowProps> = ({ onClose, onFocus }) =
                             e.stopPropagation();
                             deleteFromHistory(t.id);
                           }}
-                          className="p-1.5 hover:bg-red-500/20 rounded transition-colors"
+                          className="p-2 hover:bg-red-500/20 rounded-lg transition-colors"
                         >
                           <X className="w-4 h-4 text-white/50" />
                         </button>

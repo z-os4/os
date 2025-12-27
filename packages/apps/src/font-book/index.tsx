@@ -1,7 +1,7 @@
 /**
  * Font Book App
  *
- * Font manager app for zOS.
+ * Font manager for zOS with unified black glass UI.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -270,19 +270,19 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
-        <div className="w-52 border-r border-white/10 flex flex-col bg-[#2c2c2e]">
+      <div className="flex h-full bg-black/80 backdrop-blur-xl">
+        {/* Sidebar - Glass Panel */}
+        <div className="w-52 border-r border-white/[0.08] flex flex-col bg-white/[0.03] backdrop-blur-2xl">
           {/* Search */}
-          <div className="p-2 border-b border-white/10">
+          <div className="p-3 border-b border-white/[0.08]">
             <div className="relative">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search fonts..."
-                className="w-full pl-8 pr-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/30 outline-none focus:border-blue-500/50"
+                className="w-full pl-8 pr-3 py-1.5 bg-white/[0.06] border border-white/[0.08] rounded-md text-white/90 text-sm placeholder:text-white/30 outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all"
               />
             </div>
           </div>
@@ -290,61 +290,69 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
           {/* Sections */}
           <div className="flex-1 overflow-y-auto p-2">
             <div className="mb-4">
-              <h3 className="text-white/40 text-xs uppercase tracking-wider px-2 py-1">Library</h3>
+              <h3 className="text-white/40 text-[10px] font-medium uppercase tracking-wider px-2 py-1.5">Library</h3>
               <button
                 onClick={() => setActiveSection('all')}
-                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                  activeSection === 'all' ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-all ${
+                  activeSection === 'all' 
+                    ? 'bg-white/[0.12] text-white shadow-sm' 
+                    : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
                 }`}
               >
-                <Type className="w-4 h-4" />
+                <Type className="w-4 h-4 opacity-70" />
                 All Fonts
-                <span className="ml-auto text-xs text-white/30">{fonts.length}</span>
+                <span className="ml-auto text-[11px] text-white/40 tabular-nums">{fonts.length}</span>
               </button>
               <button
                 onClick={() => setActiveSection('favorites')}
-                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                  activeSection === 'favorites' ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-all ${
+                  activeSection === 'favorites' 
+                    ? 'bg-white/[0.12] text-white shadow-sm' 
+                    : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
                 }`}
               >
-                <Star className="w-4 h-4" />
+                <Star className="w-4 h-4 opacity-70" />
                 Favorites
-                <span className="ml-auto text-xs text-white/30">{favorites.length}</span>
+                <span className="ml-auto text-[11px] text-white/40 tabular-nums">{favorites.length}</span>
               </button>
               <button
                 onClick={() => setActiveSection('recent')}
-                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                  activeSection === 'recent' ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-all ${
+                  activeSection === 'recent' 
+                    ? 'bg-white/[0.12] text-white shadow-sm' 
+                    : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
                 }`}
               >
-                <Clock className="w-4 h-4" />
+                <Clock className="w-4 h-4 opacity-70" />
                 Recently Added
-                <span className="ml-auto text-xs text-white/30">{recentFonts.length}</span>
+                <span className="ml-auto text-[11px] text-white/40 tabular-nums">{recentFonts.length}</span>
               </button>
             </div>
 
             <div>
-              <div className="flex items-center justify-between px-2 py-1">
-                <h3 className="text-white/40 text-xs uppercase tracking-wider">Collections</h3>
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <h3 className="text-white/40 text-[10px] font-medium uppercase tracking-wider">Collections</h3>
                 <button
                   onClick={createCollection}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
+                  className="p-1 hover:bg-white/[0.08] rounded transition-colors"
                   title="New Collection"
                 >
-                  <Plus className="w-3 h-3 text-white/50" />
+                  <Plus className="w-3.5 h-3.5 text-white/50" />
                 </button>
               </div>
               {collections.map(collection => (
                 <div
                   key={collection.id}
-                  className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer transition-colors ${
-                    activeSection === collection.id ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
+                  className={`group flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm cursor-pointer transition-all ${
+                    activeSection === collection.id 
+                      ? 'bg-white/[0.12] text-white shadow-sm' 
+                      : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
                   }`}
                   onClick={() => setActiveSection(collection.id)}
                 >
-                  <FolderOpen className="w-4 h-4" />
+                  <FolderOpen className="w-4 h-4 opacity-70" />
                   <span className="flex-1 truncate">{collection.name}</span>
-                  <span className="text-xs text-white/30">{collection.fonts.length}</span>
+                  <span className="text-[11px] text-white/40 tabular-nums">{collection.fonts.length}</span>
                   <button
                     onClick={e => {
                       e.stopPropagation();
@@ -352,7 +360,7 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                     }}
                     className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-opacity"
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3 h-3 text-white/50" />
                   </button>
                 </div>
               ))}
@@ -360,27 +368,27 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
           </div>
         </div>
 
-        {/* Font List */}
-        <div className="w-64 border-r border-white/10 flex flex-col">
+        {/* Font List - Glass Panel */}
+        <div className="w-64 border-r border-white/[0.08] flex flex-col bg-white/[0.02]">
           {/* Toolbar */}
-          <div className="flex items-center justify-between p-2 border-b border-white/10">
-            <span className="text-white/50 text-xs">{filteredFonts.length} fonts</span>
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.08]">
+            <span className="text-white/50 text-xs tabular-nums">{filteredFonts.length} fonts</span>
+            <div className="flex items-center gap-0.5 bg-white/[0.04] rounded-md p-0.5">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'list' ? 'bg-white/10' : 'hover:bg-white/5'
+                className={`p-1.5 rounded transition-all ${
+                  viewMode === 'list' ? 'bg-white/[0.12] text-white shadow-sm' : 'text-white/50 hover:text-white/70'
                 }`}
               >
-                <List className="w-4 h-4 text-white/70" />
+                <List className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'grid' ? 'bg-white/10' : 'hover:bg-white/5'
+                className={`p-1.5 rounded transition-all ${
+                  viewMode === 'grid' ? 'bg-white/[0.12] text-white shadow-sm' : 'text-white/50 hover:text-white/70'
                 }`}
               >
-                <Grid className="w-4 h-4 text-white/70" />
+                <Grid className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -388,11 +396,11 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
           {/* Font List */}
           <div className="flex-1 overflow-y-auto">
             {loading ? (
-              <div className="flex items-center justify-center h-full text-white/30">
+              <div className="flex items-center justify-center h-full text-white/40 text-sm">
                 Loading fonts...
               </div>
             ) : filteredFonts.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-white/30">
+              <div className="flex items-center justify-center h-full text-white/40 text-sm">
                 No fonts found
               </div>
             ) : viewMode === 'list' ? (
@@ -401,13 +409,15 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                   <div
                     key={font.family}
                     onClick={() => handleFontSelect(font.family)}
-                    className={`group flex items-center gap-2 px-3 py-2 cursor-pointer border-b border-white/5 transition-colors ${
-                      selectedFont === font.family ? 'bg-blue-500/20' : 'hover:bg-white/5'
+                    className={`group flex items-center gap-2 px-3 py-2 cursor-pointer border-b border-white/[0.04] transition-all ${
+                      selectedFont === font.family 
+                        ? 'bg-white/[0.10]' 
+                        : 'hover:bg-white/[0.05]'
                     }`}
                   >
                     <div className="flex-1 min-w-0">
                       <p
-                        className="text-white text-sm truncate"
+                        className="text-white/90 text-sm truncate"
                         style={{ fontFamily: `"${font.family}", system-ui` }}
                       >
                         {font.family}
@@ -418,17 +428,17 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                         e.stopPropagation();
                         toggleFavorite(font.family);
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-all"
                     >
                       <Star
                         className={`w-3 h-3 ${
                           favorites.includes(font.family)
-                            ? 'text-yellow-500 fill-yellow-500'
-                            : 'text-white/50'
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-white/40'
                         }`}
                       />
                     </button>
-                    <ChevronRight className="w-4 h-4 text-white/30" />
+                    <ChevronRight className="w-3.5 h-3.5 text-white/20" />
                   </div>
                 ))}
               </div>
@@ -438,17 +448,19 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                   <div
                     key={font.family}
                     onClick={() => handleFontSelect(font.family)}
-                    className={`p-2 rounded-lg cursor-pointer transition-colors ${
-                      selectedFont === font.family ? 'bg-blue-500/20 ring-1 ring-blue-500' : 'bg-white/5 hover:bg-white/10'
+                    className={`p-3 rounded-lg cursor-pointer transition-all border ${
+                      selectedFont === font.family 
+                        ? 'bg-white/[0.10] border-white/[0.15]' 
+                        : 'bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.10]'
                     }`}
                   >
                     <p
-                      className="text-white text-lg truncate text-center"
+                      className="text-white/90 text-xl truncate text-center"
                       style={{ fontFamily: `"${font.family}", system-ui` }}
                     >
                       Aa
                     </p>
-                    <p className="text-white/50 text-xs truncate text-center mt-1">{font.family}</p>
+                    <p className="text-white/40 text-[10px] truncate text-center mt-1.5">{font.family}</p>
                   </div>
                 ))}
               </div>
@@ -456,23 +468,23 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
           </div>
         </div>
 
-        {/* Preview Pane */}
-        <div className="flex-1 flex flex-col">
+        {/* Preview Pane - Main Glass Panel */}
+        <div className="flex-1 flex flex-col bg-white/[0.01]">
           {selectedFont ? (
             <>
               {/* Preview Header */}
-              <div className="flex items-center justify-between p-3 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-white font-medium">{selectedFont}</h2>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] bg-white/[0.02]">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-white font-medium text-base">{selectedFont}</h2>
                   <button
                     onClick={() => toggleFavorite(selectedFont)}
-                    className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                    className="p-1.5 hover:bg-white/[0.08] rounded-md transition-colors"
                   >
                     <Star
                       className={`w-4 h-4 ${
                         favorites.includes(selectedFont)
-                          ? 'text-yellow-500 fill-yellow-500'
-                          : 'text-white/50'
+                          ? 'text-amber-400 fill-amber-400'
+                          : 'text-white/40'
                       }`}
                     />
                   </button>
@@ -480,47 +492,49 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowCharMap(!showCharMap)}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                      showCharMap ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/5'
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all border ${
+                      showCharMap 
+                        ? 'bg-white/[0.12] border-white/[0.15] text-white' 
+                        : 'border-white/[0.08] text-white/60 hover:bg-white/[0.06] hover:text-white/80'
                     }`}
                   >
                     Character Map
                   </button>
                   <button
-                    className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                    className="p-1.5 hover:bg-white/[0.08] rounded-md transition-colors"
                     title="Font Info"
                   >
-                    <Info className="w-4 h-4 text-white/50" />
+                    <Info className="w-4 h-4 text-white/40" />
                   </button>
                 </div>
               </div>
 
               {/* Sample Text Input */}
-              <div className="p-3 border-b border-white/10">
+              <div className="px-4 py-3 border-b border-white/[0.08]">
                 <input
                   type="text"
                   value={previewText}
                   onChange={e => setPreviewText(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/30 outline-none focus:border-blue-500/50"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-white/90 text-sm placeholder:text-white/30 outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all"
                   placeholder="Enter sample text..."
                 />
               </div>
 
               {/* Font Previews */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto px-4 py-5">
                 {showCharMap ? (
                   <div>
-                    <h3 className="text-white/50 text-sm mb-3">Character Map</h3>
+                    <h3 className="text-white/50 text-xs font-medium uppercase tracking-wider mb-4">Character Map</h3>
                     <div
-                      className="grid gap-1"
+                      className="grid gap-1.5"
                       style={{
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(42px, 1fr))',
                       }}
                     >
                       {charMapChars.map((char, i) => (
                         <div
                           key={i}
-                          className="aspect-square flex items-center justify-center bg-white/5 rounded text-white text-lg hover:bg-white/10 cursor-pointer transition-colors"
+                          className="aspect-square flex items-center justify-center bg-white/[0.04] border border-white/[0.06] rounded-md text-white/90 text-lg hover:bg-white/[0.08] hover:border-white/[0.12] cursor-pointer transition-all"
                           style={{ fontFamily: `"${selectedFont}", system-ui` }}
                           title={`U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`}
                         >
@@ -530,18 +544,19 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {PREVIEW_SIZES.map(size => (
-                      <div key={size}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-white/30 text-xs">{size}px</span>
+                      <div key={size} className="group">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-white/30 text-[10px] font-medium uppercase tracking-wider">{size}px</span>
+                          <div className="flex-1 h-px bg-white/[0.06]" />
                         </div>
                         <p
-                          className="text-white break-words"
+                          className="text-white/90 break-words leading-relaxed"
                           style={{
                             fontFamily: `"${selectedFont}", system-ui`,
                             fontSize: `${size}px`,
-                            lineHeight: 1.3,
+                            lineHeight: 1.4,
                           }}
                         >
                           {previewText}
@@ -552,24 +567,24 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
                 )}
               </div>
 
-              {/* Font Info */}
-              <div className="p-3 border-t border-white/10 bg-white/5">
-                <div className="grid grid-cols-4 gap-4 text-sm">
+              {/* Font Info - Glass Footer */}
+              <div className="px-4 py-3 border-t border-white/[0.08] bg-white/[0.03]">
+                <div className="grid grid-cols-4 gap-6 text-sm">
                   <div>
-                    <span className="text-white/40">Name</span>
-                    <p className="text-white truncate">{selectedFontInfo?.fullName || selectedFont}</p>
+                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-wider">Name</span>
+                    <p className="text-white/90 truncate mt-0.5">{selectedFontInfo?.fullName || selectedFont}</p>
                   </div>
                   <div>
-                    <span className="text-white/40">Family</span>
-                    <p className="text-white truncate">{selectedFont}</p>
+                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-wider">Family</span>
+                    <p className="text-white/90 truncate mt-0.5">{selectedFont}</p>
                   </div>
                   <div>
-                    <span className="text-white/40">Style</span>
-                    <p className="text-white capitalize">{selectedFontInfo?.style || 'Normal'}</p>
+                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-wider">Style</span>
+                    <p className="text-white/90 capitalize mt-0.5">{selectedFontInfo?.style || 'Normal'}</p>
                   </div>
                   <div>
-                    <span className="text-white/40">Weight</span>
-                    <p className="text-white">{selectedFontInfo?.weight || 'Normal'}</p>
+                    <span className="text-white/40 text-[10px] font-medium uppercase tracking-wider">Weight</span>
+                    <p className="text-white/90 mt-0.5">{selectedFontInfo?.weight || 'Normal'}</p>
                   </div>
                 </div>
               </div>
@@ -577,8 +592,10 @@ const FontBookWindow: React.FC<FontBookWindowProps> = ({ onClose, onFocus }) => 
           ) : (
             <div className="flex-1 flex items-center justify-center text-white/30">
               <div className="text-center">
-                <Type className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Select a font to preview</p>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                  <Type className="w-8 h-8 opacity-50" />
+                </div>
+                <p className="text-sm">Select a font to preview</p>
               </div>
             </div>
           )}

@@ -2,6 +2,7 @@
  * Maps App
  *
  * Map viewer for zOS using OpenStreetMap (Leaflet).
+ * Unified black glass UI with glassmorphism effects.
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -50,6 +51,31 @@ interface SearchResult {
 }
 
 type MapStyle = 'standard' | 'satellite' | 'terrain';
+
+// ============================================================================
+// Glass UI Styles
+// ============================================================================
+
+const glassStyles = {
+  // Primary glass panel - darker with more blur
+  panel: 'bg-black/60 backdrop-blur-xl border border-white/[0.08]',
+  // Control button glass
+  control: 'bg-black/50 backdrop-blur-xl border border-white/[0.1] shadow-lg shadow-black/20',
+  // Hover state for controls
+  controlHover: 'hover:bg-white/[0.08] hover:border-white/[0.15]',
+  // Active/selected state
+  controlActive: 'bg-white/[0.12] border-white/[0.18]',
+  // Input fields
+  input: 'bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] placeholder:text-white/30 focus:border-white/[0.25] focus:bg-white/[0.08]',
+  // Text colors
+  textPrimary: 'text-white/90',
+  textSecondary: 'text-white/60',
+  textMuted: 'text-white/40',
+  // Dividers
+  divider: 'border-white/[0.06]',
+  // Subtle glow effect for accents
+  glow: 'shadow-[0_0_20px_rgba(255,255,255,0.05)]',
+};
 
 // ============================================================================
 // Mock Data
@@ -281,13 +307,40 @@ const MapCanvas: React.FC<MapCanvasProps> = ({ center, zoom, style, pins }) => {
         })}
       </div>
 
-      {/* Attribution */}
-      <div className="absolute bottom-0 right-0 bg-white/80 text-[10px] text-gray-600 px-1">
+      {/* Attribution - Glass style */}
+      <div className="absolute bottom-0 right-0 bg-black/40 backdrop-blur-md text-[10px] text-white/50 px-2 py-0.5 rounded-tl-md">
         {tileLayers[style].attribution.replace('&copy;', '\u00A9')}
       </div>
     </div>
   );
 };
+
+// ============================================================================
+// Glass Button Component
+// ============================================================================
+
+interface GlassButtonProps {
+  onClick: () => void;
+  active?: boolean;
+  title?: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const GlassButton: React.FC<GlassButtonProps> = ({ onClick, active, title, children, className = '' }) => (
+  <button
+    onClick={onClick}
+    title={title}
+    className={`
+      p-2.5 rounded-xl transition-all duration-200
+      ${glassStyles.control}
+      ${active ? glassStyles.controlActive : glassStyles.controlHover}
+      ${className}
+    `}
+  >
+    {children}
+  </button>
+);
 
 // ============================================================================
 // Maps Window Component
@@ -378,46 +431,54 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 1000, height: 700 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
+      <div className="flex h-full bg-[#0a0a0a]">
+        {/* Sidebar - Glass Panel */}
         {showSidebar && (
-          <div className="w-72 bg-[#2c2c2e] border-r border-white/10 flex flex-col">
-            {/* Search */}
-            <div className="p-3 border-b border-white/10">
+          <div className={`w-80 ${glassStyles.panel} flex flex-col`}>
+            {/* Search Bar - Glass Input */}
+            <div className={`p-4 border-b ${glassStyles.divider}`}>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search for a place..."
-                  className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                  className={`
+                    w-full rounded-xl pl-10 pr-10 py-2.5 text-sm
+                    ${glassStyles.input} ${glassStyles.textPrimary}
+                    outline-none transition-all duration-200
+                  `}
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <X className="w-3 h-3 text-white/40" />
+                    <X className="w-3.5 h-3.5 text-white/40" />
                   </button>
                 )}
               </div>
 
-              {/* Search Results */}
+              {/* Search Results - Glass Dropdown */}
               {searchResults.length > 0 && (
-                <div className="mt-2 bg-[#3c3c3e] rounded-lg border border-white/10 overflow-hidden">
+                <div className={`mt-3 ${glassStyles.panel} rounded-xl overflow-hidden`}>
                   {searchResults.map(result => (
                     <button
                       key={result.id}
                       onClick={() => handleLocationSelect(result)}
-                      className="w-full flex items-center gap-3 p-3 hover:bg-white/5 text-left border-b border-white/5 last:border-0"
+                      className={`
+                        w-full flex items-center gap-3 p-3.5 text-left
+                        border-b last:border-0 ${glassStyles.divider}
+                        hover:bg-white/[0.06] transition-colors
+                      `}
                     >
                       <MapPin className="w-4 h-4 text-red-400 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm truncate">{result.name}</p>
-                        <p className="text-white/40 text-xs truncate">{result.address}</p>
+                        <p className={`text-sm truncate ${glassStyles.textPrimary}`}>{result.name}</p>
+                        <p className={`text-xs truncate ${glassStyles.textMuted}`}>{result.address}</p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-white/30" />
+                      <ChevronRight className="w-4 h-4 text-white/20" />
                     </button>
                   ))}
                 </div>
@@ -426,20 +487,23 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
 
             {/* Favorites */}
             <div className="flex-1 overflow-y-auto">
-              <div className="p-2">
-                <h3 className="text-white/40 text-xs uppercase tracking-wider px-2 py-2">Favorites</h3>
+              <div className="p-3">
+                <h3 className={`text-xs uppercase tracking-wider px-3 py-2 ${glassStyles.textMuted}`}>Favorites</h3>
                 {mockFavorites.map(location => (
                   <button
                     key={location.id}
                     onClick={() => handleLocationSelect(location)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                      selectedLocation?.id === location.id ? 'bg-blue-500/20' : 'hover:bg-white/5'
-                    }`}
+                    className={`
+                      w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200
+                      ${selectedLocation?.id === location.id 
+                        ? 'bg-blue-500/20 border border-blue-500/30' 
+                        : 'hover:bg-white/[0.06]'}
+                    `}
                   >
                     {getLocationIcon(location.icon)}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm">{location.name}</p>
-                      <p className="text-white/40 text-xs truncate">{location.address}</p>
+                      <p className={`text-sm ${glassStyles.textPrimary}`}>{location.name}</p>
+                      <p className={`text-xs truncate ${glassStyles.textMuted}`}>{location.address}</p>
                     </div>
                   </button>
                 ))}
@@ -447,14 +511,17 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
 
               {/* Recent Pins */}
               {pins.filter(p => p.icon === 'pin').length > 0 && (
-                <div className="p-2 border-t border-white/10">
-                  <h3 className="text-white/40 text-xs uppercase tracking-wider px-2 py-2">Dropped Pins</h3>
+                <div className={`p-3 border-t ${glassStyles.divider}`}>
+                  <h3 className={`text-xs uppercase tracking-wider px-3 py-2 ${glassStyles.textMuted}`}>Dropped Pins</h3>
                   {pins.filter(p => p.icon === 'pin').map(pin => (
                     <div
                       key={pin.id}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                        selectedLocation?.id === pin.id ? 'bg-blue-500/20' : 'hover:bg-white/5'
-                      }`}
+                      className={`
+                        flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        ${selectedLocation?.id === pin.id 
+                          ? 'bg-blue-500/20 border border-blue-500/30' 
+                          : 'hover:bg-white/[0.06]'}
+                      `}
                     >
                       <button
                         onClick={() => handleLocationSelect(pin)}
@@ -462,15 +529,15 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
                       >
                         <MapPin className="w-4 h-4 text-red-400" />
                         <div className="min-w-0">
-                          <p className="text-white text-sm">{pin.name}</p>
-                          <p className="text-white/40 text-xs">{pin.address}</p>
+                          <p className={`text-sm ${glassStyles.textPrimary}`}>{pin.name}</p>
+                          <p className={`text-xs ${glassStyles.textMuted}`}>{pin.address}</p>
                         </div>
                       </button>
                       <button
                         onClick={() => removePin(pin.id)}
-                        className="p-1 hover:bg-red-500/20 rounded"
+                        className="p-1.5 rounded-lg hover:bg-red-500/20 transition-colors"
                       >
-                        <X className="w-3 h-3 text-red-400" />
+                        <X className="w-3.5 h-3.5 text-red-400" />
                       </button>
                     </div>
                   ))}
@@ -478,30 +545,43 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
               )}
             </div>
 
-            {/* Directions Panel */}
+            {/* Directions Panel - Glass Style */}
             {showDirections && (
-              <div className="p-3 border-t border-white/10">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-white font-medium">Directions</h3>
+              <div className={`p-4 border-t ${glassStyles.divider}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className={`font-medium ${glassStyles.textPrimary}`}>Directions</h3>
                   <button
                     onClick={() => setShowDirections(false)}
-                    className="p-1 hover:bg-white/10 rounded"
+                    className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
                   >
                     <X className="w-4 h-4 text-white/50" />
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <input
                     type="text"
                     placeholder="Start location"
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                    className={`
+                      w-full rounded-xl px-4 py-2.5 text-sm
+                      ${glassStyles.input} ${glassStyles.textPrimary}
+                      outline-none transition-all duration-200
+                    `}
                   />
                   <input
                     type="text"
                     placeholder="End location"
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                    className={`
+                      w-full rounded-xl px-4 py-2.5 text-sm
+                      ${glassStyles.input} ${glassStyles.textPrimary}
+                      outline-none transition-all duration-200
+                    `}
                   />
-                  <button className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button className={`
+                    w-full py-2.5 rounded-xl text-sm font-medium
+                    bg-blue-500/80 hover:bg-blue-500 backdrop-blur-xl
+                    border border-blue-400/30 text-white
+                    transition-all duration-200
+                  `}>
                     Get Directions
                   </button>
                 </div>
@@ -512,41 +592,42 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
 
         {/* Map Area */}
         <div className="flex-1 flex flex-col relative">
-          {/* Map Controls */}
-          <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+          {/* Right Controls - Glass Buttons */}
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
             {/* Zoom Controls */}
-            <div className="bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 overflow-hidden">
+            <div className={`${glassStyles.control} rounded-xl overflow-hidden ${glassStyles.glow}`}>
               <button
                 onClick={handleZoomIn}
-                className="p-2 hover:bg-white/10 transition-colors block"
+                className={`p-2.5 ${glassStyles.controlHover} transition-colors block`}
                 title="Zoom In"
               >
-                <Plus className="w-5 h-5 text-white/70" />
+                <Plus className="w-5 h-5 text-white/80" />
               </button>
-              <div className="border-t border-white/10" />
+              <div className={`border-t ${glassStyles.divider}`} />
               <button
                 onClick={handleZoomOut}
-                className="p-2 hover:bg-white/10 transition-colors block"
+                className={`p-2.5 ${glassStyles.controlHover} transition-colors block`}
                 title="Zoom Out"
               >
-                <Minus className="w-5 h-5 text-white/70" />
+                <Minus className="w-5 h-5 text-white/80" />
               </button>
             </div>
 
             {/* Style Toggle */}
             <div className="relative">
-              <button
+              <GlassButton
                 onClick={() => setShowStyleMenu(!showStyleMenu)}
-                className={`p-2 bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 hover:bg-white/10 transition-colors ${
-                  showStyleMenu ? 'bg-white/10' : ''
-                }`}
+                active={showStyleMenu}
                 title="Map Style"
               >
-                <Layers className="w-5 h-5 text-white/70" />
-              </button>
+                <Layers className="w-5 h-5 text-white/80" />
+              </GlassButton>
 
               {showStyleMenu && (
-                <div className="absolute top-full right-0 mt-2 bg-[#2c2c2e] rounded-lg shadow-xl border border-white/10 overflow-hidden w-36">
+                <div className={`
+                  absolute top-full right-0 mt-2 w-40
+                  ${glassStyles.panel} rounded-xl overflow-hidden ${glassStyles.glow}
+                `}>
                   {(['standard', 'satellite', 'terrain'] as MapStyle[]).map(style => (
                     <button
                       key={style}
@@ -554,9 +635,12 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
                         setMapStyle(style);
                         setShowStyleMenu(false);
                       }}
-                      className={`w-full px-3 py-2 text-left text-sm capitalize transition-colors ${
-                        mapStyle === style ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
-                      }`}
+                      className={`
+                        w-full px-4 py-2.5 text-left text-sm capitalize transition-colors
+                        ${mapStyle === style 
+                          ? 'bg-blue-500/20 text-blue-400' 
+                          : `${glassStyles.textSecondary} hover:bg-white/[0.06]`}
+                      `}
                     >
                       {style}
                     </button>
@@ -566,83 +650,88 @@ const MapsWindow: React.FC<MapsWindowProps> = ({ onClose, onFocus }) => {
             </div>
 
             {/* Current Location */}
-            <button
-              onClick={handleCurrentLocation}
-              className="p-2 bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 hover:bg-white/10 transition-colors"
-              title="Current Location"
-            >
-              <Navigation className="w-5 h-5 text-white/70" />
-            </button>
+            <GlassButton onClick={handleCurrentLocation} title="Current Location">
+              <Navigation className="w-5 h-5 text-white/80" />
+            </GlassButton>
           </div>
 
-          {/* Left Controls */}
-          <div className="absolute top-3 left-3 z-10 flex gap-2">
+          {/* Left Controls - Glass Buttons */}
+          <div className="absolute top-4 left-4 z-10 flex gap-2">
             {/* Toggle Sidebar */}
-            <button
+            <GlassButton
               onClick={() => setShowSidebar(!showSidebar)}
-              className={`p-2 bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 hover:bg-white/10 transition-colors ${
-                showSidebar ? 'bg-white/10' : ''
-              }`}
+              active={showSidebar}
               title="Toggle Sidebar"
             >
-              <Search className="w-5 h-5 text-white/70" />
-            </button>
+              <Search className="w-5 h-5 text-white/80" />
+            </GlassButton>
 
             {/* Drop Pin */}
-            <button
-              onClick={handleDropPin}
-              className="p-2 bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 hover:bg-white/10 transition-colors"
-              title="Drop Pin"
-            >
-              <MapPin className="w-5 h-5 text-white/70" />
-            </button>
+            <GlassButton onClick={handleDropPin} title="Drop Pin">
+              <MapPin className="w-5 h-5 text-white/80" />
+            </GlassButton>
 
             {/* Directions */}
-            <button
+            <GlassButton
               onClick={() => {
                 setShowSidebar(true);
                 setShowDirections(true);
               }}
-              className="p-2 bg-[#2c2c2e] rounded-lg shadow-lg border border-white/10 hover:bg-white/10 transition-colors"
               title="Directions"
             >
-              <Route className="w-5 h-5 text-white/70" />
-            </button>
+              <Route className="w-5 h-5 text-white/80" />
+            </GlassButton>
           </div>
 
-          {/* Compass */}
-          <div className="absolute bottom-4 right-4 z-10">
-            <div className="w-12 h-12 bg-[#2c2c2e] rounded-full shadow-lg border border-white/10 flex items-center justify-center">
-              <Compass className="w-6 h-6 text-white/70" />
+          {/* Compass - Glass Style */}
+          <div className="absolute bottom-5 right-5 z-10">
+            <div className={`
+              w-12 h-12 rounded-full flex items-center justify-center
+              ${glassStyles.control} ${glassStyles.glow}
+            `}>
+              <Compass className="w-6 h-6 text-white/80" />
             </div>
           </div>
 
-          {/* Selected Location Info */}
+          {/* Selected Location Info - Glass Card */}
           {selectedLocation && (
-            <div className="absolute bottom-4 left-4 z-10 bg-[#2c2c2e] rounded-lg shadow-xl border border-white/10 p-4 max-w-sm">
+            <div className={`
+              absolute bottom-5 left-5 z-10 p-4 max-w-sm
+              ${glassStyles.panel} rounded-2xl ${glassStyles.glow}
+            `}>
               <div className="flex items-start gap-3">
                 {getLocationIcon(selectedLocation.icon)}
                 <div className="flex-1">
-                  <h3 className="text-white font-medium">{selectedLocation.name}</h3>
-                  <p className="text-white/50 text-sm">{selectedLocation.address}</p>
+                  <h3 className={`font-medium ${glassStyles.textPrimary}`}>{selectedLocation.name}</h3>
+                  <p className={`text-sm mt-0.5 ${glassStyles.textMuted}`}>{selectedLocation.address}</p>
                   <div className="flex gap-2 mt-3">
                     <button
                       onClick={() => {
                         setShowSidebar(true);
                         setShowDirections(true);
                       }}
-                      className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition-colors"
+                      className={`
+                        px-4 py-1.5 rounded-lg text-xs font-medium
+                        bg-blue-500/80 hover:bg-blue-500 backdrop-blur-xl
+                        border border-blue-400/30 text-white
+                        transition-all duration-200
+                      `}
                     >
                       Directions
                     </button>
-                    <button className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white/70 text-xs rounded-lg transition-colors">
+                    <button className={`
+                      px-4 py-1.5 rounded-lg text-xs font-medium
+                      bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-xl
+                      border border-white/[0.1] ${glassStyles.textSecondary}
+                      transition-all duration-200
+                    `}>
                       Share
                     </button>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedLocation(null)}
-                  className="p-1 hover:bg-white/10 rounded"
+                  className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
                 >
                   <X className="w-4 h-4 text-white/50" />
                 </button>

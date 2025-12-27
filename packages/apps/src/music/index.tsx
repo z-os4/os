@@ -41,38 +41,38 @@ const MusicWindow: React.FC<MusicWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d]">
+      <div className="flex flex-col h-full bg-black/80 backdrop-blur-2xl">
         <div className="flex flex-1 overflow-hidden">
-          {/* Sidebar */}
-          <div className="w-56 bg-black/30 border-r border-white/10 flex flex-col p-4">
-            <h3 className="text-white/40 text-xs uppercase tracking-wider mb-2">Library</h3>
+          {/* Sidebar - Glass panel */}
+          <div className="w-56 bg-white/[0.03] backdrop-blur-xl border-r border-white/[0.08] flex flex-col p-4">
+            <h3 className="text-white/50 text-[11px] font-medium uppercase tracking-wider mb-3 px-3">Library</h3>
             {['Recently Added', 'Artists', 'Albums', 'Songs', 'Genres'].map((item) => (
               <button
                 key={item}
-                className="text-left px-3 py-1.5 text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors"
+                className="text-left px-3 py-2 text-white/80 hover:bg-white/[0.06] active:bg-white/[0.08] rounded-md text-[13px] transition-all duration-150"
               >
                 {item}
               </button>
             ))}
 
-            <h3 className="text-white/40 text-xs uppercase tracking-wider mt-6 mb-2">Playlists</h3>
+            <h3 className="text-white/50 text-[11px] font-medium uppercase tracking-wider mt-8 mb-3 px-3">Playlists</h3>
             {playlists.map((playlist) => (
               <button
                 key={playlist}
-                className="text-left px-3 py-1.5 text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors flex items-center gap-2"
+                className="text-left px-3 py-2 text-white/80 hover:bg-white/[0.06] active:bg-white/[0.08] rounded-md text-[13px] transition-all duration-150 flex items-center gap-2.5"
               >
-                <ListMusic className="w-4 h-4" />
+                <ListMusic className="w-4 h-4 text-white/50" />
                 {playlist}
               </button>
             ))}
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Main Content - Glass background */}
+          <div className="flex-1 flex flex-col overflow-hidden bg-white/[0.02]">
             {/* Track List */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <h2 className="text-white text-2xl font-bold mb-4">Recently Added</h2>
-              <div className="space-y-1">
+            <div className="flex-1 overflow-y-auto p-6">
+              <h2 className="text-white text-2xl font-semibold mb-6 tracking-tight">Recently Added</h2>
+              <div className="space-y-0.5">
                 {mockTracks.map((track, index) => (
                   <div
                     key={track.id}
@@ -80,28 +80,30 @@ const MusicWindow: React.FC<MusicWindowProps> = ({ onClose, onFocus }) => {
                       setCurrentTrack(track);
                       setIsPlaying(true);
                     }}
-                    className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer group transition-colors ${
-                      currentTrack.id === track.id ? 'bg-white/10' : 'hover:bg-white/5'
+                    className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer group transition-all duration-150 ${
+                      currentTrack.id === track.id 
+                        ? 'bg-white/[0.08] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]' 
+                        : 'hover:bg-white/[0.04]'
                     }`}
                   >
-                    <span className="w-6 text-white/30 text-sm text-center group-hover:hidden">
+                    <span className="w-6 text-white/40 text-sm text-center font-medium group-hover:hidden">
                       {index + 1}
                     </span>
                     <Play className="w-4 h-4 text-white hidden group-hover:block" />
-                    <img src={track.cover} alt="" className="w-10 h-10 rounded" />
+                    <img src={track.cover} alt="" className="w-11 h-11 rounded-md shadow-lg shadow-black/30" />
                     <div className="flex-1 min-w-0">
-                      <p className={`truncate ${currentTrack.id === track.id ? 'text-green-400' : 'text-white'}`}>
+                      <p className={`truncate font-medium ${currentTrack.id === track.id ? 'text-white' : 'text-white/90'}`}>
                         {track.title}
                       </p>
                       <p className="text-white/50 text-sm truncate">{track.artist}</p>
                     </div>
-                    <p className="text-white/50 text-sm">{track.album}</p>
-                    <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-white/10 rounded-full transition-opacity">
-                      <Heart className="w-4 h-4 text-white/50" />
+                    <p className="text-white/40 text-sm">{track.album}</p>
+                    <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                      <Heart className="w-4 h-4 text-white/60" />
                     </button>
-                    <p className="text-white/50 text-sm w-12 text-right">{track.duration}</p>
-                    <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-white/10 rounded-full transition-opacity">
-                      <MoreHorizontal className="w-4 h-4 text-white/50" />
+                    <p className="text-white/40 text-sm w-12 text-right tabular-nums">{track.duration}</p>
+                    <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                      <MoreHorizontal className="w-4 h-4 text-white/60" />
                     </button>
                   </div>
                 ))}
@@ -110,64 +112,68 @@ const MusicWindow: React.FC<MusicWindowProps> = ({ onClose, onFocus }) => {
           </div>
         </div>
 
-        {/* Player Bar */}
-        <div className="h-24 bg-black/50 border-t border-white/10 flex items-center px-4 gap-4">
+        {/* Player Bar - Glass morphism */}
+        <div className="h-24 bg-white/[0.04] backdrop-blur-2xl border-t border-white/[0.08] flex items-center px-5 gap-6">
           {/* Current Track Info */}
-          <div className="flex items-center gap-3 w-64">
-            <img src={currentTrack.cover} alt="" className="w-14 h-14 rounded shadow-lg" />
+          <div className="flex items-center gap-4 w-64">
+            <img 
+              src={currentTrack.cover} 
+              alt="" 
+              className="w-14 h-14 rounded-lg shadow-xl shadow-black/40" 
+            />
             <div className="min-w-0">
-              <p className="text-white font-medium truncate">{currentTrack.title}</p>
+              <p className="text-white font-medium truncate text-[15px]">{currentTrack.title}</p>
               <p className="text-white/50 text-sm truncate">{currentTrack.artist}</p>
             </div>
-            <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <Heart className="w-4 h-4 text-white/50" />
+            <button className="p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+              <Heart className="w-4 h-4 text-white/50 hover:text-white/80" />
             </button>
           </div>
 
-          {/* Controls */}
+          {/* Controls - Glass buttons */}
           <div className="flex-1 flex flex-col items-center gap-2">
-            <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <Shuffle className="w-4 h-4 text-white/50" />
+            <div className="flex items-center gap-5">
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                <Shuffle className="w-4 h-4 text-white/50 hover:text-white/80" />
               </button>
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <SkipBack className="w-5 h-5 text-white" />
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                <SkipBack className="w-5 h-5 text-white/80 hover:text-white" />
               </button>
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="p-3 bg-white rounded-full hover:scale-105 transition-transform"
+                className="p-3.5 bg-white/[0.12] backdrop-blur-xl rounded-full hover:bg-white/[0.18] transition-all duration-150 shadow-lg shadow-black/20 border border-white/[0.1]"
               >
                 {isPlaying ? (
-                  <Pause className="w-5 h-5 text-black" />
+                  <Pause className="w-5 h-5 text-white" />
                 ) : (
-                  <Play className="w-5 h-5 text-black ml-0.5" />
+                  <Play className="w-5 h-5 text-white ml-0.5" />
                 )}
               </button>
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <SkipForward className="w-5 h-5 text-white" />
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                <SkipForward className="w-5 h-5 text-white/80 hover:text-white" />
               </button>
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <Repeat className="w-4 h-4 text-white/50" />
+              <button className="p-2 hover:bg-white/[0.08] rounded-full transition-all duration-150">
+                <Repeat className="w-4 h-4 text-white/50 hover:text-white/80" />
               </button>
             </div>
-            <div className="flex items-center gap-2 w-full max-w-md">
-              <span className="text-white/50 text-xs w-10 text-right">1:18</span>
-              <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+            <div className="flex items-center gap-3 w-full max-w-md">
+              <span className="text-white/50 text-xs w-10 text-right tabular-nums">1:18</span>
+              <div className="flex-1 h-1 bg-white/[0.12] rounded-full overflow-hidden group cursor-pointer">
                 <div
-                  className="h-full bg-white rounded-full"
+                  className="h-full bg-white/60 group-hover:bg-white/80 rounded-full transition-colors duration-150"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <span className="text-white/50 text-xs w-10">{currentTrack.duration}</span>
+              <span className="text-white/50 text-xs w-10 tabular-nums">{currentTrack.duration}</span>
             </div>
           </div>
 
-          {/* Volume */}
-          <div className="flex items-center gap-2 w-40">
+          {/* Volume - Glass slider */}
+          <div className="flex items-center gap-2.5 w-36">
             <Volume2 className="w-4 h-4 text-white/50" />
-            <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+            <div className="flex-1 h-1 bg-white/[0.12] rounded-full overflow-hidden group cursor-pointer">
               <div
-                className="h-full bg-white rounded-full"
+                className="h-full bg-white/60 group-hover:bg-white/80 rounded-full transition-colors duration-150"
                 style={{ width: `${volume}%` }}
               />
             </div>

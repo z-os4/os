@@ -2,6 +2,7 @@
  * Passwords App
  *
  * Password manager and keychain for zOS.
+ * Black glass UI with backdrop blur and glass morphism.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -153,6 +154,13 @@ const checkStrength = (password: string): 'weak' | 'medium' | 'strong' => {
   return 'weak';
 };
 
+// Glass morphism style classes
+const glassPanel = "bg-black/40 backdrop-blur-xl border border-white/[0.08]";
+const glassPanelHover = "hover:bg-white/[0.06] hover:border-white/[0.12]";
+const glassInput = "bg-black/30 backdrop-blur-md border border-white/[0.1] text-white/90 placeholder:text-white/30 focus:outline-none focus:border-white/20 focus:bg-black/40";
+const glassButton = "bg-white/[0.06] backdrop-blur-md border border-white/[0.1] hover:bg-white/[0.1] hover:border-white/[0.15] transition-all duration-200";
+const glassDivider = "border-white/[0.06]";
+
 const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [masterPassword, setMasterPassword] = useState('');
@@ -283,10 +291,10 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
 
   const getStrengthColor = (strength?: string) => {
     switch (strength) {
-      case 'strong': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
+      case 'strong': return 'text-emerald-400';
+      case 'medium': return 'text-amber-400';
       case 'weak': return 'text-red-400';
-      default: return 'text-white/50';
+      default: return 'text-white/40';
     }
   };
 
@@ -311,39 +319,45 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
         onClose={onClose}
         onFocus={onFocus}
         initialPosition={{ x: 200, y: 150 }}
-        initialSize={{ width: 400, height: 350 }}
+        initialSize={{ width: 400, height: 380 }}
         windowType="system"
       >
-        <div className="flex flex-col items-center justify-center h-full bg-[#1e1e1e] p-8">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center mb-6">
-            <Key className="w-10 h-10 text-white" />
+        <div className={cn("flex flex-col items-center justify-center h-full p-8", glassPanel, "rounded-none border-0 bg-black/60")}>
+          {/* Glowing key icon */}
+          <div className="relative mb-8">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/30 to-orange-600/30 rounded-full blur-xl" />
+            <div className={cn("relative w-20 h-20 rounded-full flex items-center justify-center", glassPanel)}>
+              <Key className="w-9 h-9 text-amber-400/90" />
+            </div>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Passwords is Locked</h2>
-          <p className="text-white/50 text-sm mb-6 text-center">
+          
+          <h2 className="text-xl font-medium text-white/90 mb-2">Passwords is Locked</h2>
+          <p className="text-white/40 text-sm mb-8 text-center">
             Enter your master password to unlock
           </p>
+          
           <form onSubmit={handleUnlock} className="w-full max-w-xs space-y-4">
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
               <input
                 type="password"
                 value={masterPassword}
                 onChange={(e) => setMasterPassword(e.target.value)}
                 placeholder="Master Password"
-                className="w-full pl-10 pr-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                className={cn("w-full pl-10 pr-4 py-3 rounded-xl", glassInput)}
                 autoFocus
               />
             </div>
             {masterPasswordError && (
-              <p className="text-red-400 text-sm text-center">{masterPasswordError}</p>
+              <p className="text-red-400/90 text-sm text-center">{masterPasswordError}</p>
             )}
             <button
               type="submit"
-              className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+              className="w-full py-3 bg-white/10 hover:bg-white/15 border border-white/[0.1] hover:border-white/20 text-white/90 font-medium rounded-xl transition-all duration-200 backdrop-blur-md"
             >
               Unlock
             </button>
-            <p className="text-xs text-white/30 text-center">
+            <p className="text-xs text-white/25 text-center">
               Hint: zOS2024
             </p>
           </form>
@@ -361,45 +375,50 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
       initialSize={{ width: 950, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
+      <div className="flex h-full bg-black/70 backdrop-blur-2xl">
         {/* Sidebar */}
-        <div className="w-48 bg-black/30 border-r border-white/10 flex flex-col">
-          <div className="p-2 border-b border-white/10">
+        <div className={cn("w-52 flex flex-col border-r", glassDivider, "bg-black/30")}>
+          <div className={cn("p-3 border-b", glassDivider)}>
             <button
               onClick={handleAddNew}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors"
+              className={cn(
+                "w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-white/80",
+                glassButton
+              )}
             >
               <Plus className="w-4 h-4" />
-              <span className="text-sm font-medium">Add New</span>
+              <span className="text-sm font-medium">New Item</span>
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-2">
+          
+          <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
             {categories.map(category => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
+                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-150",
                   selectedCategory === category.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-white/[0.08] text-white/90 border border-white/[0.1]"
+                    : "text-white/60 hover:bg-white/[0.04] hover:text-white/80 border border-transparent"
                 )}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <category.icon className={cn(
                     "w-4 h-4",
-                    selectedCategory === category.id ? "text-blue-400" : "text-white/50"
+                    selectedCategory === category.id ? "text-white/70" : "text-white/40"
                   )} />
                   <span>{category.label}</span>
                 </div>
-                <span className="text-xs text-white/40">{category.count}</span>
+                <span className="text-xs text-white/30 tabular-nums">{category.count}</span>
               </button>
             ))}
           </div>
-          <div className="p-2 border-t border-white/10">
+          
+          <div className={cn("p-2 border-t", glassDivider)}>
             <button
               onClick={() => setIsUnlocked(false)}
-              className="w-full flex items-center gap-2 px-3 py-2 text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-white/40 hover:text-white/70 hover:bg-white/[0.04] rounded-lg transition-all duration-150"
             >
               <Lock className="w-4 h-4" />
               <span className="text-sm">Lock</span>
@@ -408,17 +427,17 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
         </div>
 
         {/* Entries list */}
-        <div className="w-64 border-r border-white/10 flex flex-col">
+        <div className={cn("w-72 border-r flex flex-col", glassDivider, "bg-black/20")}>
           {/* Search */}
-          <div className="p-2 border-b border-white/10">
+          <div className={cn("p-3 border-b", glassDivider)}>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full pl-9 pr-3 py-2 bg-black/30 border border-white/10 rounded-lg text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
+                className={cn("w-full pl-9 pr-3 py-2 text-sm rounded-lg", glassInput)}
               />
             </div>
           </div>
@@ -434,31 +453,34 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
                   setShowPassword(false);
                 }}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 border-b border-white/5 transition-colors text-left",
-                  selectedEntry?.id === entry.id ? "bg-blue-500/20" : "hover:bg-white/5"
+                  "w-full flex items-center gap-3 p-3 transition-all duration-150 text-left border-b",
+                  glassDivider,
+                  selectedEntry?.id === entry.id
+                    ? "bg-white/[0.08]"
+                    : "hover:bg-white/[0.04]"
                 )}
               >
                 <div className={cn(
-                  "w-8 h-8 rounded-lg flex items-center justify-center",
-                  entry.type === 'password' && "bg-blue-500/20 text-blue-400",
-                  entry.type === 'wifi' && "bg-green-500/20 text-green-400",
-                  entry.type === 'note' && "bg-yellow-500/20 text-yellow-400"
+                  "w-9 h-9 rounded-lg flex items-center justify-center backdrop-blur-md border border-white/[0.08]",
+                  entry.type === 'password' && "bg-blue-500/15 text-blue-400/80",
+                  entry.type === 'wifi' && "bg-emerald-500/15 text-emerald-400/80",
+                  entry.type === 'note' && "bg-amber-500/15 text-amber-400/80"
                 )}>
                   {getTypeIcon(entry.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium truncate">{entry.title}</span>
-                    {entry.favorite && <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
+                    <span className="text-white/85 font-medium truncate text-sm">{entry.title}</span>
+                    {entry.favorite && <Star className="w-3 h-3 text-amber-400/80 fill-amber-400/80 flex-shrink-0" />}
                   </div>
                   {entry.username && (
-                    <span className="text-xs text-white/40 truncate block">{entry.username}</span>
+                    <span className="text-xs text-white/35 truncate block">{entry.username}</span>
                   )}
                 </div>
               </button>
             ))}
             {filteredEntries.length === 0 && (
-              <div className="p-4 text-center text-white/30 text-sm">
+              <div className="p-6 text-center text-white/25 text-sm">
                 No items found
               </div>
             )}
@@ -466,17 +488,17 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
         </div>
 
         {/* Detail panel */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-black/10">
           {selectedEntry || isEditing ? (
             <>
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#252525]">
+              <div className={cn("flex items-center justify-between p-4 border-b", glassDivider, "bg-black/20")}>
                 <div className="flex items-center gap-3">
                   <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center",
-                    (editForm.type || selectedEntry?.type) === 'password' && "bg-blue-500/20 text-blue-400",
-                    (editForm.type || selectedEntry?.type) === 'wifi' && "bg-green-500/20 text-green-400",
-                    (editForm.type || selectedEntry?.type) === 'note' && "bg-yellow-500/20 text-yellow-400"
+                    "w-11 h-11 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/[0.08]",
+                    (editForm.type || selectedEntry?.type) === 'password' && "bg-blue-500/15 text-blue-400/80",
+                    (editForm.type || selectedEntry?.type) === 'wifi' && "bg-emerald-500/15 text-emerald-400/80",
+                    (editForm.type || selectedEntry?.type) === 'note' && "bg-amber-500/15 text-amber-400/80"
                   )}>
                     {getTypeIcon(editForm.type || selectedEntry?.type || 'password')}
                   </div>
@@ -486,36 +508,38 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
                       value={editForm.title || ''}
                       onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                       placeholder="Title"
-                      className="bg-transparent border-b border-white/20 text-xl font-semibold text-white focus:outline-none focus:border-blue-500"
+                      className="bg-transparent border-b border-white/15 text-xl font-medium text-white/90 focus:outline-none focus:border-white/30 pb-1"
                     />
                   ) : (
-                    <h2 className="text-xl font-semibold text-white">{selectedEntry?.title}</h2>
+                    <h2 className="text-xl font-medium text-white/90">{selectedEntry?.title}</h2>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   {!isEditing && selectedEntry && (
                     <>
                       <button
                         onClick={() => toggleFavorite(selectedEntry)}
                         className={cn(
-                          "p-2 rounded-lg transition-colors",
-                          selectedEntry.favorite ? "text-yellow-400" : "text-white/50 hover:text-yellow-400"
+                          "p-2 rounded-lg transition-all duration-150",
+                          selectedEntry.favorite
+                            ? "text-amber-400/80"
+                            : "text-white/30 hover:text-amber-400/60 hover:bg-white/[0.04]"
                         )}
                       >
-                        <Star className={cn("w-4 h-4", selectedEntry.favorite && "fill-yellow-400")} />
+                        <Star className={cn("w-4 h-4", selectedEntry.favorite && "fill-amber-400/80")} />
                       </button>
                       <button
                         onClick={() => {
                           setEditForm(selectedEntry);
                           setIsEditing(true);
                         }}
-                        className="p-2 hover:bg-white/10 rounded-lg text-white/50 hover:text-white transition-colors"
+                        className="p-2 hover:bg-white/[0.06] rounded-lg text-white/40 hover:text-white/70 transition-all duration-150"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={handleDelete}
-                        className="p-2 hover:bg-red-500/20 rounded-lg text-white/50 hover:text-red-400 transition-colors"
+                        className="p-2 hover:bg-red-500/15 rounded-lg text-white/40 hover:text-red-400/80 transition-all duration-150"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -528,13 +552,13 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
                           setIsEditing(false);
                           setEditForm({});
                         }}
-                        className="px-4 py-2 text-white/50 hover:text-white transition-colors"
+                        className="px-4 py-2 text-white/40 hover:text-white/70 transition-colors text-sm"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleSave}
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                        className={cn("px-4 py-2 rounded-lg text-white/90 text-sm font-medium", glassButton, "bg-white/[0.1]")}
                       >
                         Save
                       </button>
@@ -544,57 +568,55 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-auto p-6 space-y-4">
+              <div className="flex-1 overflow-auto p-6 space-y-5">
                 {/* URL */}
                 {(isEditing || selectedEntry?.url) && (selectedEntry?.type === 'password' || editForm.type === 'password') && (
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/50 uppercase tracking-wider">Website</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Website</label>
                     {isEditing ? (
                       <input
                         type="url"
                         value={editForm.url || ''}
                         onChange={(e) => setEditForm({ ...editForm, url: e.target.value })}
                         placeholder="https://example.com"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500/50"
+                        className={cn("w-full px-4 py-3 rounded-xl text-sm", glassInput)}
                       />
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <a
-                          href={selectedEntry?.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          {selectedEntry?.url}
-                        </a>
-                      </div>
+                      <a
+                        href={selectedEntry?.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400/80 hover:text-blue-400 hover:underline text-sm"
+                      >
+                        {selectedEntry?.url}
+                      </a>
                     )}
                   </div>
                 )}
 
                 {/* Username */}
                 {(isEditing || selectedEntry?.username) && (selectedEntry?.type === 'password' || editForm.type === 'password') && (
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/50 uppercase tracking-wider">Username</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Username</label>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editForm.username || ''}
                         onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
                         placeholder="Username or email"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500/50"
+                        className={cn("w-full px-4 py-3 rounded-xl text-sm", glassInput)}
                       />
                     ) : (
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                        <span className="text-white">{selectedEntry?.username}</span>
+                      <div className={cn("flex items-center justify-between p-3 rounded-xl", glassPanel)}>
+                        <span className="text-white/80 text-sm">{selectedEntry?.username}</span>
                         <button
                           onClick={() => handleCopy(selectedEntry?.username || '', 'username')}
-                          className="p-2 hover:bg-white/10 rounded transition-colors"
+                          className="p-2 hover:bg-white/[0.08] rounded-lg transition-colors"
                         >
                           {copiedField === 'username' ? (
-                            <Check className="w-4 h-4 text-green-400" />
+                            <Check className="w-4 h-4 text-emerald-400/80" />
                           ) : (
-                            <Copy className="w-4 h-4 text-white/50" />
+                            <Copy className="w-4 h-4 text-white/40" />
                           )}
                         </button>
                       </div>
@@ -604,8 +626,8 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
 
                 {/* Password */}
                 {(isEditing || selectedEntry?.password) && (selectedEntry?.type !== 'note' || editForm.type !== 'note') && (
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/50 uppercase tracking-wider">Password</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Password</label>
                     {isEditing ? (
                       <div className="flex gap-2">
                         <div className="flex-1 relative">
@@ -614,47 +636,47 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
                             value={editForm.password || ''}
                             onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
                             placeholder="Password"
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500/50 font-mono"
+                            className={cn("w-full px-4 py-3 rounded-xl font-mono text-sm", glassInput)}
                           />
                           <button
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
                           >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
                         </div>
                         <button
                           onClick={handleGeneratePassword}
-                          className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                          className={cn("px-4 py-3 rounded-xl", glassButton)}
                           title="Generate Password"
                         >
-                          <RefreshCw className="w-4 h-4" />
+                          <RefreshCw className="w-4 h-4 text-white/60" />
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                        <span className="font-mono text-white">
+                      <div className={cn("flex items-center justify-between p-3 rounded-xl", glassPanel)}>
+                        <span className="font-mono text-white/80 text-sm">
                           {showPassword ? selectedEntry?.password : '••••••••••••'}
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <button
                             onClick={() => setShowPassword(!showPassword)}
-                            className="p-2 hover:bg-white/10 rounded transition-colors"
+                            className="p-2 hover:bg-white/[0.08] rounded-lg transition-colors"
                           >
                             {showPassword ? (
-                              <EyeOff className="w-4 h-4 text-white/50" />
+                              <EyeOff className="w-4 h-4 text-white/40" />
                             ) : (
-                              <Eye className="w-4 h-4 text-white/50" />
+                              <Eye className="w-4 h-4 text-white/40" />
                             )}
                           </button>
                           <button
                             onClick={() => handleCopy(selectedEntry?.password || '', 'password')}
-                            className="p-2 hover:bg-white/10 rounded transition-colors"
+                            className="p-2 hover:bg-white/[0.08] rounded-lg transition-colors"
                           >
                             {copiedField === 'password' ? (
-                              <Check className="w-4 h-4 text-green-400" />
+                              <Check className="w-4 h-4 text-emerald-400/80" />
                             ) : (
-                              <Copy className="w-4 h-4 text-white/50" />
+                              <Copy className="w-4 h-4 text-white/40" />
                             )}
                           </button>
                         </div>
@@ -674,19 +696,19 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
 
                 {/* Notes */}
                 {(isEditing || selectedEntry?.notes || selectedEntry?.type === 'note' || editForm.type === 'note') && (
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/50 uppercase tracking-wider">Notes</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Notes</label>
                     {isEditing ? (
                       <textarea
                         value={editForm.notes || ''}
                         onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
                         placeholder="Add notes..."
                         rows={6}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500/50 resize-none"
+                        className={cn("w-full px-4 py-3 rounded-xl resize-none text-sm", glassInput)}
                       />
                     ) : (
-                      <div className="p-3 bg-white/5 rounded-lg">
-                        <pre className="text-white whitespace-pre-wrap font-sans">{selectedEntry?.notes}</pre>
+                      <div className={cn("p-4 rounded-xl", glassPanel)}>
+                        <pre className="text-white/70 whitespace-pre-wrap font-sans text-sm">{selectedEntry?.notes}</pre>
                       </div>
                     )}
                   </div>
@@ -694,20 +716,20 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
 
                 {/* Category */}
                 {(isEditing || selectedEntry?.category) && (
-                  <div className="space-y-1">
-                    <label className="text-xs text-white/50 uppercase tracking-wider">Category</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Category</label>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editForm.category || ''}
                         onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
                         placeholder="e.g., Work, Personal"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500/50"
+                        className={cn("w-full px-4 py-3 rounded-xl text-sm", glassInput)}
                       />
                     ) : (
                       <div className="flex items-center gap-2">
-                        <Folder className="w-4 h-4 text-white/50" />
-                        <span className="text-white">{selectedEntry?.category}</span>
+                        <Folder className="w-4 h-4 text-white/40" />
+                        <span className="text-white/70 text-sm">{selectedEntry?.category}</span>
                       </div>
                     )}
                   </div>
@@ -715,14 +737,14 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
 
                 {/* Dates */}
                 {!isEditing && selectedEntry && (
-                  <div className="pt-4 border-t border-white/10 grid grid-cols-2 gap-4 text-sm">
+                  <div className={cn("pt-5 mt-5 border-t grid grid-cols-2 gap-4 text-sm", glassDivider)}>
                     <div>
-                      <span className="text-white/50">Created</span>
-                      <p className="text-white">{formatDate(selectedEntry.createdAt)}</p>
+                      <span className="text-white/35 text-xs">Created</span>
+                      <p className="text-white/60 mt-0.5">{formatDate(selectedEntry.createdAt)}</p>
                     </div>
                     <div>
-                      <span className="text-white/50">Modified</span>
-                      <p className="text-white">{formatDate(selectedEntry.modifiedAt)}</p>
+                      <span className="text-white/35 text-xs">Modified</span>
+                      <p className="text-white/60 mt-0.5">{formatDate(selectedEntry.modifiedAt)}</p>
                     </div>
                   </div>
                 )}
@@ -731,8 +753,10 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <Key className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                <p className="text-white/50">Select an item or create a new one</p>
+                <div className={cn("w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-5", glassPanel)}>
+                  <Key className="w-9 h-9 text-white/20" />
+                </div>
+                <p className="text-white/35 text-sm">Select an item or create a new one</p>
               </div>
             </div>
           )}

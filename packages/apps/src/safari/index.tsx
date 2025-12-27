@@ -2,6 +2,7 @@
  * Safari App
  *
  * Web browser for zOS following macOS Safari patterns.
+ * Dark glass morphism UI with transparency and blur effects.
  */
 
 import React, { useState } from 'react';
@@ -32,57 +33,68 @@ const SafariWindow: React.FC<SafariWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 1000, height: 700 }}
       windowType="safari"
     >
-      <div className="flex flex-col h-full bg-[#1e1e1e]">
-        {/* Toolbar */}
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-black/20">
+      <div className="flex flex-col h-full bg-black/90">
+        {/* Toolbar - Dark glass with blur */}
+        <div className="flex items-center gap-2 px-3 py-2.5 bg-black/80 backdrop-blur-xl border-b border-white/[0.08]">
           {/* Navigation buttons */}
-          <div className="flex items-center gap-1">
-            <button className="p-1.5 rounded hover:bg-white/10 disabled:opacity-30">
-              <ChevronLeft className="w-4 h-4 text-white/70" />
+          <div className="flex items-center gap-0.5">
+            <button className="p-1.5 rounded-md hover:bg-white/10 active:bg-white/15 transition-colors disabled:opacity-30">
+              <ChevronLeft className="w-4 h-4 text-white/80" />
             </button>
-            <button className="p-1.5 rounded hover:bg-white/10 disabled:opacity-30">
-              <ChevronRight className="w-4 h-4 text-white/70" />
+            <button className="p-1.5 rounded-md hover:bg-white/10 active:bg-white/15 transition-colors disabled:opacity-30">
+              <ChevronRight className="w-4 h-4 text-white/80" />
             </button>
           </div>
 
-          {/* URL bar */}
+          {/* Glass morphism URL bar */}
           <form onSubmit={handleNavigate} className="flex-1 max-w-2xl mx-auto">
-            <div className="relative flex items-center">
-              <Lock className="absolute left-3 w-3 h-3 text-green-400" />
+            <div className="relative flex items-center group">
+              <div className="absolute inset-0 rounded-lg bg-white/[0.06] backdrop-blur-md border border-white/[0.1] group-focus-within:border-white/20 group-focus-within:bg-white/[0.08] transition-all" />
+              <Lock className="absolute left-3 w-3 h-3 text-emerald-400/90 z-10" />
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full h-8 pl-8 pr-10 rounded-lg bg-white/5 border border-white/10 text-sm text-white/90 text-center focus:outline-none focus:border-blue-500/50"
+                className="relative w-full h-8 pl-8 pr-10 bg-transparent text-sm text-white/90 text-center focus:outline-none z-10 placeholder:text-white/30"
+                placeholder="Search or enter website name"
               />
               {isLoading ? (
-                <RotateCw className="absolute right-3 w-4 h-4 text-white/50 animate-spin" />
+                <RotateCw className="absolute right-3 w-4 h-4 text-white/60 animate-spin z-10" />
               ) : (
-                <RotateCw className="absolute right-3 w-4 h-4 text-white/30 hover:text-white/50 cursor-pointer" />
+                <RotateCw className="absolute right-3 w-4 h-4 text-white/40 hover:text-white/60 cursor-pointer transition-colors z-10" />
               )}
             </div>
           </form>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-1">
-            <button className="p-1.5 rounded hover:bg-white/10">
-              <Share className="w-4 h-4 text-white/70" />
+          <div className="flex items-center gap-0.5">
+            <button className="p-1.5 rounded-md hover:bg-white/10 active:bg-white/15 transition-colors">
+              <Share className="w-4 h-4 text-white/80" />
             </button>
-            <button className="p-1.5 rounded hover:bg-white/10">
-              <Plus className="w-4 h-4 text-white/70" />
+            <button className="p-1.5 rounded-md hover:bg-white/10 active:bg-white/15 transition-colors">
+              <Plus className="w-4 h-4 text-white/80" />
             </button>
           </div>
         </div>
 
-        {/* Tab bar */}
-        <div className="flex items-center gap-1 px-2 py-1 border-b border-white/10 bg-black/10">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-            <img src="https://hanzo.ai/favicon.ico" alt="" className="w-4 h-4" onError={(e) => { e.currentTarget.style.display = 'none' }} />
-            <span className="text-xs text-white/70 max-w-[150px] truncate">Hanzo AI</span>
-            <button className="text-white/30 hover:text-white/60 ml-1">x</button>
+        {/* Tab bar - Subtle glass effect */}
+        <div className="flex items-center gap-1 px-2 py-1.5 bg-black/60 backdrop-blur-lg border-b border-white/[0.06]">
+          {/* Active tab with glass effect */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/[0.08] backdrop-blur-sm border border-white/[0.1]">
+            <img 
+              src="https://hanzo.ai/favicon.ico" 
+              alt="" 
+              className="w-4 h-4 rounded-sm" 
+              onError={(e) => { e.currentTarget.style.display = 'none' }} 
+            />
+            <span className="text-xs text-white/80 max-w-[150px] truncate font-medium">Hanzo AI</span>
+            <button className="text-white/40 hover:text-white/70 hover:bg-white/10 rounded-sm w-4 h-4 flex items-center justify-center transition-colors text-xs">
+              ×
+            </button>
           </div>
-          <button className="p-1 rounded hover:bg-white/5">
-            <Plus className="w-4 h-4 text-white/40" />
+          {/* New tab button */}
+          <button className="p-1.5 rounded-md hover:bg-white/[0.06] transition-colors">
+            <Plus className="w-3.5 h-3.5 text-white/50" />
           </button>
         </div>
 

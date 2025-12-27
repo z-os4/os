@@ -15,6 +15,16 @@ interface SettingsWindowProps {
   onFocus?: () => void;
 }
 
+// Glass panel wrapper for sections
+const GlassPanel: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <div className={cn(
+    "bg-white/[0.03] backdrop-blur-xl rounded-xl border border-white/[0.08] shadow-lg shadow-black/20",
+    className
+  )}>
+    {children}
+  </div>
+);
+
 // Toggle switch component
 const Toggle: React.FC<{ enabled: boolean; onChange: (v: boolean) => void; disabled?: boolean }> = ({
   enabled, onChange, disabled
@@ -22,13 +32,13 @@ const Toggle: React.FC<{ enabled: boolean; onChange: (v: boolean) => void; disab
   <button
     onClick={() => !disabled && onChange(!enabled)}
     className={cn(
-      "w-11 h-6 rounded-full transition-colors relative",
-      enabled ? "bg-green-500" : "bg-white/20",
+      "w-11 h-6 rounded-full transition-all duration-200 relative",
+      enabled ? "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]" : "bg-white/10",
       disabled && "opacity-50 cursor-not-allowed"
     )}
   >
     <div className={cn(
-      "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform",
+      "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-200",
       enabled ? "translate-x-5" : "translate-x-0.5"
     )} />
   </button>
@@ -44,9 +54,11 @@ const Slider: React.FC<{ value: number; onChange: (v: number) => void; min?: num
     max={max}
     value={value}
     onChange={(e) => onChange(Number(e.target.value))}
-    className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer
+    className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer
       [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow"
+      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md
+      [&::-webkit-slider-thumb]:shadow-black/30 [&::-webkit-slider-thumb]:border-0
+      [&::-webkit-slider-runnable-track]:rounded-full"
   />
 );
 
@@ -56,20 +68,37 @@ const SettingRow: React.FC<{
   description?: string;
   children: React.ReactNode;
   onClick?: () => void;
-}> = ({ label, description, children, onClick }) => (
+  first?: boolean;
+  last?: boolean;
+}> = ({ label, description, children, onClick, first, last }) => (
   <div
     className={cn(
-      "flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10",
-      onClick && "cursor-pointer hover:bg-white/10"
+      "flex items-center justify-between px-4 py-3 bg-white/[0.02] transition-colors",
+      onClick && "cursor-pointer hover:bg-white/[0.05]",
+      first && "rounded-t-lg",
+      last && "rounded-b-lg",
+      !last && "border-b border-white/[0.05]"
     )}
     onClick={onClick}
   >
-    <div>
-      <h3 className="text-white font-medium">{label}</h3>
-      {description && <p className="text-sm text-white/50">{description}</p>}
+    <div className="flex-1 min-w-0">
+      <h3 className="text-[13px] font-medium text-white/90">{label}</h3>
+      {description && <p className="text-[11px] text-white/40 mt-0.5">{description}</p>}
     </div>
-    {children}
+    <div className="ml-4 flex-shrink-0">
+      {children}
+    </div>
   </div>
+);
+
+// Section header
+const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
+  <h3 className="text-[11px] font-medium text-white/40 uppercase tracking-wider px-1 mb-2">{title}</h3>
+);
+
+// Content section title
+const ContentTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <h2 className="text-[22px] font-semibold text-white/90 mb-6">{children}</h2>
 );
 
 const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => {
@@ -128,103 +157,111 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'general':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">General</h2>
-            <div className="space-y-3">
-              <SettingRow label="About This zOS" description="Version 4.2.0">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+            <ContentTitle>General</ContentTitle>
+            <GlassPanel>
+              <SettingRow label="About This zOS" description="Version 4.2.0" first>
+                <ChevronRight className="w-4 h-4 text-white/20" />
               </SettingRow>
               <SettingRow label="Software Update" description="Your system is up to date">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-400" />
-                  <ChevronRight className="w-5 h-5 text-white/30" />
+                  <ChevronRight className="w-4 h-4 text-white/20" />
                 </div>
               </SettingRow>
               <SettingRow label="Storage" description="128 GB available">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-4 h-4 text-white/20" />
               </SettingRow>
               <SettingRow label="AirDrop" description="Contacts Only">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-4 h-4 text-white/20" />
               </SettingRow>
-              <SettingRow label="Login Items" description="5 items open at login">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+              <SettingRow label="Login Items" description="5 items open at login" last>
+                <ChevronRight className="w-4 h-4 text-white/20" />
               </SettingRow>
-            </div>
+            </GlassPanel>
           </div>
         );
 
       case 'appearance':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Appearance</h2>
+            <ContentTitle>Appearance</ContentTitle>
 
             {/* Theme */}
             <div>
-              <h3 className="text-white font-medium mb-3">Theme</h3>
+              <SectionHeader title="Theme" />
               <div className="flex gap-4">
                 <button
                   onClick={() => setTheme('sequoia')}
                   className={cn(
-                    "flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 transition-colors",
-                    theme === 'sequoia' ? "border-blue-500" : "border-white/10 hover:border-white/20"
+                    "flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] backdrop-blur-sm border transition-all duration-200",
+                    theme === 'sequoia' 
+                      ? "border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]" 
+                      : "border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.05]"
                   )}
                 >
-                  <div className="w-16 h-12 rounded bg-[#1e1e1e] border border-white/20 flex items-center justify-center">
-                    <Moon className="w-6 h-6 text-white/50" />
+                  <div className="w-16 h-12 rounded-lg bg-[#0a0a0a] border border-white/10 flex items-center justify-center">
+                    <Moon className="w-5 h-5 text-white/50" />
                   </div>
-                  <span className="text-sm text-white">Dark</span>
+                  <span className="text-[12px] text-white/80">Dark</span>
                 </button>
                 <button
                   onClick={() => setTheme('sonoma')}
                   className={cn(
-                    "flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 transition-colors",
-                    theme === 'sonoma' ? "border-blue-500" : "border-white/10 hover:border-white/20"
+                    "flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] backdrop-blur-sm border transition-all duration-200",
+                    theme === 'sonoma' 
+                      ? "border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]" 
+                      : "border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.05]"
                   )}
                 >
-                  <div className="w-16 h-12 rounded bg-white border border-gray-300 flex items-center justify-center">
-                    <Sun className="w-6 h-6 text-yellow-500" />
+                  <div className="w-16 h-12 rounded-lg bg-gradient-to-b from-gray-100 to-gray-200 border border-gray-300 flex items-center justify-center">
+                    <Sun className="w-5 h-5 text-amber-500" />
                   </div>
-                  <span className="text-sm text-white/70">Light</span>
+                  <span className="text-[12px] text-white/60">Light</span>
                 </button>
-                <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 border-white/10 hover:border-white/20 transition-colors">
-                  <div className="w-16 h-12 rounded bg-gradient-to-b from-white to-[#1e1e1e] border border-white/20 flex items-center justify-center">
-                    <Laptop className="w-6 h-6 text-gray-500" />
+                <button className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-200">
+                  <div className="w-16 h-12 rounded-lg bg-gradient-to-b from-gray-200 to-[#0a0a0a] border border-white/10 flex items-center justify-center">
+                    <Laptop className="w-5 h-5 text-white/50" />
                   </div>
-                  <span className="text-sm text-white/70">Auto</span>
+                  <span className="text-[12px] text-white/60">Auto</span>
                 </button>
               </div>
             </div>
 
             {/* Accent Color */}
             <div>
-              <h3 className="text-white font-medium mb-3">Accent Color</h3>
-              <div className="flex gap-3">
-                {['#007AFF', '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#AF52DE', '#FF2D55', '#8E8E93'].map((color) => (
-                  <button
-                    key={color}
-                    className="w-8 h-8 rounded-full border-2 border-white/20 hover:border-white/40 transition-colors hover:scale-110"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
+              <SectionHeader title="Accent Color" />
+              <GlassPanel className="p-4">
+                <div className="flex gap-3">
+                  {['#007AFF', '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#AF52DE', '#FF2D55', '#8E8E93'].map((color) => (
+                    <button
+                      key={color}
+                      className="w-7 h-7 rounded-full transition-transform duration-200 hover:scale-110 ring-2 ring-black/20 hover:ring-white/30"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </GlassPanel>
             </div>
 
             {/* Wallpaper */}
             <div>
-              <h3 className="text-white font-medium mb-3">Wallpaper</h3>
+              <SectionHeader title="Wallpaper" />
               <div className="grid grid-cols-3 gap-3">
                 {wallpapers.map((wp) => (
                   <button
                     key={wp.id}
                     onClick={() => setTheme(wp.id)}
                     className={cn(
-                      "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
-                      theme === wp.id ? "border-blue-500 ring-2 ring-blue-500/50" : "border-white/10"
+                      "relative aspect-video rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-[1.02]",
+                      theme === wp.id 
+                        ? "border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
+                        : "border-white/[0.08] hover:border-white/[0.15]"
                     )}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-purple-900" />
-                    <span className="absolute bottom-1 left-2 text-xs text-white/70">{wp.name}</span>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 to-purple-900/80" />
+                    <span className="absolute bottom-1.5 left-2 text-[10px] text-white/70 font-medium">{wp.name}</span>
                     {theme === wp.id && (
-                      <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                      <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
                         <Check className="w-3 h-3 text-white" />
                       </div>
                     )}
@@ -234,31 +271,43 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </div>
 
             {/* Night Shift */}
-            <SettingRow label="Night Shift" description="Reduces blue light after sunset">
-              <Toggle enabled={nightShift} onChange={setNightShift} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Night Shift" description="Reduces blue light after sunset" first last>
+                <Toggle enabled={nightShift} onChange={setNightShift} />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
       case 'wifi':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Wi-Fi</h2>
-            <SettingRow label="Wi-Fi" description={wifiEnabled ? "Connected to Home Network" : "Off"}>
-              <Toggle enabled={wifiEnabled} onChange={setWifiEnabled} />
-            </SettingRow>
+            <ContentTitle>Wi-Fi</ContentTitle>
+            <GlassPanel>
+              <SettingRow label="Wi-Fi" description={wifiEnabled ? "Connected to Home Network" : "Off"} first last>
+                <Toggle enabled={wifiEnabled} onChange={setWifiEnabled} />
+              </SettingRow>
+            </GlassPanel>
 
             {wifiEnabled && (
               <>
                 <div>
-                  <h3 className="text-white/70 text-sm mb-2">Known Networks</h3>
-                  <div className="space-y-2">
-                    {['Home Network', 'Office WiFi', 'Coffee Shop'].map((network, i) => (
-                      <div key={network} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                  <SectionHeader title="Known Networks" />
+                  <GlassPanel>
+                    {['Home Network', 'Office WiFi', 'Coffee Shop'].map((network, i, arr) => (
+                      <div 
+                        key={network} 
+                        className={cn(
+                          "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03]",
+                          i === 0 && "rounded-t-lg",
+                          i === arr.length - 1 && "rounded-b-lg",
+                          i !== arr.length - 1 && "border-b border-white/[0.05]"
+                        )}
+                      >
                         <div className="flex items-center gap-3">
                           <Wifi className={cn("w-4 h-4", i === 0 ? "text-blue-400" : "text-white/30")} />
-                          <span className="text-white">{network}</span>
-                          {i === 0 && <span className="text-xs text-white/50">Connected</span>}
+                          <span className="text-[13px] text-white/90">{network}</span>
+                          {i === 0 && <span className="text-[11px] text-white/40">Connected</span>}
                         </div>
                         <div className="flex items-center gap-2">
                           {i === 0 && <Check className="w-4 h-4 text-blue-400" />}
@@ -266,11 +315,13 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </GlassPanel>
                 </div>
-                <SettingRow label="Ask to Join Networks" description="Known networks will be joined automatically">
-                  <Toggle enabled={true} onChange={() => {}} />
-                </SettingRow>
+                <GlassPanel>
+                  <SettingRow label="Ask to Join Networks" description="Known networks will be joined automatically" first last>
+                    <Toggle enabled={true} onChange={() => {}} />
+                  </SettingRow>
+                </GlassPanel>
               </>
             )}
           </div>
@@ -279,38 +330,48 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'bluetooth':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Bluetooth</h2>
-            <SettingRow label="Bluetooth" description={bluetoothEnabled ? "On" : "Off"}>
-              <Toggle enabled={bluetoothEnabled} onChange={setBluetoothEnabled} />
-            </SettingRow>
+            <ContentTitle>Bluetooth</ContentTitle>
+            <GlassPanel>
+              <SettingRow label="Bluetooth" description={bluetoothEnabled ? "On" : "Off"} first last>
+                <Toggle enabled={bluetoothEnabled} onChange={setBluetoothEnabled} />
+              </SettingRow>
+            </GlassPanel>
 
             {bluetoothEnabled && (
               <div>
-                <h3 className="text-white/70 text-sm mb-2">My Devices</h3>
-                <div className="space-y-2">
+                <SectionHeader title="My Devices" />
+                <GlassPanel>
                   {[
                     { name: 'AirPods Pro', type: 'Headphones', connected: true, battery: 85 },
                     { name: 'Magic Keyboard', type: 'Keyboard', connected: true, battery: 92 },
                     { name: 'Magic Mouse', type: 'Mouse', connected: false, battery: 45 },
-                  ].map((device) => (
-                    <div key={device.name} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                  ].map((device, i, arr) => (
+                    <div 
+                      key={device.name} 
+                      className={cn(
+                        "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03]",
+                        i === 0 && "rounded-t-lg",
+                        i === arr.length - 1 && "rounded-b-lg",
+                        i !== arr.length - 1 && "border-b border-white/[0.05]"
+                      )}
+                    >
                       <div className="flex items-center gap-3">
                         <Bluetooth className={cn("w-4 h-4", device.connected ? "text-blue-400" : "text-white/30")} />
                         <div>
-                          <span className="text-white">{device.name}</span>
-                          <span className="text-xs text-white/50 ml-2">{device.type}</span>
+                          <span className="text-[13px] text-white/90">{device.name}</span>
+                          <span className="text-[11px] text-white/40 ml-2">{device.type}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
-                          <Battery className="w-4 h-4 text-white/50" />
-                          <span className="text-xs text-white/50">{device.battery}%</span>
+                          <Battery className="w-4 h-4 text-white/40" />
+                          <span className="text-[11px] text-white/40">{device.battery}%</span>
                         </div>
-                        {device.connected && <span className="text-xs text-green-400">Connected</span>}
+                        {device.connected && <span className="text-[11px] text-green-400">Connected</span>}
                       </div>
                     </div>
                   ))}
-                </div>
+                </GlassPanel>
               </div>
             )}
           </div>
@@ -319,24 +380,34 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'notifications':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Notifications</h2>
-            <SettingRow label="Allow Notifications" description="Show notifications on the desktop">
-              <Toggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
-            </SettingRow>
-            <SettingRow label="Do Not Disturb" description="Silence all notifications">
-              <Toggle enabled={doNotDisturb} onChange={setDoNotDisturb} />
-            </SettingRow>
+            <ContentTitle>Notifications</ContentTitle>
+            <GlassPanel>
+              <SettingRow label="Allow Notifications" description="Show notifications on the desktop" first>
+                <Toggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
+              </SettingRow>
+              <SettingRow label="Do Not Disturb" description="Silence all notifications" last>
+                <Toggle enabled={doNotDisturb} onChange={setDoNotDisturb} />
+              </SettingRow>
+            </GlassPanel>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Application Notifications</h3>
-              <div className="space-y-2">
-                {['Messages', 'Mail', 'Calendar', 'Reminders', 'Safari'].map((app) => (
-                  <div key={app} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-white">{app}</span>
+              <SectionHeader title="Application Notifications" />
+              <GlassPanel>
+                {['Messages', 'Mail', 'Calendar', 'Reminders', 'Safari'].map((app, i, arr) => (
+                  <div 
+                    key={app}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03]",
+                      i === 0 && "rounded-t-lg",
+                      i === arr.length - 1 && "rounded-b-lg",
+                      i !== arr.length - 1 && "border-b border-white/[0.05]"
+                    )}
+                  >
+                    <span className="text-[13px] text-white/90">{app}</span>
                     <Toggle enabled={true} onChange={() => {}} />
                   </div>
                 ))}
-              </div>
+              </GlassPanel>
             </div>
           </div>
         );
@@ -344,75 +415,100 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'sound':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Sound</h2>
+            <ContentTitle>Sound</ContentTitle>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Output Volume</h3>
-                <span className="text-white/50">{volume}%</span>
+            <GlassPanel className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[13px] font-medium text-white/90">Output Volume</h3>
+                <span className="text-[12px] text-white/40">{volume}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <Volume2 className="w-4 h-4 text-white/50" />
+                <Volume2 className="w-4 h-4 text-white/40" />
                 <Slider value={volume} onChange={setVolume} />
               </div>
-            </div>
+            </GlassPanel>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Output Device</h3>
-              <div className="space-y-2">
-                {['MacBook Pro Speakers', 'AirPods Pro', 'External Display'].map((device, i) => (
-                  <div key={device} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-white">{device}</span>
+              <SectionHeader title="Output Device" />
+              <GlassPanel>
+                {['MacBook Pro Speakers', 'AirPods Pro', 'External Display'].map((device, i, arr) => (
+                  <div 
+                    key={device}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03] cursor-pointer",
+                      i === 0 && "rounded-t-lg",
+                      i === arr.length - 1 && "rounded-b-lg",
+                      i !== arr.length - 1 && "border-b border-white/[0.05]"
+                    )}
+                  >
+                    <span className="text-[13px] text-white/90">{device}</span>
                     {i === 0 && <Check className="w-4 h-4 text-blue-400" />}
                   </div>
                 ))}
-              </div>
+              </GlassPanel>
             </div>
 
-            <SettingRow label="Play sound effects" description="UI sounds and alerts">
-              <Toggle enabled={true} onChange={() => {}} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Play sound effects" description="UI sounds and alerts" first last>
+                <Toggle enabled={true} onChange={() => {}} />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
       case 'privacy':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Privacy & Security</h2>
+            <ContentTitle>Privacy & Security</ContentTitle>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Privacy</h3>
-              <div className="space-y-2">
+              <SectionHeader title="Privacy" />
+              <GlassPanel>
                 {[
                   { icon: Camera, label: 'Camera', desc: '2 apps have access' },
                   { icon: Volume2, label: 'Microphone', desc: '3 apps have access' },
                   { icon: Globe, label: 'Location Services', desc: 'On' },
                   { icon: User, label: 'Contacts', desc: '4 apps have access' },
                   { icon: Fingerprint, label: 'Touch ID', desc: 'Configured' },
-                ].map(({ icon: Icon, label, desc }) => (
-                  <SettingRow key={label} label={label} description={desc}>
-                    <ChevronRight className="w-5 h-5 text-white/30" />
-                  </SettingRow>
+                ].map(({ icon: Icon, label, desc }, i, arr) => (
+                  <div
+                    key={label}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03] cursor-pointer",
+                      i === 0 && "rounded-t-lg",
+                      i === arr.length - 1 && "rounded-b-lg",
+                      i !== arr.length - 1 && "border-b border-white/[0.05]"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-4 h-4 text-white/50" />
+                      <div>
+                        <span className="text-[13px] text-white/90">{label}</span>
+                        <p className="text-[11px] text-white/40">{desc}</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-white/20" />
+                  </div>
                 ))}
-              </div>
+              </GlassPanel>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Security</h3>
-              <SettingRow label="FileVault" description="Disk encryption is on">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-green-400" />
-                  <span className="text-green-400 text-sm">On</span>
-                </div>
-              </SettingRow>
-              <div className="mt-2">
-                <SettingRow label="Firewall" description="Protecting your system">
+              <SectionHeader title="Security" />
+              <GlassPanel>
+                <SettingRow label="FileVault" description="Disk encryption is on" first>
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-green-400" />
-                    <span className="text-green-400 text-sm">On</span>
+                    <span className="text-green-400 text-[12px]">On</span>
                   </div>
                 </SettingRow>
-              </div>
+                <SettingRow label="Firewall" description="Protecting your system" last>
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-green-400" />
+                    <span className="text-green-400 text-[12px]">On</span>
+                  </div>
+                </SettingRow>
+              </GlassPanel>
             </div>
           </div>
         );
@@ -420,33 +516,38 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'users':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Users & Groups</h2>
+            <ContentTitle>Users & Groups</ContentTitle>
 
-            <div className="flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold text-white">
-                Z
+            <GlassPanel className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-semibold text-white shadow-lg shadow-blue-500/20">
+                  Z
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-medium text-white/90">Zach Kelling</h3>
+                  <p className="text-[12px] text-white/40">Admin</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-medium text-lg">Zach Kelling</h3>
-                <p className="text-white/50">Admin</p>
-              </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Password" description="Last changed 30 days ago">
-              <button className="px-3 py-1.5 rounded bg-white/10 text-white text-sm hover:bg-white/20">
-                Change...
-              </button>
-            </SettingRow>
-
-            <SettingRow label="Login Options" description="Automatic login disabled">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Password" description="Last changed 30 days ago" first>
+                <button className="px-3 py-1.5 rounded-lg bg-white/[0.08] text-[12px] text-white/80 hover:bg-white/[0.12] transition-colors border border-white/[0.08]">
+                  Change...
+                </button>
+              </SettingRow>
+              <SettingRow label="Login Options" description="Automatic login disabled" last>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+            </GlassPanel>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Other Users</h3>
-              <SettingRow label="Guest User" description="Allow guests to log in">
-                <Toggle enabled={false} onChange={() => {}} />
-              </SettingRow>
+              <SectionHeader title="Other Users" />
+              <GlassPanel>
+                <SettingRow label="Guest User" description="Allow guests to log in" first last>
+                  <Toggle enabled={false} onChange={() => {}} />
+                </SettingRow>
+              </GlassPanel>
             </div>
           </div>
         );
@@ -454,105 +555,107 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'keyboard':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Keyboard</h2>
+            <ContentTitle>Keyboard</ContentTitle>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Key Repeat Speed</h3>
-                <span className="text-white/50">{keyRepeatSpeed}%</span>
+            <GlassPanel className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[13px] font-medium text-white/90">Key Repeat Speed</h3>
+                <span className="text-[12px] text-white/40">{keyRepeatSpeed}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-white/50">Slow</span>
+                <span className="text-[11px] text-white/40">Slow</span>
                 <Slider value={keyRepeatSpeed} onChange={setKeyRepeatSpeed} />
-                <span className="text-xs text-white/50">Fast</span>
+                <span className="text-[11px] text-white/40">Fast</span>
               </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Press fn key to" description="Change Input Source">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="Keyboard Shortcuts" description="Customize keyboard shortcuts">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="Text Replacements" description="8 replacements configured">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="Dictation" description="Off">
-              <Toggle enabled={false} onChange={() => {}} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Press fn key to" description="Change Input Source" first>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="Keyboard Shortcuts" description="Customize keyboard shortcuts">
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="Text Replacements" description="8 replacements configured">
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="Dictation" description="Off" last>
+                <Toggle enabled={false} onChange={() => {}} />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
       case 'trackpad':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Trackpad</h2>
+            <ContentTitle>Trackpad</ContentTitle>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Tracking Speed</h3>
-                <span className="text-white/50">{trackpadSpeed}%</span>
+            <GlassPanel className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[13px] font-medium text-white/90">Tracking Speed</h3>
+                <span className="text-[12px] text-white/40">{trackpadSpeed}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-white/50">Slow</span>
+                <span className="text-[11px] text-white/40">Slow</span>
                 <Slider value={trackpadSpeed} onChange={setTrackpadSpeed} />
-                <span className="text-xs text-white/50">Fast</span>
+                <span className="text-[11px] text-white/40">Fast</span>
               </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Tap to Click" description="Tap with one finger to click">
-              <Toggle enabled={tapToClick} onChange={setTapToClick} />
-            </SettingRow>
-
-            <SettingRow label="Natural Scrolling" description="Content tracks finger movement">
-              <Toggle enabled={naturalScrolling} onChange={setNaturalScrolling} />
-            </SettingRow>
-
-            <SettingRow label="Force Click and haptic feedback" description="Click then press firmly for more options">
-              <Toggle enabled={true} onChange={() => {}} />
-            </SettingRow>
-
-            <SettingRow label="More Gestures" description="Configure swipes and taps">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Tap to Click" description="Tap with one finger to click" first>
+                <Toggle enabled={tapToClick} onChange={setTapToClick} />
+              </SettingRow>
+              <SettingRow label="Natural Scrolling" description="Content tracks finger movement">
+                <Toggle enabled={naturalScrolling} onChange={setNaturalScrolling} />
+              </SettingRow>
+              <SettingRow label="Force Click and haptic feedback" description="Click then press firmly for more options">
+                <Toggle enabled={true} onChange={() => {}} />
+              </SettingRow>
+              <SettingRow label="More Gestures" description="Configure swipes and taps" last>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
       case 'accessibility':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Accessibility</h2>
+            <ContentTitle>Accessibility</ContentTitle>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Vision</h3>
-              <div className="space-y-2">
-                <SettingRow label="VoiceOver" description="Screen reader">
+              <SectionHeader title="Vision" />
+              <GlassPanel>
+                <SettingRow label="VoiceOver" description="Screen reader" first>
                   <Toggle enabled={false} onChange={() => {}} />
                 </SettingRow>
                 <SettingRow label="Zoom" description="Magnify the screen">
                   <Toggle enabled={false} onChange={() => {}} />
                 </SettingRow>
-                <SettingRow label="Increase Contrast" description="Reduce transparency">
+                <SettingRow label="Increase Contrast" description="Reduce transparency" last>
                   <Toggle enabled={increaseContrast} onChange={setIncreaseContrast} />
                 </SettingRow>
-              </div>
+              </GlassPanel>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Motor</h3>
-              <SettingRow label="Reduce Motion" description="Minimize interface animations">
-                <Toggle enabled={reduceMotion} onChange={setReduceMotion} />
-              </SettingRow>
+              <SectionHeader title="Motor" />
+              <GlassPanel>
+                <SettingRow label="Reduce Motion" description="Minimize interface animations" first last>
+                  <Toggle enabled={reduceMotion} onChange={setReduceMotion} />
+                </SettingRow>
+              </GlassPanel>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Hearing</h3>
-              <SettingRow label="Captions" description="Show closed captions when available">
-                <Toggle enabled={false} onChange={() => {}} />
-              </SettingRow>
+              <SectionHeader title="Hearing" />
+              <GlassPanel>
+                <SettingRow label="Captions" description="Show closed captions when available" first last>
+                  <Toggle enabled={false} onChange={() => {}} />
+                </SettingRow>
+              </GlassPanel>
             </div>
           </div>
         );
@@ -560,73 +663,74 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'datetime':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Date & Time</h2>
+            <ContentTitle>Date & Time</ContentTitle>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10 text-center">
-              <div className="text-4xl font-light text-white mb-1">
+            <GlassPanel className="p-6 text-center">
+              <div className="text-4xl font-light text-white/90 mb-1 tracking-tight">
                 {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
-              <div className="text-white/50">
+              <div className="text-[13px] text-white/40">
                 {new Date().toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Set time and date automatically" description="Using network time">
-              <Toggle enabled={true} onChange={() => {}} />
-            </SettingRow>
-
-            <SettingRow label="Set time zone automatically" description="Using current location">
-              <Toggle enabled={autoTimezone} onChange={setAutoTimezone} />
-            </SettingRow>
-
-            <SettingRow label="24-hour time" description="Use 24-hour clock format">
-              <Toggle enabled={is24Hour} onChange={setIs24Hour} />
-            </SettingRow>
-
-            <SettingRow label="Show date in menu bar" description="Display date next to time">
-              <Toggle enabled={true} onChange={() => {}} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Set time and date automatically" description="Using network time" first>
+                <Toggle enabled={true} onChange={() => {}} />
+              </SettingRow>
+              <SettingRow label="Set time zone automatically" description="Using current location">
+                <Toggle enabled={autoTimezone} onChange={setAutoTimezone} />
+              </SettingRow>
+              <SettingRow label="24-hour time" description="Use 24-hour clock format">
+                <Toggle enabled={is24Hour} onChange={setIs24Hour} />
+              </SettingRow>
+              <SettingRow label="Show date in menu bar" description="Display date next to time" last>
+                <Toggle enabled={true} onChange={() => {}} />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
       case 'battery':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Battery</h2>
+            <ContentTitle>Battery</ContentTitle>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-              <div className="flex items-center justify-between mb-3">
+            <GlassPanel className="p-4">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <Battery className="w-8 h-8 text-green-400" />
                   <div>
-                    <div className="text-2xl font-semibold text-white">87%</div>
-                    <div className="text-sm text-white/50">Power Adapter Connected</div>
+                    <div className="text-2xl font-semibold text-white/90">87%</div>
+                    <div className="text-[12px] text-white/40">Power Adapter Connected</div>
                   </div>
                 </div>
-                <Zap className="w-5 h-5 text-yellow-400" />
+                <Zap className="w-5 h-5 text-amber-400" />
               </div>
               <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-green-400 rounded-full" style={{ width: '87%' }} />
+                <div className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full" style={{ width: '87%' }} />
               </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Low Power Mode" description="Reduces energy usage">
-              <Toggle enabled={lowPowerMode} onChange={setLowPowerMode} />
-            </SettingRow>
-
-            <SettingRow label="Optimized Battery Charging" description="Reduces battery aging">
-              <Toggle enabled={optimizedCharging} onChange={setOptimizedCharging} />
-            </SettingRow>
-
-            <SettingRow label="Show battery percentage" description="In menu bar">
-              <Toggle enabled={true} onChange={() => {}} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Low Power Mode" description="Reduces energy usage" first>
+                <Toggle enabled={lowPowerMode} onChange={setLowPowerMode} />
+              </SettingRow>
+              <SettingRow label="Optimized Battery Charging" description="Reduces battery aging">
+                <Toggle enabled={optimizedCharging} onChange={setOptimizedCharging} />
+              </SettingRow>
+              <SettingRow label="Show battery percentage" description="In menu bar" last>
+                <Toggle enabled={true} onChange={() => {}} />
+              </SettingRow>
+            </GlassPanel>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Battery Health</h3>
-              <SettingRow label="Maximum Capacity" description="Your battery is functioning normally">
-                <span className="text-green-400">98%</span>
-              </SettingRow>
+              <SectionHeader title="Battery Health" />
+              <GlassPanel>
+                <SettingRow label="Maximum Capacity" description="Your battery is functioning normally" first last>
+                  <span className="text-green-400 text-[13px] font-medium">98%</span>
+                </SettingRow>
+              </GlassPanel>
             </div>
           </div>
         );
@@ -634,39 +738,40 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'storage':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Storage</h2>
+            <ContentTitle>Storage</ContentTitle>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-              <div className="flex items-center justify-between mb-3">
+            <GlassPanel className="p-4">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <div className="text-lg font-medium text-white">Macintosh HD</div>
-                  <div className="text-sm text-white/50">128 GB available of 512 GB</div>
+                  <div className="text-[15px] font-medium text-white/90">Macintosh HD</div>
+                  <div className="text-[12px] text-white/40">128 GB available of 512 GB</div>
                 </div>
-                <HardDrive className="w-6 h-6 text-white/30" />
+                <HardDrive className="w-5 h-5 text-white/30" />
               </div>
-              <div className="h-4 bg-white/10 rounded-full overflow-hidden flex">
+              <div className="h-3 bg-white/10 rounded-full overflow-hidden flex">
                 <div className="h-full bg-blue-500" style={{ width: '45%' }} title="Apps" />
-                <div className="h-full bg-yellow-500" style={{ width: '15%' }} title="Documents" />
+                <div className="h-full bg-amber-500" style={{ width: '15%' }} title="Documents" />
                 <div className="h-full bg-purple-500" style={{ width: '10%' }} title="Photos" />
                 <div className="h-full bg-green-500" style={{ width: '5%' }} title="System" />
               </div>
-              <div className="flex gap-4 mt-2 text-xs">
-                <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-500" /> Apps</div>
-                <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-yellow-500" /> Documents</div>
-                <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-purple-500" /> Photos</div>
-                <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-green-500" /> System</div>
+              <div className="flex gap-4 mt-3 text-[11px] text-white/50">
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" /> Apps</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" /> Documents</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-purple-500" /> Photos</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-green-500" /> System</div>
               </div>
-            </div>
+            </GlassPanel>
 
-            <SettingRow label="Empty Trash Automatically" description="Remove items after 30 days">
-              <Toggle enabled={false} onChange={() => {}} />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Empty Trash Automatically" description="Remove items after 30 days" first>
+                <Toggle enabled={false} onChange={() => {}} />
+              </SettingRow>
+              <SettingRow label="Optimize Storage" description="Store files in iCloud when space is low" last>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+            </GlassPanel>
 
-            <SettingRow label="Optimize Storage" description="Store files in iCloud when space is low">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <button className="w-full p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2">
+            <button className="w-full p-3 rounded-xl bg-red-500/10 backdrop-blur-sm border border-red-500/20 text-red-400 hover:bg-red-500/15 transition-colors flex items-center justify-center gap-2 text-[13px] font-medium">
               <Trash2 className="w-4 h-4" />
               Clean Up Storage...
             </button>
@@ -676,38 +781,45 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'language':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Language & Region</h2>
+            <ContentTitle>Language & Region</ContentTitle>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Preferred Languages</h3>
-              <div className="space-y-2">
-                {['English (US)', 'Spanish', 'Japanese'].map((lang, i) => (
-                  <div key={lang} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+              <SectionHeader title="Preferred Languages" />
+              <GlassPanel>
+                {['English (US)', 'Spanish', 'Japanese'].map((lang, i, arr) => (
+                  <div 
+                    key={lang}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.03]",
+                      i === 0 && "rounded-t-lg",
+                      i === arr.length - 1 && "rounded-b-lg",
+                      i !== arr.length - 1 && "border-b border-white/[0.05]"
+                    )}
+                  >
                     <div className="flex items-center gap-3">
-                      <span className="text-white/30 text-sm">{i + 1}</span>
-                      <span className="text-white">{lang}</span>
-                      {i === 0 && <span className="text-xs text-blue-400">Primary</span>}
+                      <span className="text-[12px] text-white/30 w-4">{i + 1}</span>
+                      <span className="text-[13px] text-white/90">{lang}</span>
+                      {i === 0 && <span className="text-[10px] text-blue-400 font-medium">Primary</span>}
                     </div>
                   </div>
                 ))}
-              </div>
+              </GlassPanel>
             </div>
 
-            <SettingRow label="Region" description="United States">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="Calendar" description="Gregorian">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="Temperature" description="Fahrenheit">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
-
-            <SettingRow label="First day of week" description="Sunday">
-              <ChevronRight className="w-5 h-5 text-white/30" />
-            </SettingRow>
+            <GlassPanel>
+              <SettingRow label="Region" description="United States" first>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="Calendar" description="Gregorian">
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="Temperature" description="Fahrenheit">
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+              <SettingRow label="First day of week" description="Sunday" last>
+                <ChevronRight className="w-4 h-4 text-white/20" />
+              </SettingRow>
+            </GlassPanel>
           </div>
         );
 
@@ -715,14 +827,14 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
         return (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] flex items-center justify-center mx-auto mb-4">
                 {sections.find(s => s.id === activeSection)?.icon &&
                   React.createElement(sections.find(s => s.id === activeSection)!.icon, {
-                    className: 'w-8 h-8 text-white/30'
+                    className: 'w-7 h-7 text-white/30'
                   })
                 }
               </div>
-              <h3 className="text-white/50">
+              <h3 className="text-[14px] text-white/40">
                 {sections.find(s => s.id === activeSection)?.label} settings
               </h3>
             </div>
@@ -740,24 +852,24 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
+      <div className="flex h-full bg-[#0d0d0d]/95 backdrop-blur-2xl">
         {/* Sidebar */}
-        <div className="w-56 bg-black/30 border-r border-white/10 overflow-y-auto">
+        <div className="w-56 bg-black/40 backdrop-blur-xl border-r border-white/[0.06] overflow-y-auto">
           <div className="p-2">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150",
                   activeSection === section.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-white/[0.08] text-white shadow-sm"
+                    : "text-white/60 hover:bg-white/[0.04] hover:text-white/80"
                 )}
               >
                 <section.icon className={cn(
-                  "w-5 h-5",
-                  activeSection === section.id ? "text-blue-400" : "text-white/50"
+                  "w-[18px] h-[18px]",
+                  activeSection === section.id ? "text-blue-400" : "text-white/40"
                 )} />
                 <span>{section.label}</span>
               </button>

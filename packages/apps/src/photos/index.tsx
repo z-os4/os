@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Grid, List, Heart, Share2, Trash2, Plus, Image } from 'lucide-react';
+import { Grid, List, Heart, Share2, Trash2, Plus, Image, Folder, Clock, Camera } from 'lucide-react';
 
 interface PhotosWindowProps {
   onClose: () => void;
@@ -19,10 +19,10 @@ const mockPhotos = [
 ];
 
 const albums = [
-  { id: 'all', label: 'All Photos', count: 8 },
-  { id: 'favorites', label: 'Favorites', count: 3 },
-  { id: 'recents', label: 'Recents', count: 5 },
-  { id: 'screenshots', label: 'Screenshots', count: 0 },
+  { id: 'all', label: 'All Photos', count: 8, icon: Image },
+  { id: 'favorites', label: 'Favorites', count: 3, icon: Heart },
+  { id: 'recents', label: 'Recents', count: 5, icon: Clock },
+  { id: 'screenshots', label: 'Screenshots', count: 0, icon: Camera },
 ];
 
 const PhotosWindow: React.FC<PhotosWindowProps> = ({ onClose, onFocus }) => {
@@ -43,90 +43,158 @@ const PhotosWindow: React.FC<PhotosWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
-        {/* Sidebar */}
-        <div className="w-48 bg-[#2c2c2e] border-r border-white/10 flex flex-col p-2">
-          <div className="mb-4">
-            <h3 className="text-white/40 text-xs uppercase tracking-wider px-3 py-2">Library</h3>
-            {albums.map((album) => (
-              <button
-                key={album.id}
-                onClick={() => setSelectedAlbum(album.id)}
-                className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  selectedAlbum === album.id ? 'bg-blue-500/20 text-blue-400' : 'text-white/70 hover:bg-white/5'
-                }`}
-              >
-                <span>{album.label}</span>
-                <span className="text-white/30 text-xs">{album.count}</span>
+      <div className="flex h-full bg-black/80 backdrop-blur-2xl">
+        {/* Glass Morphism Sidebar */}
+        <div className="w-52 bg-white/[0.03] backdrop-blur-xl border-r border-white/[0.08] flex flex-col">
+          {/* Sidebar Header */}
+          <div className="h-12 flex items-center px-4 border-b border-white/[0.06]">
+            <span className="text-white/50 text-xs font-medium uppercase tracking-widest">Library</span>
+          </div>
+
+          {/* Album List */}
+          <div className="flex-1 overflow-y-auto py-2 px-2">
+            {albums.map((album) => {
+              const IconComponent = album.icon;
+              return (
+                <button
+                  key={album.id}
+                  onClick={() => setSelectedAlbum(album.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    selectedAlbum === album.id
+                      ? 'bg-white/[0.12] text-white shadow-[inset_0_0.5px_0_rgba(255,255,255,0.1)]'
+                      : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
+                  }`}
+                >
+                  <IconComponent className={`w-4 h-4 ${selectedAlbum === album.id ? 'text-white' : 'text-white/50'}`} />
+                  <span className="flex-1 text-left">{album.label}</span>
+                  <span className={`text-xs ${selectedAlbum === album.id ? 'text-white/60' : 'text-white/30'}`}>
+                    {album.count}
+                  </span>
+                </button>
+              );
+            })}
+
+            {/* Albums Section */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-white/40 text-xs font-medium uppercase tracking-widest">Albums</span>
+                <button className="p-1 hover:bg-white/[0.08] rounded transition-colors">
+                  <Plus className="w-3 h-3 text-white/40" />
+                </button>
+              </div>
+              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/50 hover:bg-white/[0.06] hover:text-white/70 transition-all duration-200">
+                <Folder className="w-4 h-4" />
+                <span>My Album</span>
               </button>
-            ))}
+            </div>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-          {/* Toolbar */}
-          <div className="flex items-center justify-between p-3 border-b border-white/10">
-            <div className="flex items-center gap-2">
+          {/* Glass Toolbar */}
+          <div className="h-12 flex items-center justify-between px-4 bg-white/[0.02] border-b border-white/[0.06] backdrop-blur-xl">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  viewMode === 'grid'
+                    ? 'bg-white/[0.12] text-white shadow-[inset_0_0.5px_0_rgba(255,255,255,0.1)]'
+                    : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70'
+                }`}
               >
-                <Grid className="w-4 h-4 text-white/70" />
+                <Grid className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  viewMode === 'list'
+                    ? 'bg-white/[0.12] text-white shadow-[inset_0_0.5px_0_rgba(255,255,255,0.1)]'
+                    : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70'
+                }`}
               >
-                <List className="w-4 h-4 text-white/70" />
+                <List className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
-                <Plus className="w-4 h-4 text-white/70" />
+
+            {/* Album Title */}
+            <div className="absolute left-1/2 -translate-x-1/2">
+              <span className="text-white/90 text-sm font-medium">
+                {albums.find(a => a.id === selectedAlbum)?.label}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button className="p-2 text-white/50 hover:bg-white/[0.06] hover:text-white/70 rounded-lg transition-all duration-200">
+                <Plus className="w-4 h-4" />
               </button>
-              <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
-                <Share2 className="w-4 h-4 text-white/70" />
+              <button className="p-2 text-white/50 hover:bg-white/[0.06] hover:text-white/70 rounded-lg transition-all duration-200">
+                <Share2 className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           {/* Photo Grid */}
-          <div className="flex-1 overflow-y-auto p-4">
-            <div className={`grid ${viewMode === 'grid' ? 'grid-cols-4' : 'grid-cols-1'} gap-2`}>
+          <div className="flex-1 overflow-y-auto p-4 bg-black/20">
+            <div className={`grid ${viewMode === 'grid' ? 'grid-cols-4' : 'grid-cols-1'} gap-3`}>
               {filteredPhotos.map((photo) => (
                 <div
                   key={photo.id}
                   onClick={() => setSelectedPhoto(photo.id)}
-                  className={`relative cursor-pointer rounded-lg overflow-hidden group ${
-                    selectedPhoto === photo.id ? 'ring-2 ring-blue-500' : ''
+                  className={`relative cursor-pointer rounded-xl overflow-hidden group transition-all duration-300 ${
+                    selectedPhoto === photo.id
+                      ? 'ring-2 ring-white/60 ring-offset-2 ring-offset-black/80 scale-[0.98]'
+                      : 'hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/50'
                   }`}
                 >
-                  <div className={`${viewMode === 'grid' ? 'aspect-square' : 'h-24'} bg-white/5`}>
+                  {/* Photo Container with Glass Border */}
+                  <div className={`${viewMode === 'grid' ? 'aspect-square' : 'h-24'} bg-white/[0.03] border border-white/[0.08] rounded-xl overflow-hidden`}>
                     <img
                       src={photo.src}
                       alt=""
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="flex items-center gap-2">
-                      <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-                        <Heart className={`w-4 h-4 ${photo.favorite ? 'text-red-500 fill-red-500' : 'text-white'}`} />
+
+                  {/* Hover Overlay with Glass Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md rounded-full p-1 border border-white/[0.1]">
+                      <button className="p-2 hover:bg-white/[0.15] rounded-full transition-colors">
+                        <Heart className={`w-4 h-4 ${photo.favorite ? 'text-red-400 fill-red-400' : 'text-white/90'}`} />
                       </button>
-                      <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-                        <Trash2 className="w-4 h-4 text-white" />
+                      <button className="p-2 hover:bg-white/[0.15] rounded-full transition-colors">
+                        <Trash2 className="w-4 h-4 text-white/90" />
                       </button>
                     </div>
                   </div>
+
+                  {/* Favorite Badge */}
                   {photo.favorite && (
-                    <div className="absolute top-2 right-2">
-                      <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                    <div className="absolute top-2 right-2 p-1.5 bg-black/40 backdrop-blur-md rounded-full border border-white/[0.1]">
+                      <Heart className="w-3 h-3 text-red-400 fill-red-400" />
                     </div>
                   )}
                 </div>
               ))}
             </div>
+
+            {/* Empty State */}
+            {filteredPhotos.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <div className="w-20 h-20 rounded-2xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center mb-4">
+                  <Image className="w-10 h-10 text-white/30" />
+                </div>
+                <h3 className="text-white/70 text-lg font-medium mb-2">No Photos</h3>
+                <p className="text-white/40 text-sm">Import photos to get started</p>
+              </div>
+            )}
+          </div>
+
+          {/* Status Bar */}
+          <div className="h-8 flex items-center justify-center px-4 bg-white/[0.02] border-t border-white/[0.06] backdrop-blur-xl">
+            <span className="text-white/40 text-xs">
+              {filteredPhotos.length} {filteredPhotos.length === 1 ? 'photo' : 'photos'}
+            </span>
           </div>
         </div>
       </div>

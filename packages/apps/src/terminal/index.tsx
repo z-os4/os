@@ -973,37 +973,40 @@ Su Mo Tu We Th Fr Sa
     >
       <div
         ref={containerRef}
-        className="h-full bg-[#1a1a1a] text-green-400 font-mono text-sm p-4 overflow-auto cursor-text"
+        className="h-full bg-black/90 backdrop-blur-xl text-green-400 font-mono text-sm p-4 overflow-auto cursor-text border border-white/10 rounded-b-lg shadow-2xl"
+        style={{
+          backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.85))',
+        }}
         onClick={focusInput}
       >
         {history.map((entry, index) => (
           <div key={index} className="mb-2">
             {entry.command && (
               <div className="flex">
-                <span className="text-blue-400">user@zos</span>
-                <span className="text-white">:</span>
-                <span className="text-purple-400">{getPromptPath(entry.cwd || '/Users/user')}</span>
-                <span className="text-white">$ </span>
-                <span className="text-white">{entry.command}</span>
+                <span className="text-green-500">user@zos</span>
+                <span className="text-white/60">:</span>
+                <span className="text-green-300">{getPromptPath(entry.cwd || '/Users/user')}</span>
+                <span className="text-white/60">$ </span>
+                <span className="text-white/90">{entry.command}</span>
               </div>
             )}
             {entry.output && (
-              <pre className="text-white/80 whitespace-pre-wrap">{entry.output}</pre>
+              <pre className="text-white/70 whitespace-pre-wrap leading-relaxed">{entry.output}</pre>
             )}
           </div>
         ))}
         <div className="flex">
-          <span className="text-blue-400">user@zos</span>
-          <span className="text-white">:</span>
-          <span className="text-purple-400">{getPromptPath(cwd)}</span>
-          <span className="text-white">$ </span>
+          <span className="text-green-500">user@zos</span>
+          <span className="text-white/60">:</span>
+          <span className="text-green-300">{getPromptPath(cwd)}</span>
+          <span className="text-white/60">$ </span>
           <input
             ref={inputRef}
             type="text"
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-1 bg-transparent text-white outline-none caret-green-400"
+            className="flex-1 bg-transparent text-white/90 outline-none caret-green-400"
             autoFocus
           />
         </div>

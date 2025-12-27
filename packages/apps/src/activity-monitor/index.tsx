@@ -61,31 +61,35 @@ const ActivityMonitorWindow: React.FC<ActivityMonitorWindowProps> = ({ onClose, 
   const renderGraph = () => {
     const max = Math.max(...cpuHistory);
     return (
-      <div className="h-24 flex items-end gap-px bg-black/30 rounded p-2">
+      <div className="h-28 flex items-end gap-px rounded-xl p-3 bg-black/40 backdrop-blur-md border border-white/[0.08] shadow-inner">
         {cpuHistory.map((value, i) => (
           <div
             key={i}
-            className="flex-1 bg-green-500 rounded-t transition-all duration-200"
-            style={{ height: `${(value / max) * 100}%`, opacity: 0.3 + (i / cpuHistory.length) * 0.7 }}
+            className="flex-1 rounded-t transition-all duration-200"
+            style={{
+              height: `${(value / max) * 100}%`,
+              opacity: 0.4 + (i / cpuHistory.length) * 0.6,
+              background: `linear-gradient(to top, rgba(34, 197, 94, 0.8), rgba(74, 222, 128, 0.4))`,
+            }}
           />
         ))}
       </div>
     );
   };
 
-  const renderUsageBar = (label: string, value: number, color: string, details?: string) => (
-    <div className="space-y-1">
+  const renderUsageBar = (label: string, value: number, gradient: string, details?: string) => (
+    <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-white/70">{label}</span>
-        <span className="text-white font-medium">{value.toFixed(1)}%</span>
+        <span className="text-white/60 font-medium">{label}</span>
+        <span className="text-white/90 font-semibold tabular-nums">{value.toFixed(1)}%</span>
       </div>
-      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-black/40 backdrop-blur-sm rounded-full overflow-hidden border border-white/[0.06]">
         <div
-          className={cn("h-full rounded-full transition-all duration-500", color)}
-          style={{ width: `${value}%` }}
+          className="h-full rounded-full transition-all duration-500 shadow-lg"
+          style={{ width: `${value}%`, background: gradient }}
         />
       </div>
-      {details && <p className="text-xs text-white/50">{details}</p>}
+      {details && <p className="text-xs text-white/40">{details}</p>}
     </div>
   );
 
@@ -97,163 +101,182 @@ const ActivityMonitorWindow: React.FC<ActivityMonitorWindowProps> = ({ onClose, 
       initialPosition={{ x: 150, y: 100 }}
       initialSize={{ width: 800, height: 600 }}
     >
-      <div className="flex flex-col h-full bg-[#1e1e1e]">
-        {/* Tabs */}
-        <div className="flex border-b border-white/10 bg-[#252525]">
+      <div className="flex flex-col h-full bg-black/80 backdrop-blur-2xl">
+        {/* Glass Tabs */}
+        <div className="flex border-b border-white/[0.08] bg-black/40 backdrop-blur-xl">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-2 px-5 py-3 text-sm font-medium transition-all duration-200 relative",
                 activeTab === tab.id
-                  ? "text-white border-b-2 border-blue-500 bg-blue-500/10"
-                  : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                  ? "text-white"
+                  : "text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
               )}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon className={cn(
+                "w-4 h-4 transition-colors",
+                activeTab === tab.id ? "text-cyan-400" : ""
+              )} />
               {tab.label}
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 to-blue-500" />
+              )}
             </button>
           ))}
         </div>
 
         {/* Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Stats panel */}
-          <div className="p-4 border-b border-white/10 bg-[#252525]">
+          {/* Stats panel with glass effect */}
+          <div className="p-5 border-b border-white/[0.08] bg-black/30 backdrop-blur-xl">
             {activeTab === 'cpu' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">CPU Usage</h3>
-                    <p className="text-2xl font-bold text-green-400">{cpuUsage.toFixed(1)}%</p>
+                    <h3 className="text-white/60 text-sm font-medium mb-1">CPU Usage</h3>
+                    <p className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">
+                      {cpuUsage.toFixed(1)}%
+                    </p>
                   </div>
-                  <div className="text-right text-sm text-white/50">
-                    <p>System: {(cpuUsage * 0.3).toFixed(1)}%</p>
-                    <p>User: {(cpuUsage * 0.7).toFixed(1)}%</p>
+                  <div className="text-right text-sm space-y-1">
+                    <p className="text-white/40">System: <span className="text-white/70 tabular-nums">{(cpuUsage * 0.3).toFixed(1)}%</span></p>
+                    <p className="text-white/40">User: <span className="text-white/70 tabular-nums">{(cpuUsage * 0.7).toFixed(1)}%</span></p>
                   </div>
                 </div>
                 {renderGraph()}
               </div>
             )}
             {activeTab === 'memory' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Memory Pressure</h3>
-                    <p className="text-2xl font-bold text-blue-400">{memoryUsage.toFixed(0)}%</p>
+                    <h3 className="text-white/60 text-sm font-medium mb-1">Memory Pressure</h3>
+                    <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                      {memoryUsage.toFixed(0)}%
+                    </p>
                   </div>
-                  <div className="text-right text-sm text-white/50">
-                    <p>Physical Memory: 16 GB</p>
-                    <p>Used: {(16 * memoryUsage / 100).toFixed(1)} GB</p>
+                  <div className="text-right text-sm space-y-1">
+                    <p className="text-white/40">Physical Memory: <span className="text-white/70">16 GB</span></p>
+                    <p className="text-white/40">Used: <span className="text-white/70 tabular-nums">{(16 * memoryUsage / 100).toFixed(1)} GB</span></p>
                   </div>
                 </div>
-                {renderUsageBar('App Memory', memoryUsage * 0.6, 'bg-blue-500')}
-                {renderUsageBar('Wired Memory', memoryUsage * 0.25, 'bg-yellow-500')}
-                {renderUsageBar('Cached Files', memoryUsage * 0.15, 'bg-green-500')}
+                {renderUsageBar('App Memory', memoryUsage * 0.6, 'linear-gradient(to right, #3b82f6, #60a5fa)')}
+                {renderUsageBar('Wired Memory', memoryUsage * 0.25, 'linear-gradient(to right, #f59e0b, #fbbf24)')}
+                {renderUsageBar('Cached Files', memoryUsage * 0.15, 'linear-gradient(to right, #22c55e, #4ade80)')}
               </div>
             )}
             {activeTab === 'energy' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Energy Impact</h3>
-                    <p className="text-sm text-white/50">Last 12 hours</p>
+                    <h3 className="text-white/60 text-sm font-medium mb-1">Energy Impact</h3>
+                    <p className="text-sm text-white/40">Last 12 hours</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
                     <Zap className="w-5 h-5 text-yellow-400" />
                     <span className="text-lg font-bold text-yellow-400">Low</span>
                   </div>
                 </div>
-                {renderUsageBar('Average Energy Impact', 35, 'bg-yellow-500', 'Battery remaining: 4:32')}
+                {renderUsageBar('Average Energy Impact', 35, 'linear-gradient(to right, #f59e0b, #fcd34d)', 'Battery remaining: 4:32')}
               </div>
             )}
             {activeTab === 'disk' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Disk Activity</h3>
+                    <h3 className="text-white/60 text-sm font-medium mb-1">Disk Activity</h3>
                   </div>
-                  <div className="text-right text-sm text-white/50">
-                    <p>Read: 12.5 MB/s</p>
-                    <p>Write: 4.2 MB/s</p>
+                  <div className="text-right text-sm space-y-1">
+                    <p className="text-white/40">Read: <span className="text-green-400 tabular-nums">12.5 MB/s</span></p>
+                    <p className="text-white/40">Write: <span className="text-blue-400 tabular-nums">4.2 MB/s</span></p>
                   </div>
                 </div>
-                {renderUsageBar('Disk Usage', diskUsage, 'bg-purple-500', '256 GB available of 512 GB')}
+                {renderUsageBar('Disk Usage', diskUsage, 'linear-gradient(to right, #a855f7, #c084fc)', '256 GB available of 512 GB')}
               </div>
             )}
             {activeTab === 'network' && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-white font-medium">Network Activity</h3>
+                    <h3 className="text-white/60 text-sm font-medium mb-1">Network Activity</h3>
                   </div>
-                  <div className="text-right text-sm">
-                    <p className="text-green-400">↓ {networkIn.toFixed(2)} MB/s</p>
-                    <p className="text-blue-400">↑ {networkOut.toFixed(2)} MB/s</p>
+                  <div className="text-right text-sm space-y-1">
+                    <p className="text-green-400 font-medium tabular-nums">↓ {networkIn.toFixed(2)} MB/s</p>
+                    <p className="text-blue-400 font-medium tabular-nums">↑ {networkOut.toFixed(2)} MB/s</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 rounded-lg bg-black/20">
-                    <p className="text-xs text-white/50 mb-1">Data Received</p>
-                    <p className="text-lg font-medium text-green-400">1.45 GB</p>
+                  <div className="p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/[0.08]">
+                    <p className="text-xs text-white/40 mb-2">Data Received</p>
+                    <p className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent tabular-nums">1.45 GB</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-black/20">
-                    <p className="text-xs text-white/50 mb-1">Data Sent</p>
-                    <p className="text-lg font-medium text-blue-400">284 MB</p>
+                  <div className="p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/[0.08]">
+                    <p className="text-xs text-white/40 mb-2">Data Sent</p>
+                    <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent tabular-nums">284 MB</p>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Process list */}
+          {/* Process list with glass effect */}
           <div className="flex-1 overflow-auto">
             <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-[#252525] text-white/50">
+              <thead className="sticky top-0 bg-black/60 backdrop-blur-xl border-b border-white/[0.06]">
                 <tr>
-                  <th className="text-left p-2 font-medium">Process Name</th>
-                  <th className="text-right p-2 font-medium">PID</th>
-                  <th className="text-right p-2 font-medium">% CPU</th>
-                  <th className="text-right p-2 font-medium">Memory</th>
-                  <th className="text-right p-2 font-medium">Threads</th>
+                  <th className="text-left p-3 font-medium text-white/50">Process Name</th>
+                  <th className="text-right p-3 font-medium text-white/50">PID</th>
+                  <th className="text-right p-3 font-medium text-white/50">% CPU</th>
+                  <th className="text-right p-3 font-medium text-white/50">Memory</th>
+                  <th className="text-right p-3 font-medium text-white/50">Threads</th>
                 </tr>
               </thead>
               <tbody>
                 {processes
                   .sort((a, b) => b.cpu - a.cpu)
-                  .map(process => (
+                  .map((process, index) => (
                     <tr
                       key={process.pid}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      className={cn(
+                        "border-b border-white/[0.04] transition-colors hover:bg-white/[0.04]",
+                        index % 2 === 0 ? "bg-black/20" : "bg-transparent"
+                      )}
                     >
-                      <td className="p-2 text-white">{process.name}</td>
-                      <td className="p-2 text-right text-white/50">{process.pid}</td>
-                      <td className={cn(
-                        "p-2 text-right font-medium",
-                        process.cpu > 10 ? "text-red-400" : process.cpu > 5 ? "text-yellow-400" : "text-green-400"
-                      )}>
-                        {process.cpu.toFixed(1)}
+                      <td className="p-3 text-white/90 font-medium">{process.name}</td>
+                      <td className="p-3 text-right text-white/40 tabular-nums">{process.pid}</td>
+                      <td className="p-3 text-right tabular-nums">
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-md text-xs font-semibold",
+                          process.cpu > 10 
+                            ? "bg-red-500/20 text-red-400 border border-red-500/30" 
+                            : process.cpu > 5 
+                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30" 
+                              : "bg-green-500/20 text-green-400 border border-green-500/30"
+                        )}>
+                          {process.cpu.toFixed(1)}
+                        </span>
                       </td>
-                      <td className="p-2 text-right text-white/70">{process.memory} MB</td>
-                      <td className="p-2 text-right text-white/50">{process.threads}</td>
+                      <td className="p-3 text-right text-white/60 tabular-nums">{process.memory} MB</td>
+                      <td className="p-3 text-right text-white/40 tabular-nums">{process.threads}</td>
                     </tr>
                   ))}
               </tbody>
             </table>
           </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between p-2 border-t border-white/10 bg-[#252525] text-xs text-white/50">
-            <span>{processes.length} processes</span>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                <Activity className="w-3 h-3" />
-                CPU: {cpuUsage.toFixed(0)}%
+          {/* Footer with glass effect */}
+          <div className="flex items-center justify-between p-3 border-t border-white/[0.08] bg-black/40 backdrop-blur-xl text-xs">
+            <span className="text-white/40">{processes.length} processes</span>
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2 text-white/50">
+                <Activity className="w-3 h-3 text-green-400" />
+                CPU: <span className="text-white/70 tabular-nums">{cpuUsage.toFixed(0)}%</span>
               </span>
-              <span className="flex items-center gap-1">
-                <MemoryStick className="w-3 h-3" />
-                Memory: {memoryUsage.toFixed(0)}%
+              <span className="flex items-center gap-2 text-white/50">
+                <MemoryStick className="w-3 h-3 text-blue-400" />
+                Memory: <span className="text-white/70 tabular-nums">{memoryUsage.toFixed(0)}%</span>
               </span>
             </div>
           </div>
