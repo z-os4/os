@@ -338,13 +338,13 @@ const PasswordsWindow: React.FC<PasswordsWindowProps> = ({ onClose, onFocus }) =
           
           <form onSubmit={handleUnlock} className="w-full max-w-xs space-y-4">
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
               <input
                 type="password"
                 value={masterPassword}
                 onChange={(e) => setMasterPassword(e.target.value)}
                 placeholder="Master Password"
-                className={cn("w-full pl-10 pr-4 py-3 rounded-xl", glassInput)}
+                className={cn("w-full pl-12 pr-4 py-3 rounded-xl", glassInput)}
                 autoFocus
               />
             </div>
