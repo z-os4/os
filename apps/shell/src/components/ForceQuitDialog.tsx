@@ -73,7 +73,6 @@ const appIcons: Partial<Record<AppType, React.ReactNode>> = {
   'FaceTime': <Video className="w-5 h-5" />,
   'TextEdit': <FileEdit className="w-5 h-5" />,
   'Notes': <FileText className="w-5 h-5" />,
-  'GitHub Stats': <Github className="w-5 h-5" />,
   'Messages': <MessageSquare className="w-5 h-5" />,
   'Activity Monitor': <Activity className="w-5 h-5" />,
   'Hanzo AI': <HanzoLogo />,

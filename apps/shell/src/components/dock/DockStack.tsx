@@ -11,7 +11,7 @@ interface StackItem {
 interface DockStackProps {
   isOpen: boolean;
   onClose: () => void;
-  items: StackItem[];
+  items?: StackItem[];
   position: { x: number; y: number };
   title: string;
   onItemClick?: (item: StackItem) => void;

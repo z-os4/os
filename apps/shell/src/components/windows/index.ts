@@ -1,3 +1,4 @@
+// Core system windows with full implementations
 export { default as FinderWindow } from './FinderWindow';
 export { default as TerminalWindow } from './TerminalWindow';
 export { default as SafariWindow } from './SafariWindow';
@@ -8,7 +9,6 @@ export { default as ClockWindow } from './ClockWindow';
 export { default as NotesWindow } from './NotesWindow';
 export { default as WeatherWindow } from './WeatherWindow';
 export { default as RemindersWindow } from './RemindersWindow';
-// New windows for dock apps
 export { default as MailWindow } from './MailWindow';
 export { default as PhotosWindow } from './PhotosWindow';
 export { default as CalendarWindow } from './CalendarWindow';
@@ -20,18 +20,6 @@ export { default as LuxWindow } from './LuxWindow';
 export { default as ZooWindow } from './ZooWindow';
 export { default as StickiesWindow } from './StickiesWindow';
 export { default as ActivityMonitorWindow } from './ActivityMonitorWindow';
-export { default as BooksWindow } from './BooksWindow';
-export { default as ConsoleWindow } from './ConsoleWindow';
-export { default as ContactsWindow } from './ContactsWindow';
-export { default as DictionaryWindow } from './DictionaryWindow';
-export { default as DiskUtilityWindow } from './DiskUtilityWindow';
-export { default as FontBookWindow } from './FontBookWindow';
-export { default as FreeformWindow } from './FreeformWindow';
-export { default as MapsWindow } from './MapsWindow';
-export { default as NewsWindow } from './NewsWindow';
-export { default as PasswordsWindow } from './PasswordsWindow';
-export { default as PodcastsWindow } from './PodcastsWindow';
-export { default as PreviewWindow } from './PreviewWindow';
-export { default as StocksWindow } from './StocksWindow';
-export { default as TranslateWindow } from './TranslateWindow';
-export { default as VoiceMemosWindow } from './VoiceMemosWindow';
+
+// Additional apps are dynamically loaded from zos-apps organization
+// See @z-os/apps for the dynamic app loader

@@ -1,0 +1,108 @@
+name: Update App Store
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_screenshots:
+        description: 'Force screenshot capture for all apps'
+        required: false
+        default: 'false'
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    outputs:
+      apps_updated: ${{ steps.check.outputs.apps_updated }}
+      updated_list: ${{ steps.check.outputs.updated_list }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check for app updates
+        id: check
+        run: |
+          npm install -g @octokit/rest
+          node scripts/check-app-updates.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  capture-screenshots:
+    needs: check-updates
+    if: needs.check-updates.outputs.apps_updated == 'true' || github.event.inputs.force_screenshots == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright
+        run: npx playwright install chromium
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Start dev server
+        run: |
+          pnpm dev &
+          sleep 10
+
+      - name: Capture screenshots
+        run: npx tsx scripts/capture-all-screenshots.ts
+        env:
+          UPDATED_APPS: ${{ needs.check-updates.outputs.updated_list }}
+
+      - name: Update app manifests
+        run: npx tsx scripts/update-app-manifests.ts
+
+      - name: Commit and push screenshots
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          bash scripts/push-all-apps.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-registry:
+    needs: [check-updates, capture-screenshots]
+    if: always() && needs.check-updates.outputs.apps_updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update app registry
+        run: node scripts/update-registry.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit registry changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add -A
+          git diff --cached --quiet || git commit -m "chore: update app registry"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@playwright/test':
+        specifier: ^1.57.0
+        version: 1.57.0
+      playwright:
+        specifier: ^1.57.0
+        version: 1.57.0
       turbo:
         specifier: ^2.3.3
         version: 2.7.2
@@ -118,1230 +124,6 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@types/node@25.0.3)(jiti@1.21.7)(jsdom@27.4.0)
 
-  packages/app-activity-monitor:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-books:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-calculator:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-calendar:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-clock:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-console:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-contacts:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-dictionary:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-disk-utility:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-facetime:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-finder:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-font-book:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-freeform:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-hanzo-ai:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-lux:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-mail:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-maps:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-messages:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-music:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-news:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-notes:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-passwords:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-photos:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-podcasts:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-preview:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-reminders:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-safari:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-settings:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-stickies:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-stocks:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-terminal:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-textedit:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-translate:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-voice-memos:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-weather:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
-  packages/app-zoo:
-    dependencies:
-      '@z-os/core':
-        specifier: workspace:*
-        version: link:../core
-      '@z-os/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@z-os/ui':
-        specifier: workspace:*
-        version: link:../ui
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@18.3.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.3.1(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.27
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.7(@types/react@18.3.27)
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
   packages/apps:
     dependencies:
       '@z-os/core':
@@ -1442,6 +224,37 @@ importers:
         version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
       typescript:
         specifier: ^5.7.2
+        version: 5.9.3
+
+  packages/runtime:
+    dependencies:
+      '@z-os/core':
+        specifier: workspace:*
+        version: link:../core
+      '@z-os/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@z-os/ui':
+        specifier: workspace:*
+        version: link:../ui
+      react:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.6
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.1.5
+        version: 19.2.3(@types/react@19.2.7)
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/sdk:
@@ -2223,6 +1036,11 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@playwright/test@1.57.0':
+    resolution: {integrity: sha512-6TyEnHgd6SArQO8UO2OMTxshln3QMWBtPGrOCgs3wVEmQmwyuNtB10IZMfmYDE0riwNR1cu4q+pPcxMVtaG3TA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   '@radix-ui/primitive@1.1.3':
     resolution: {integrity: sha512-JTF99U/6XIjCBo0wqkU5sK10glYe27MRRsfwoiq5zzOEZLHU3A3KCMa5X/azekYRCJ0HlwI0crAXS/5dEHTzDg==}
 
@@ -2704,8 +1522,16 @@ packages:
     peerDependencies:
       '@types/react': ^18.0.0
 
+  '@types/react-dom@19.2.3':
+    resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
+    peerDependencies:
+      '@types/react': ^19.2.0
+
   '@types/react@18.3.27':
     resolution: {integrity: sha512-cisd7gxkzjBKU2GgdYrTdtQx1SORymWyaAFhaxQPK9bYO9ot3Y5OikQRvY0VYQtvwjeQnizCINJAenh/V7MK2w==}
+
+  '@types/react@19.2.7':
+    resolution: {integrity: sha512-MWtvHrGZLFttgeEj28VXHxpmwYbor/ATPYbBfSFZEIRK0ecCFLl2Qo55z52Hss+UV9CRN7trSeq1zbgx7YDWWg==}
 
   '@vitejs/plugin-react@4.7.0':
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
@@ -3046,6 +1872,11 @@ packages:
       react-dom:
         optional: true
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -3296,6 +2127,16 @@ packages:
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
+
+  playwright-core@1.57.0:
+    resolution: {integrity: sha512-agTcKlMw/mjBWOnD6kFZttAAGHgi/Nw0CZ2o6JqWSbMlI219lAFLZZCyqByTsvVAJq5XA5H8cA6PrvBRpBWEuQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.57.0:
+    resolution: {integrity: sha512-ilYQj1s8sr2ppEJ2YVadYBN0Mb3mdo9J0wQ+UuDhzYqURwSoW4n1Xs5vs7ORwgDGmyEh33tRMeS8KhdkMoLXQw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -3829,6 +2670,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -4453,6 +3295,10 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
+  '@playwright/test@1.57.0':
+    dependencies:
+      playwright: 1.57.0
+
   '@radix-ui/primitive@1.1.3': {}
 
   '@radix-ui/react-arrow@1.1.7(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -4875,9 +3721,17 @@ snapshots:
     dependencies:
       '@types/react': 18.3.27
 
+  '@types/react-dom@19.2.3(@types/react@19.2.7)':
+    dependencies:
+      '@types/react': 19.2.7
+
   '@types/react@18.3.27':
     dependencies:
       '@types/prop-types': 15.7.15
+      csstype: 3.2.3
+
+  '@types/react@19.2.7':
+    dependencies:
       csstype: 3.2.3
 
   '@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@25.0.3))':
@@ -5293,6 +4147,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -5534,6 +4391,14 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.8.0
       pathe: 2.0.3
+
+  playwright-core@1.57.0: {}
+
+  playwright@1.57.0:
+    dependencies:
+      playwright-core: 1.57.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   postcss-import@15.1.0(postcss@8.5.6):
     dependencies:

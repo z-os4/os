@@ -1,28 +1,20 @@
 import { useReducer, useCallback, useMemo, useEffect } from 'react';
 
-// App types for window management
+// App types for window management (core bundled apps only)
 export type AppType =
   | 'Finder' | 'Terminal' | 'Safari' | 'Music' | 'Mail' | 'Calendar'
   | 'System Preferences' | 'Photos' | 'FaceTime' | 'TextEdit' | 'Notes'
-  | 'GitHub Stats' | 'Messages' | 'Activity Monitor' | 'Hanzo AI'
+  | 'Messages' | 'Activity Monitor' | 'Hanzo AI' | 'App Store'
   | 'Lux Wallet' | 'Zoo' | 'Calculator' | 'Clock' | 'Weather' | 'Stickies'
-  | 'App Store' | 'Xcode' | 'Reminders'
-  // New apps
-  | 'Books' | 'Console' | 'Contacts' | 'Dictionary' | 'Disk Utility'
-  | 'Font Book' | 'Freeform' | 'Maps' | 'News' | 'Passwords'
-  | 'Podcasts' | 'Preview' | 'Stocks' | 'Translate' | 'Voice Memos';
+  | 'Reminders';
 
 // All app types as array for iteration
 export const ALL_APPS: AppType[] = [
   'Finder', 'Terminal', 'Safari', 'Music', 'Mail', 'Calendar',
   'System Preferences', 'Photos', 'FaceTime', 'TextEdit', 'Notes',
-  'GitHub Stats', 'Messages', 'Activity Monitor', 'Hanzo AI',
+  'Messages', 'Activity Monitor', 'Hanzo AI', 'App Store',
   'Lux Wallet', 'Zoo', 'Calculator', 'Clock', 'Weather', 'Stickies',
-  'App Store', 'Xcode', 'Reminders',
-  // New apps
-  'Books', 'Console', 'Contacts', 'Dictionary', 'Disk Utility',
-  'Font Book', 'Freeform', 'Maps', 'News', 'Passwords',
-  'Podcasts', 'Preview', 'Stocks', 'Translate', 'Voice Memos'
+  'Reminders',
 ];
 
 // Window state - which windows are open

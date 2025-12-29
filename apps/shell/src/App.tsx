@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { DockProvider } from '@z-os/core';
-import Desktop from './components/Desktop';
+import ResponsiveShell from './components/ResponsiveShell';
 import BootSequence from './components/BootSequence';
+import { useDevice } from './components/hooks/useDevice';
 
 // System states
 type SystemState = 'booting' | 'running' | 'locked' | 'sleeping' | 'shutdown';
@@ -32,7 +33,7 @@ function App() {
   return (
     <DockProvider>
       <div className="h-screen w-screen overflow-hidden bg-black">
-        <Desktop
+        <ResponsiveShell
           isLocked={systemState === 'locked'}
           onUnlock={handleUnlock}
           onShutdown={handleShutdown}

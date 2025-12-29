@@ -423,3 +423,10 @@ export function createDockContextMenu(options: {
 
   return items;
 }
+
+// ============================================================================
+// Utilities
+// ============================================================================
+
+export * from './utils/formatting';
+export * from './utils/colors';

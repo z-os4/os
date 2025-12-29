@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ZWindow } from '@z-os/ui';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Sparkles, AlertCircle, Settings, Key } from 'lucide-react';
 
 interface HanzoAIWindowProps {
   onClose: () => void;
@@ -9,9 +9,12 @@ interface HanzoAIWindowProps {
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'error';
   content: string;
 }
+
+// Hanzo API configuration
+const HANZO_API_URL = 'https://api.hanzo.ai/v1/chat/completions';
 
 const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
   const [messages, setMessages] = useState<Message[]>([
@@ -23,8 +26,30 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load API key from localStorage
+  useEffect(() => {
+    const savedKey = localStorage.getItem('hanzo-api-key');
+    if (savedKey) {
+      setApiKey(savedKey);
+    }
+  }, []);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const saveApiKey = (key: string) => {
+    localStorage.setItem('hanzo-api-key', key);
+    setApiKey(key);
+    setShowApiKeyInput(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -38,25 +63,63 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const responses = [
-        "That's an interesting question! Let me think about it...",
-        "I'd be happy to help you with that.",
-        "Great question! Here's what I know...",
-        "I understand. Let me provide some insights.",
-        "Thanks for asking! Here's my perspective...",
-      ];
+    try {
+      // Build conversation history for context
+      const conversationHistory = messages
+        .filter(m => m.role !== 'error')
+        .map(m => ({
+          role: m.role,
+          content: m.content
+        }));
+
+      conversationHistory.push({ role: 'user', content: userMessage.content });
+
+      const response = await fetch(HANZO_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(apiKey && { 'Authorization': `Bearer ${apiKey}` }),
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are Hanzo AI, a helpful and intelligent assistant integrated into zOS. Be concise, friendly, and helpful.'
+            },
+            ...conversationHistory
+          ],
+          max_tokens: 1024,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || `API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const aiContent = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: responses[Math.floor(Math.random() * responses.length)]
+        content: aiContent
       };
 
       setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Hanzo AI error:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'error',
+        content: error instanceof Error ? error.message : 'Failed to connect to Hanzo AI'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+    }
   };
 
   return (
@@ -70,15 +133,72 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
     >
       <div className="flex flex-col h-full bg-gradient-to-br from-[#1a1a2e] to-[#16213e]">
         {/* Header */}
-        <div className="flex items-center gap-3 p-4 border-b border-white/10">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-white font-medium">Hanzo AI</h2>
+              <p className="text-xs text-white/50 flex items-center gap-1">
+                {apiKey ? (
+                  <>
+                    <Key className="w-3 h-3 text-green-400" />
+                    <span className="text-green-400">Connected</span>
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="w-3 h-3 text-yellow-400" />
+                    <span className="text-yellow-400">No API key</span>
+                  </>
+                )}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-white font-medium">Hanzo AI</h2>
-            <p className="text-xs text-white/50">Always ready to help</p>
-          </div>
+          <button
+            onClick={() => setShowApiKeyInput(true)}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            title="API Settings"
+          >
+            <Settings className="w-4 h-4 text-white/50" />
+          </button>
         </div>
+
+        {/* API Key Input Modal */}
+        {showApiKeyInput && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+            <div className="bg-[#2a2a3e] rounded-xl p-6 w-80">
+              <h3 className="text-white font-medium mb-3">Enter Hanzo API Key</h3>
+              <input
+                type="password"
+                placeholder="sk-..."
+                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30 mb-3"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    saveApiKey((e.target as HTMLInputElement).value);
+                  }
+                }}
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowApiKeyInput(false)}
+                  className="flex-1 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => {
+                    const input = (e.target as HTMLElement).parentElement?.previousElementSibling as HTMLInputElement;
+                    if (input?.value) saveApiKey(input.value);
+                  }}
+                  className="flex-1 py-2 bg-gradient-to-br from-orange-400 to-pink-600 text-white rounded-lg hover:opacity-90"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-auto p-4 space-y-4">
@@ -90,19 +210,25 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                 message.role === 'user'
                   ? 'bg-blue-500/20'
+                  : message.role === 'error'
+                  ? 'bg-red-500/20'
                   : 'bg-gradient-to-br from-orange-400 to-pink-600'
               }`}>
                 {message.role === 'user'
                   ? <User className="w-4 h-4 text-blue-400" />
+                  : message.role === 'error'
+                  ? <AlertCircle className="w-4 h-4 text-red-400" />
                   : <Bot className="w-4 h-4 text-white" />
                 }
               </div>
               <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                 message.role === 'user'
                   ? 'bg-blue-500 text-white'
+                  : message.role === 'error'
+                  ? 'bg-red-500/20 text-red-300'
                   : 'bg-white/10 text-white/90'
               }`}>
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
             </div>
           ))}
@@ -120,6 +246,7 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}

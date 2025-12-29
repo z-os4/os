@@ -8,45 +8,8 @@ import Spotlight from './Spotlight';
 import AppSwitcher from './AppSwitcher';
 import Launchpad from './Launchpad';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
-// System Windows - all bundled locally
-import {
-  FinderWindow,
-  TerminalWindow,
-  SafariWindow,
-  HanzoAIWindow,
-  SettingsWindow,
-  CalculatorWindow,
-  ClockWindow,
-  NotesWindow,
-  WeatherWindow,
-  RemindersWindow,
-  MailWindow,
-  PhotosWindow,
-  CalendarWindow,
-  MessagesWindow,
-  FaceTimeWindow,
-  MusicWindow,
-  TextEditWindow,
-  LuxWindow,
-  ZooWindow,
-  StickiesWindow,
-  ActivityMonitorWindow,
-  BooksWindow,
-  ConsoleWindow,
-  ContactsWindow,
-  DictionaryWindow,
-  DiskUtilityWindow,
-  FontBookWindow,
-  FreeformWindow,
-  MapsWindow,
-  NewsWindow,
-  PasswordsWindow,
-  PodcastsWindow,
-  PreviewWindow,
-  StocksWindow,
-  TranslateWindow,
-  VoiceMemosWindow,
-} from './windows';
+// Centralized window rendering with lazy loading
+import { AllWindowsRenderer } from './WindowRenderer';
 // System dialogs and screens
 import ForceQuitDialog from './ForceQuitDialog';
 import LockScreen from './LockScreen';
@@ -62,7 +25,7 @@ interface DesktopProps {
   onLock: () => void;
 }
 
-// Map dock app ids to window AppTypes
+// Map dock app ids to window AppTypes (core bundled apps only)
 const APP_ID_TO_TYPE: Record<string, AppType> = {
   'finder': 'Finder',
   'safari': 'Safari',
@@ -83,24 +46,8 @@ const APP_ID_TO_TYPE: Record<string, AppType> = {
   'clock': 'Clock',
   'weather': 'Weather',
   'reminders': 'Reminders',
-  'xcode': 'Xcode',
   'stickies': 'Stickies',
   'activity-monitor': 'Activity Monitor',
-  'books': 'Books',
-  'console': 'Console',
-  'contacts': 'Contacts',
-  'dictionary': 'Dictionary',
-  'disk-utility': 'Disk Utility',
-  'font-book': 'Font Book',
-  'freeform': 'Freeform',
-  'maps': 'Maps',
-  'news': 'News',
-  'passwords': 'Passwords',
-  'podcasts': 'Podcasts',
-  'preview': 'Preview',
-  'stocks': 'Stocks',
-  'translate': 'Translate',
-  'voice-memos': 'Voice Memos',
 };
 
 const Desktop: React.FC<DesktopProps> = ({
@@ -256,223 +203,12 @@ const Desktop: React.FC<DesktopProps> = ({
 
         {/* Desktop Content */}
         <div className="pt-7 pb-20 h-full">
-          {/* System Windows */}
-          {windows.isOpen('Finder') && (
-            <FinderWindow
-              onClose={() => windows.closeWindow('Finder')}
-              onFocus={() => windows.focusWindow('Finder')}
-            />
-          )}
-          {windows.isOpen('Terminal') && (
-            <TerminalWindow
-              onClose={() => windows.closeWindow('Terminal')}
-              onFocus={() => windows.focusWindow('Terminal')}
-            />
-          )}
-          {windows.isOpen('Safari') && (
-            <SafariWindow
-              onClose={() => windows.closeWindow('Safari')}
-              onFocus={() => windows.focusWindow('Safari')}
-            />
-          )}
-          {windows.isOpen('Hanzo AI') && (
-            <HanzoAIWindow
-              onClose={() => windows.closeWindow('Hanzo AI')}
-              onFocus={() => windows.focusWindow('Hanzo AI')}
-            />
-          )}
-          {windows.isOpen('System Preferences') && (
-            <SettingsWindow
-              onClose={() => windows.closeWindow('System Preferences')}
-              onFocus={() => windows.focusWindow('System Preferences')}
-            />
-          )}
-          {windows.isOpen('Calculator') && (
-            <CalculatorWindow
-              onClose={() => windows.closeWindow('Calculator')}
-              onFocus={() => windows.focusWindow('Calculator')}
-            />
-          )}
-          {windows.isOpen('Clock') && (
-            <ClockWindow
-              onClose={() => windows.closeWindow('Clock')}
-              onFocus={() => windows.focusWindow('Clock')}
-            />
-          )}
-          {windows.isOpen('Notes') && (
-            <NotesWindow
-              onClose={() => windows.closeWindow('Notes')}
-              onFocus={() => windows.focusWindow('Notes')}
-            />
-          )}
-          {windows.isOpen('Weather') && (
-            <WeatherWindow
-              onClose={() => windows.closeWindow('Weather')}
-              onFocus={() => windows.focusWindow('Weather')}
-            />
-          )}
-          {windows.isOpen('Reminders') && (
-            <RemindersWindow
-              onClose={() => windows.closeWindow('Reminders')}
-              onFocus={() => windows.focusWindow('Reminders')}
-            />
-          )}
-          {windows.isOpen('Mail') && (
-            <MailWindow
-              onClose={() => windows.closeWindow('Mail')}
-              onFocus={() => windows.focusWindow('Mail')}
-            />
-          )}
-          {windows.isOpen('Photos') && (
-            <PhotosWindow
-              onClose={() => windows.closeWindow('Photos')}
-              onFocus={() => windows.focusWindow('Photos')}
-            />
-          )}
-          {windows.isOpen('Calendar') && (
-            <CalendarWindow
-              onClose={() => windows.closeWindow('Calendar')}
-              onFocus={() => windows.focusWindow('Calendar')}
-            />
-          )}
-          {windows.isOpen('Messages') && (
-            <MessagesWindow
-              onClose={() => windows.closeWindow('Messages')}
-              onFocus={() => windows.focusWindow('Messages')}
-            />
-          )}
-          {windows.isOpen('FaceTime') && (
-            <FaceTimeWindow
-              onClose={() => windows.closeWindow('FaceTime')}
-              onFocus={() => windows.focusWindow('FaceTime')}
-            />
-          )}
-          {windows.isOpen('Music') && (
-            <MusicWindow
-              onClose={() => windows.closeWindow('Music')}
-              onFocus={() => windows.focusWindow('Music')}
-            />
-          )}
-          {windows.isOpen('TextEdit') && (
-            <TextEditWindow
-              onClose={() => windows.closeWindow('TextEdit')}
-              onFocus={() => windows.focusWindow('TextEdit')}
-            />
-          )}
-          {windows.isOpen('Lux Wallet') && (
-            <LuxWindow
-              onClose={() => windows.closeWindow('Lux Wallet')}
-              onFocus={() => windows.focusWindow('Lux Wallet')}
-            />
-          )}
-          {windows.isOpen('Zoo') && (
-            <ZooWindow
-              onClose={() => windows.closeWindow('Zoo')}
-              onFocus={() => windows.focusWindow('Zoo')}
-            />
-          )}
-          {windows.isOpen('Stickies') && (
-            <StickiesWindow
-              onClose={() => windows.closeWindow('Stickies')}
-              onFocus={() => windows.focusWindow('Stickies')}
-            />
-          )}
-          {windows.isOpen('Activity Monitor') && (
-            <ActivityMonitorWindow
-              onClose={() => windows.closeWindow('Activity Monitor')}
-              onFocus={() => windows.focusWindow('Activity Monitor')}
-            />
-          )}
-          {windows.isOpen('Books') && (
-            <BooksWindow
-              onClose={() => windows.closeWindow('Books')}
-              onFocus={() => windows.focusWindow('Books')}
-            />
-          )}
-          {windows.isOpen('Console') && (
-            <ConsoleWindow
-              onClose={() => windows.closeWindow('Console')}
-              onFocus={() => windows.focusWindow('Console')}
-            />
-          )}
-          {windows.isOpen('Contacts') && (
-            <ContactsWindow
-              onClose={() => windows.closeWindow('Contacts')}
-              onFocus={() => windows.focusWindow('Contacts')}
-            />
-          )}
-          {windows.isOpen('Dictionary') && (
-            <DictionaryWindow
-              onClose={() => windows.closeWindow('Dictionary')}
-              onFocus={() => windows.focusWindow('Dictionary')}
-            />
-          )}
-          {windows.isOpen('Disk Utility') && (
-            <DiskUtilityWindow
-              onClose={() => windows.closeWindow('Disk Utility')}
-              onFocus={() => windows.focusWindow('Disk Utility')}
-            />
-          )}
-          {windows.isOpen('Font Book') && (
-            <FontBookWindow
-              onClose={() => windows.closeWindow('Font Book')}
-              onFocus={() => windows.focusWindow('Font Book')}
-            />
-          )}
-          {windows.isOpen('Freeform') && (
-            <FreeformWindow
-              onClose={() => windows.closeWindow('Freeform')}
-              onFocus={() => windows.focusWindow('Freeform')}
-            />
-          )}
-          {windows.isOpen('Maps') && (
-            <MapsWindow
-              onClose={() => windows.closeWindow('Maps')}
-              onFocus={() => windows.focusWindow('Maps')}
-            />
-          )}
-          {windows.isOpen('News') && (
-            <NewsWindow
-              onClose={() => windows.closeWindow('News')}
-              onFocus={() => windows.focusWindow('News')}
-            />
-          )}
-          {windows.isOpen('Passwords') && (
-            <PasswordsWindow
-              onClose={() => windows.closeWindow('Passwords')}
-              onFocus={() => windows.focusWindow('Passwords')}
-            />
-          )}
-          {windows.isOpen('Podcasts') && (
-            <PodcastsWindow
-              onClose={() => windows.closeWindow('Podcasts')}
-              onFocus={() => windows.focusWindow('Podcasts')}
-            />
-          )}
-          {windows.isOpen('Preview') && (
-            <PreviewWindow
-              onClose={() => windows.closeWindow('Preview')}
-              onFocus={() => windows.focusWindow('Preview')}
-            />
-          )}
-          {windows.isOpen('Stocks') && (
-            <StocksWindow
-              onClose={() => windows.closeWindow('Stocks')}
-              onFocus={() => windows.focusWindow('Stocks')}
-            />
-          )}
-          {windows.isOpen('Translate') && (
-            <TranslateWindow
-              onClose={() => windows.closeWindow('Translate')}
-              onFocus={() => windows.focusWindow('Translate')}
-            />
-          )}
-          {windows.isOpen('Voice Memos') && (
-            <VoiceMemosWindow
-              onClose={() => windows.closeWindow('Voice Memos')}
-              onFocus={() => windows.focusWindow('Voice Memos')}
-            />
-          )}
+          {/* All System Windows - lazy loaded via WindowRenderer */}
+          <AllWindowsRenderer
+            openWindows={windows.windows}
+            closeWindow={windows.closeWindow}
+            focusWindow={windows.focusWindow}
+          />
 
           {/* Xcode Window */}
           {showXcode && (
