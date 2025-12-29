@@ -46,7 +46,7 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a]">
+      <div className="flex flex-col h-full bg-black">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <div className="flex items-center gap-2">

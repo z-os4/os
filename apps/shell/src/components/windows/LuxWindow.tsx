@@ -53,7 +53,7 @@ const LuxWindow: React.FC<LuxWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 400, height: 600 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a]">
+      <div className="flex flex-col h-full bg-black">
         {/* Header */}
         <div className="p-6 text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">

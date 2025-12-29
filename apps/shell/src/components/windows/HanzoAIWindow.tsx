@@ -131,7 +131,7 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 500, height: 600 }}
       windowType="default"
     >
-      <div className="flex flex-col h-full bg-gradient-to-br from-[#1a1a2e] to-[#16213e]">
+      <div className="flex flex-col h-full bg-black">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <div className="flex items-center gap-3">
@@ -167,7 +167,7 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
         {/* API Key Input Modal */}
         {showApiKeyInput && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-            <div className="bg-[#2a2a3e] rounded-xl p-6 w-80">
+            <div className="bg-neutral-900 rounded-xl p-6 w-80 border border-white/10">
               <h3 className="text-white font-medium mb-3">Enter Hanzo API Key</h3>
               <input
                 type="password"
