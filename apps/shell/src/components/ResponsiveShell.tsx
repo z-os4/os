@@ -14,6 +14,9 @@ import { MobileShell } from './mobile/MobileShell';
 import { MobileApp } from './mobile/MobileApp';
 import Desktop from './Desktop';
 
+// Show debug indicator in dev mode
+const DEV_MODE = import.meta.env.DEV;
+
 // App type mapping
 const APP_ID_TO_TYPE: Record<string, AppType> = {
   finder: 'Finder',
@@ -70,8 +73,26 @@ interface ResponsiveShellProps {
   onLock: () => void;
 }
 
+// Debug indicator component
+const DeviceDebugIndicator: React.FC<{ type: string; width: number }> = ({ type, width }) => {
+  if (!DEV_MODE) return null;
+  
+  const colors: Record<string, string> = {
+    mobile: 'bg-green-500',
+    tablet: 'bg-blue-500', 
+    laptop: 'bg-yellow-500',
+    desktop: 'bg-red-500',
+  };
+  
+  return (
+    <div className={`fixed bottom-20 right-4 z-[9999] ${colors[type] || 'bg-gray-500'} text-white text-xs px-2 py-1 rounded-full opacity-75`}>
+      {type} ({width}px)
+    </div>
+  );
+};
+
 export const ResponsiveShell: React.FC<ResponsiveShellProps> = (props) => {
-  const { isMobile, isTablet, isDesktop, type } = useDevice();
+  const { isMobile, isTablet, isDesktop, type, screenWidth } = useDevice();
   const windows = useWindowManager();
   const [activeApp, setActiveApp] = useState<AppType | null>(null);
   const [showSearch, setShowSearch] = useState(false);
@@ -106,6 +127,7 @@ export const ResponsiveShell: React.FC<ResponsiveShellProps> = (props) => {
   if (isMobile || isTablet) {
     return (
       <div className="h-screen w-screen overflow-hidden bg-black">
+        <DeviceDebugIndicator type={type} width={screenWidth} />
         {/* Active App (full screen on mobile) */}
         {activeApp && windowComponents[activeApp] && (
           <MobileApp
@@ -151,7 +173,12 @@ export const ResponsiveShell: React.FC<ResponsiveShellProps> = (props) => {
   }
 
   // Desktop: macOS-style
-  return <Desktop {...props} />;
+  return (
+    <>
+      <DeviceDebugIndicator type={type} width={screenWidth} />
+      <Desktop {...props} />
+    </>
+  );
 };
 
 // Helper functions for app icons/colors

@@ -158,7 +158,7 @@ export const DockItem: React.FC<DockItemProps> = ({
               <Tooltip.Content
                 side="top"
                 sideOffset={tooltipOffset}
-                className="px-3 py-1.5 bg-black/90 backdrop-blur-xl text-white text-sm rounded-md border border-white/10 shadow-lg z-[10000]"
+                className="px-3 py-1.5 glass-menu zos-text-primary text-sm rounded-md shadow-lg z-[10000]"
               >
                 {label}
                 <Tooltip.Arrow className="fill-black/90" />
@@ -170,19 +170,19 @@ export const DockItem: React.FC<DockItemProps> = ({
 
       <ContextMenu.Portal>
         <ContextMenu.Content
-          className="min-w-[180px] bg-black/90 backdrop-blur-xl rounded-lg border border-white/20 p-1 shadow-xl z-[10000]"
+          className="min-w-[180px] glass-menu rounded-lg p-1 shadow-xl z-[10000]"
         >
           <ContextMenu.Item
             onClick={handleClick}
-            className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Open {label}
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             {isPinned ? 'Unpin from Dock' : 'Keep in Dock'}
           </ContextMenu.Item>
@@ -196,17 +196,17 @@ export const DockItem: React.FC<DockItemProps> = ({
             </ContextMenu.Item>
           )}
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-2 text-sm text-white/50 rounded-md cursor-default"
+            className="flex items-center px-3 py-2 text-sm zos-text-muted rounded-md cursor-default"
             disabled
           >
             Options
           </ContextMenu.Item>
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Show in Finder
           </ContextMenu.Item>

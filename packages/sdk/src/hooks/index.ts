@@ -21,3 +21,15 @@ export { useSelection } from './useSelection';
 
 // Utility hooks
 export { useDebounce, useDebouncedCallback, useThrottledCallback } from './useDebounce';
+
+// Audio hook
+export { useAudio } from './useAudio';
+
+// Graphics hooks
+export { useCanvas2D, useWebGL3D, useOrbitControls } from './useGraphics';
+export type {
+  UseCanvas2DOptions,
+  UseCanvas2DReturn,
+  UseWebGL3DOptions,
+  UseWebGL3DReturn,
+} from './useGraphics';

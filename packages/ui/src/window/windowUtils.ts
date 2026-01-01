@@ -1,12 +1,12 @@
-
-// Create a global z-index manager
-let globalZIndex = 40;
+import { windowZIndexManager } from '../constants';
 
 /**
  * Gets the next z-index value for window stacking
+ * Uses the centralized z-index manager for consistent layering
+ * @param windowId Optional window ID for tracking
  * @returns The next z-index value
  */
-export const getNextZIndex = () => ++globalZIndex;
+export const getNextZIndex = (windowId?: string) => windowZIndexManager.getNextZIndex(windowId);
 
 /**
  * Returns the appropriate window style based on window type

@@ -23,13 +23,13 @@ const Toggle: React.FC<{ enabled: boolean; onChange: (v: boolean) => void; disab
     onClick={() => !disabled && onChange(!enabled)}
     className={cn(
       "w-11 h-6 rounded-full transition-colors relative",
-      enabled ? "bg-green-500" : "bg-white/20",
+      enabled ? "bg-green-500" : "bg-[var(--zos-border-primary)]",
       disabled && "opacity-50 cursor-not-allowed"
     )}
   >
     <div className={cn(
-      "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform",
-      enabled ? "translate-x-5" : "translate-x-0.5"
+      "absolute top-0.5 w-5 h-5 rounded-full shadow transition-transform",
+      enabled ? "translate-x-5 bg-white" : "translate-x-0.5 bg-[var(--zos-text-primary)]"
     )} />
   </button>
 );
@@ -44,9 +44,9 @@ const Slider: React.FC<{ value: number; onChange: (v: number) => void; min?: num
     max={max}
     value={value}
     onChange={(e) => onChange(Number(e.target.value))}
-    className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer
+    className="w-full h-1 bg-[var(--zos-border-primary)] rounded-full appearance-none cursor-pointer
       [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow"
+      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--zos-accent-primary)] [&::-webkit-slider-thumb]:shadow"
   />
 );
 
@@ -59,14 +59,14 @@ const SettingRow: React.FC<{
 }> = ({ label, description, children, onClick }) => (
   <div
     className={cn(
-      "flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10",
-      onClick && "cursor-pointer hover:bg-white/10"
+      "flex items-center justify-between p-4 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]",
+      onClick && "cursor-pointer hover:bg-[var(--zos-surface-glass-hover)]"
     )}
     onClick={onClick}
   >
     <div>
-      <h3 className="text-white font-medium">{label}</h3>
-      {description && <p className="text-sm text-white/50">{description}</p>}
+      <h3 className="zos-text-primary font-medium">{label}</h3>
+      {description && <p className="text-sm zos-text-muted">{description}</p>}
     </div>
     {children}
   </div>
@@ -74,7 +74,7 @@ const SettingRow: React.FC<{
 
 const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => {
   const [activeSection, setActiveSection] = useState('general');
-  const { theme, setTheme } = useDesktopSettings();
+  const { theme, setTheme, colorScheme, setColorScheme } = useDesktopSettings();
 
   // Local state for settings
   const [wifiEnabled, setWifiEnabled] = useState(true);
@@ -128,25 +128,25 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'general':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">General</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">General</h2>
             <div className="space-y-3">
               <SettingRow label="About This zOS" description="Version 4.2.0">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-5 h-5 zos-text-muted" />
               </SettingRow>
               <SettingRow label="Software Update" description="Your system is up to date">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-400" />
-                  <ChevronRight className="w-5 h-5 text-white/30" />
+                  <ChevronRight className="w-5 h-5 zos-text-muted" />
                 </div>
               </SettingRow>
               <SettingRow label="Storage" description="128 GB available">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-5 h-5 zos-text-muted" />
               </SettingRow>
               <SettingRow label="AirDrop" description="Contacts Only">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-5 h-5 zos-text-muted" />
               </SettingRow>
               <SettingRow label="Login Items" description="5 items open at login">
-                <ChevronRight className="w-5 h-5 text-white/30" />
+                <ChevronRight className="w-5 h-5 zos-text-muted" />
               </SettingRow>
             </div>
           </div>
@@ -155,48 +155,54 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'appearance':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Appearance</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Appearance</h2>
 
             {/* Theme */}
             <div>
-              <h3 className="text-white font-medium mb-3">Theme</h3>
+              <h3 className="zos-text-primary font-medium mb-3">Theme</h3>
               <div className="flex gap-4">
                 <button
-                  onClick={() => setTheme('sequoia')}
+                  onClick={() => setColorScheme('dark')}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 transition-colors",
-                    theme === 'sequoia' ? "border-blue-500" : "border-white/10 hover:border-white/20"
+                    colorScheme === 'dark' ? "border-blue-500" : "border-white/10 hover:border-white/20"
                   )}
                 >
                   <div className="w-16 h-12 rounded bg-[#1e1e1e] border border-white/20 flex items-center justify-center">
-                    <Moon className="w-6 h-6 text-white/50" />
+                    <Moon className="w-6 h-6 zos-text-muted" />
                   </div>
-                  <span className="text-sm text-white">Dark</span>
+                  <span className="text-sm zos-text-primary">Dark</span>
                 </button>
                 <button
-                  onClick={() => setTheme('sonoma')}
+                  onClick={() => setColorScheme('light')}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 transition-colors",
-                    theme === 'sonoma' ? "border-blue-500" : "border-white/10 hover:border-white/20"
+                    colorScheme === 'light' ? "border-blue-500" : "border-white/10 hover:border-white/20"
                   )}
                 >
                   <div className="w-16 h-12 rounded bg-white border border-gray-300 flex items-center justify-center">
                     <Sun className="w-6 h-6 text-yellow-500" />
                   </div>
-                  <span className="text-sm text-white/70">Light</span>
+                  <span className="text-sm zos-text-primary/70">Light</span>
                 </button>
-                <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 border-white/10 hover:border-white/20 transition-colors">
+                <button
+                  onClick={() => setColorScheme('system')}
+                  className={cn(
+                    "flex flex-col items-center gap-2 p-4 rounded-lg bg-white/5 border-2 transition-colors",
+                    colorScheme === 'system' ? "border-blue-500" : "border-white/10 hover:border-white/20"
+                  )}
+                >
                   <div className="w-16 h-12 rounded bg-gradient-to-b from-white to-[#1e1e1e] border border-white/20 flex items-center justify-center">
                     <Laptop className="w-6 h-6 text-gray-500" />
                   </div>
-                  <span className="text-sm text-white/70">Auto</span>
+                  <span className="text-sm zos-text-primary/70">Auto</span>
                 </button>
               </div>
             </div>
 
             {/* Accent Color */}
             <div>
-              <h3 className="text-white font-medium mb-3">Accent Color</h3>
+              <h3 className="zos-text-primary font-medium mb-3">Accent Color</h3>
               <div className="flex gap-3">
                 {['#007AFF', '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#AF52DE', '#FF2D55', '#8E8E93'].map((color) => (
                   <button
@@ -210,7 +216,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
 
             {/* Wallpaper */}
             <div>
-              <h3 className="text-white font-medium mb-3">Wallpaper</h3>
+              <h3 className="zos-text-primary font-medium mb-3">Wallpaper</h3>
               <div className="grid grid-cols-3 gap-3">
                 {wallpapers.map((wp) => (
                   <button
@@ -222,7 +228,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
                     )}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-purple-900" />
-                    <span className="absolute bottom-1 left-2 text-xs text-white/70">{wp.name}</span>
+                    <span className="absolute bottom-1 left-2 text-xs zos-text-secondary">{wp.name}</span>
                     {theme === wp.id && (
                       <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
                         <Check className="w-3 h-3 text-white" />
@@ -243,7 +249,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'wifi':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Wi-Fi</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Wi-Fi</h2>
             <SettingRow label="Wi-Fi" description={wifiEnabled ? "Connected to Home Network" : "Off"}>
               <Toggle enabled={wifiEnabled} onChange={setWifiEnabled} />
             </SettingRow>
@@ -251,18 +257,18 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             {wifiEnabled && (
               <>
                 <div>
-                  <h3 className="text-white/70 text-sm mb-2">Known Networks</h3>
+                  <h3 className="zos-text-muted text-sm mb-2">Known Networks</h3>
                   <div className="space-y-2">
                     {['Home Network', 'Office WiFi', 'Coffee Shop'].map((network, i) => (
-                      <div key={network} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                      <div key={network} className="flex items-center justify-between p-3 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
                         <div className="flex items-center gap-3">
-                          <Wifi className={cn("w-4 h-4", i === 0 ? "text-blue-400" : "text-white/30")} />
-                          <span className="text-white">{network}</span>
-                          {i === 0 && <span className="text-xs text-white/50">Connected</span>}
+                          <Wifi className={cn("w-4 h-4", i === 0 ? "text-blue-400" : "zos-text-muted")} />
+                          <span className="zos-text-primary">{network}</span>
+                          {i === 0 && <span className="text-xs zos-text-muted">Connected</span>}
                         </div>
                         <div className="flex items-center gap-2">
                           {i === 0 && <Check className="w-4 h-4 text-blue-400" />}
-                          <Lock className="w-3 h-3 text-white/30" />
+                          <Lock className="w-3 h-3 zos-text-muted" />
                         </div>
                       </div>
                     ))}
@@ -279,32 +285,32 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'bluetooth':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Bluetooth</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Bluetooth</h2>
             <SettingRow label="Bluetooth" description={bluetoothEnabled ? "On" : "Off"}>
               <Toggle enabled={bluetoothEnabled} onChange={setBluetoothEnabled} />
             </SettingRow>
 
             {bluetoothEnabled && (
               <div>
-                <h3 className="text-white/70 text-sm mb-2">My Devices</h3>
+                <h3 className="zos-text-muted text-sm mb-2">My Devices</h3>
                 <div className="space-y-2">
                   {[
                     { name: 'AirPods Pro', type: 'Headphones', connected: true, battery: 85 },
                     { name: 'Magic Keyboard', type: 'Keyboard', connected: true, battery: 92 },
                     { name: 'Magic Mouse', type: 'Mouse', connected: false, battery: 45 },
                   ].map((device) => (
-                    <div key={device.name} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                    <div key={device.name} className="flex items-center justify-between p-3 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
                       <div className="flex items-center gap-3">
-                        <Bluetooth className={cn("w-4 h-4", device.connected ? "text-blue-400" : "text-white/30")} />
+                        <Bluetooth className={cn("w-4 h-4", device.connected ? "text-blue-400" : "zos-text-muted")} />
                         <div>
-                          <span className="text-white">{device.name}</span>
-                          <span className="text-xs text-white/50 ml-2">{device.type}</span>
+                          <span className="zos-text-primary">{device.name}</span>
+                          <span className="text-xs zos-text-muted ml-2">{device.type}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
-                          <Battery className="w-4 h-4 text-white/50" />
-                          <span className="text-xs text-white/50">{device.battery}%</span>
+                          <Battery className="w-4 h-4 zos-text-muted" />
+                          <span className="text-xs zos-text-muted">{device.battery}%</span>
                         </div>
                         {device.connected && <span className="text-xs text-green-400">Connected</span>}
                       </div>
@@ -319,7 +325,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'notifications':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Notifications</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Notifications</h2>
             <SettingRow label="Allow Notifications" description="Show notifications on the desktop">
               <Toggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
             </SettingRow>
@@ -328,11 +334,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </SettingRow>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Application Notifications</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Application Notifications</h3>
               <div className="space-y-2">
                 {['Messages', 'Mail', 'Calendar', 'Reminders', 'Safari'].map((app) => (
-                  <div key={app} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-white">{app}</span>
+                  <div key={app} className="flex items-center justify-between p-3 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
+                    <span className="zos-text-primary">{app}</span>
                     <Toggle enabled={true} onChange={() => {}} />
                   </div>
                 ))}
@@ -344,25 +350,25 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'sound':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Sound</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Sound</h2>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Output Volume</h3>
-                <span className="text-white/50">{volume}%</span>
+                <h3 className="zos-text-primary font-medium">Output Volume</h3>
+                <span className="zos-text-muted">{volume}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <Volume2 className="w-4 h-4 text-white/50" />
+                <Volume2 className="w-4 h-4 zos-text-muted" />
                 <Slider value={volume} onChange={setVolume} />
               </div>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Output Device</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Output Device</h3>
               <div className="space-y-2">
                 {['MacBook Pro Speakers', 'AirPods Pro', 'External Display'].map((device, i) => (
-                  <div key={device} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-white">{device}</span>
+                  <div key={device} className="flex items-center justify-between p-3 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
+                    <span className="zos-text-primary">{device}</span>
                     {i === 0 && <Check className="w-4 h-4 text-blue-400" />}
                   </div>
                 ))}
@@ -378,10 +384,10 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'privacy':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Privacy & Security</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Privacy & Security</h2>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Privacy</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Privacy</h3>
               <div className="space-y-2">
                 {[
                   { icon: Camera, label: 'Camera', desc: '2 apps have access' },
@@ -391,14 +397,14 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
                   { icon: Fingerprint, label: 'Touch ID', desc: 'Configured' },
                 ].map(({ icon: Icon, label, desc }) => (
                   <SettingRow key={label} label={label} description={desc}>
-                    <ChevronRight className="w-5 h-5 text-white/30" />
+                    <ChevronRight className="w-5 h-5 zos-text-muted" />
                   </SettingRow>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Security</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Security</h3>
               <SettingRow label="FileVault" description="Disk encryption is on">
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-green-400" />
@@ -420,30 +426,30 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'users':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Users & Groups</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Users & Groups</h2>
 
-            <div className="flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10">
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold text-white">
                 Z
               </div>
               <div>
-                <h3 className="text-white font-medium text-lg">Zach Kelling</h3>
-                <p className="text-white/50">Admin</p>
+                <h3 className="zos-text-primary font-medium text-lg">Zach Kelling</h3>
+                <p className="zos-text-muted">Admin</p>
               </div>
             </div>
 
             <SettingRow label="Password" description="Last changed 30 days ago">
-              <button className="px-3 py-1.5 rounded bg-white/10 text-white text-sm hover:bg-white/20">
+              <button className="px-3 py-1.5 rounded bg-[var(--zos-border-primary)] zos-text-primary text-sm hover:bg-[var(--zos-border-primary)]/80">
                 Change...
               </button>
             </SettingRow>
 
             <SettingRow label="Login Options" description="Automatic login disabled">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Other Users</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Other Users</h3>
               <SettingRow label="Guest User" description="Allow guests to log in">
                 <Toggle enabled={false} onChange={() => {}} />
               </SettingRow>
@@ -454,30 +460,30 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'keyboard':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Keyboard</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Keyboard</h2>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Key Repeat Speed</h3>
-                <span className="text-white/50">{keyRepeatSpeed}%</span>
+                <h3 className="zos-text-primary font-medium">Key Repeat Speed</h3>
+                <span className="zos-text-muted">{keyRepeatSpeed}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-white/50">Slow</span>
+                <span className="text-xs zos-text-muted">Slow</span>
                 <Slider value={keyRepeatSpeed} onChange={setKeyRepeatSpeed} />
-                <span className="text-xs text-white/50">Fast</span>
+                <span className="text-xs zos-text-muted">Fast</span>
               </div>
             </div>
 
             <SettingRow label="Press fn key to" description="Change Input Source">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="Keyboard Shortcuts" description="Customize keyboard shortcuts">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="Text Replacements" description="8 replacements configured">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="Dictation" description="Off">
@@ -489,17 +495,17 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'trackpad':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Trackpad</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Trackpad</h2>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-medium">Tracking Speed</h3>
-                <span className="text-white/50">{trackpadSpeed}%</span>
+                <h3 className="zos-text-primary font-medium">Tracking Speed</h3>
+                <span className="zos-text-muted">{trackpadSpeed}%</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-white/50">Slow</span>
+                <span className="text-xs zos-text-muted">Slow</span>
                 <Slider value={trackpadSpeed} onChange={setTrackpadSpeed} />
-                <span className="text-xs text-white/50">Fast</span>
+                <span className="text-xs zos-text-muted">Fast</span>
               </div>
             </div>
 
@@ -516,7 +522,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </SettingRow>
 
             <SettingRow label="More Gestures" description="Configure swipes and taps">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
           </div>
         );
@@ -524,10 +530,10 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'accessibility':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Accessibility</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Accessibility</h2>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Vision</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Vision</h3>
               <div className="space-y-2">
                 <SettingRow label="VoiceOver" description="Screen reader">
                   <Toggle enabled={false} onChange={() => {}} />
@@ -542,14 +548,14 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Motor</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Motor</h3>
               <SettingRow label="Reduce Motion" description="Minimize interface animations">
                 <Toggle enabled={reduceMotion} onChange={setReduceMotion} />
               </SettingRow>
             </div>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Hearing</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Hearing</h3>
               <SettingRow label="Captions" description="Show closed captions when available">
                 <Toggle enabled={false} onChange={() => {}} />
               </SettingRow>
@@ -560,13 +566,13 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'datetime':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Date & Time</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Date & Time</h2>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10 text-center">
-              <div className="text-4xl font-light text-white mb-1">
+            <div className="p-4 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)] text-center">
+              <div className="text-4xl font-light zos-text-primary mb-1">
                 {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
-              <div className="text-white/50">
+              <div className="zos-text-muted">
                 {new Date().toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </div>
             </div>
@@ -592,15 +598,15 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'battery':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Battery</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Battery</h2>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+            <div className="p-4 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <Battery className="w-8 h-8 text-green-400" />
                   <div>
-                    <div className="text-2xl font-semibold text-white">87%</div>
-                    <div className="text-sm text-white/50">Power Adapter Connected</div>
+                    <div className="text-2xl font-semibold zos-text-primary">87%</div>
+                    <div className="text-sm zos-text-muted">Power Adapter Connected</div>
                   </div>
                 </div>
                 <Zap className="w-5 h-5 text-yellow-400" />
@@ -623,7 +629,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </SettingRow>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Battery Health</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Battery Health</h3>
               <SettingRow label="Maximum Capacity" description="Your battery is functioning normally">
                 <span className="text-green-400">98%</span>
               </SettingRow>
@@ -634,15 +640,15 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'storage':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Storage</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Storage</h2>
 
-            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+            <div className="p-4 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-lg font-medium text-white">Macintosh HD</div>
-                  <div className="text-sm text-white/50">128 GB available of 512 GB</div>
+                  <div className="text-lg font-medium zos-text-primary">Macintosh HD</div>
+                  <div className="text-sm zos-text-muted">128 GB available of 512 GB</div>
                 </div>
-                <HardDrive className="w-6 h-6 text-white/30" />
+                <HardDrive className="w-6 h-6 zos-text-muted" />
               </div>
               <div className="h-4 bg-white/10 rounded-full overflow-hidden flex">
                 <div className="h-full bg-blue-500" style={{ width: '45%' }} title="Apps" />
@@ -663,7 +669,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </SettingRow>
 
             <SettingRow label="Optimize Storage" description="Store files in iCloud when space is low">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <button className="w-full p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2">
@@ -676,16 +682,16 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       case 'language':
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-white">Language & Region</h2>
+            <h2 className="text-xl font-semibold zos-text-primary">Language & Region</h2>
 
             <div>
-              <h3 className="text-white/70 text-sm mb-2">Preferred Languages</h3>
+              <h3 className="zos-text-muted text-sm mb-2">Preferred Languages</h3>
               <div className="space-y-2">
                 {['English (US)', 'Spanish', 'Japanese'].map((lang, i) => (
-                  <div key={lang} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                  <div key={lang} className="flex items-center justify-between p-3 rounded-lg bg-[var(--zos-bg-tertiary)] border border-[var(--zos-border-primary)]">
                     <div className="flex items-center gap-3">
-                      <span className="text-white/30 text-sm">{i + 1}</span>
-                      <span className="text-white">{lang}</span>
+                      <span className="zos-text-muted text-sm">{i + 1}</span>
+                      <span className="zos-text-primary">{lang}</span>
                       {i === 0 && <span className="text-xs text-blue-400">Primary</span>}
                     </div>
                   </div>
@@ -694,19 +700,19 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
             </div>
 
             <SettingRow label="Region" description="United States">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="Calendar" description="Gregorian">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="Temperature" description="Fahrenheit">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
 
             <SettingRow label="First day of week" description="Sunday">
-              <ChevronRight className="w-5 h-5 text-white/30" />
+              <ChevronRight className="w-5 h-5 zos-text-muted" />
             </SettingRow>
           </div>
         );
@@ -718,11 +724,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
               <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
                 {sections.find(s => s.id === activeSection)?.icon &&
                   React.createElement(sections.find(s => s.id === activeSection)!.icon, {
-                    className: 'w-8 h-8 text-white/30'
+                    className: 'w-8 h-8 zos-text-muted'
                   })
                 }
               </div>
-              <h3 className="text-white/50">
+              <h3 className="zos-text-muted">
                 {sections.find(s => s.id === activeSection)?.label} settings
               </h3>
             </div>
@@ -740,9 +746,9 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex h-full bg-[#1e1e1e]">
+      <div className="flex h-full zos-bg-elevated">
         {/* Sidebar */}
-        <div className="w-56 bg-black/30 border-r border-white/10 overflow-y-auto">
+        <div className="w-56 zos-bg-secondary border-r border-[var(--zos-border-primary)] overflow-y-auto">
           <div className="p-2">
             {sections.map((section) => (
               <button
@@ -751,13 +757,13 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ onClose, onFocus }) => 
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                   activeSection === section.id
-                    ? "bg-blue-500/20 text-white"
-                    : "text-white/70 hover:bg-white/5"
+                    ? "bg-[var(--zos-accent-primary)]/20 zos-text-primary"
+                    : "zos-text-secondary hover:bg-[var(--zos-border-primary)]"
                 )}
               >
                 <section.icon className={cn(
                   "w-5 h-5",
-                  activeSection === section.id ? "text-blue-400" : "text-white/50"
+                  activeSection === section.id ? "text-[var(--zos-accent-primary)]" : "zos-text-muted"
                 )} />
                 <span>{section.label}</span>
               </button>

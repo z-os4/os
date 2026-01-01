@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ZWindow } from '@z-os/ui';
+import { ZWindow, useTheme } from '@z-os/ui';
 import { Send, Bot, User, Sparkles, AlertCircle, Settings, Key } from 'lucide-react';
 
 interface HanzoAIWindowProps {
@@ -17,6 +17,7 @@ interface Message {
 const HANZO_API_URL = 'https://api.hanzo.ai/v1/chat/completions';
 
 const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
+  const { theme } = useTheme();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -131,25 +132,25 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 500, height: 600 }}
       windowType="default"
     >
-      <div className="flex flex-col h-full bg-black">
+      <div className="flex flex-col h-full zos-bg-primary">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
+        <div className="flex items-center justify-between p-4 border-b zos-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+              <Sparkles className="w-5 h-5 zos-text-primary" style={{ color: 'white' }} />
             </div>
             <div>
-              <h2 className="text-white font-medium">Hanzo AI</h2>
-              <p className="text-xs text-white/50 flex items-center gap-1">
+              <h2 className="zos-text-primary font-medium">Hanzo AI</h2>
+              <p className="text-xs zos-text-muted flex items-center gap-1">
                 {apiKey ? (
                   <>
-                    <Key className="w-3 h-3 text-green-400" />
-                    <span className="text-green-400">Connected</span>
+                    <Key className="w-3 h-3 zos-text-green" />
+                    <span className="zos-text-green">Connected</span>
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="w-3 h-3 text-yellow-400" />
-                    <span className="text-yellow-400">No API key</span>
+                    <AlertCircle className="w-3 h-3 zos-text-yellow" />
+                    <span className="zos-text-yellow">No API key</span>
                   </>
                 )}
               </p>
@@ -157,22 +158,22 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
           </div>
           <button
             onClick={() => setShowApiKeyInput(true)}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg hover:bg-[var(--zos-surface-glass-hover)] transition-colors"
             title="API Settings"
           >
-            <Settings className="w-4 h-4 text-white/50" />
+            <Settings className="w-4 h-4 zos-text-muted" />
           </button>
         </div>
 
         {/* API Key Input Modal */}
         {showApiKeyInput && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-            <div className="bg-neutral-900 rounded-xl p-6 w-80 border border-white/10">
-              <h3 className="text-white font-medium mb-3">Enter Hanzo API Key</h3>
+          <div className="absolute inset-0 zos-surface-overlay flex items-center justify-center z-10">
+            <div className="zos-bg-secondary rounded-xl p-6 w-80 border zos-border">
+              <h3 className="zos-text-primary font-medium mb-3">Enter Hanzo API Key</h3>
               <input
                 type="password"
                 placeholder="sk-..."
-                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30 mb-3"
+                className="w-full h-10 px-3 rounded-lg zos-surface-glass border zos-border zos-text-primary placeholder:zos-text-muted focus:outline-none focus:border-[var(--zos-border-focus)] mb-3"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     saveApiKey((e.target as HTMLInputElement).value);
@@ -182,7 +183,7 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowApiKeyInput(false)}
-                  className="flex-1 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                  className="flex-1 py-2 zos-surface-glass zos-text-primary rounded-lg hover:bg-[var(--zos-surface-glass-hover)]"
                 >
                   Cancel
                 </button>
@@ -209,24 +210,24 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                 message.role === 'user'
-                  ? 'bg-blue-500/20'
+                  ? 'bg-[var(--zos-accent-primary)]/20'
                   : message.role === 'error'
-                  ? 'bg-red-500/20'
+                  ? 'bg-[var(--zos-system-red)]/20'
                   : 'bg-gradient-to-br from-orange-400 to-pink-600'
               }`}>
                 {message.role === 'user'
-                  ? <User className="w-4 h-4 text-blue-400" />
+                  ? <User className="w-4 h-4 text-[var(--zos-accent-primary)]" />
                   : message.role === 'error'
-                  ? <AlertCircle className="w-4 h-4 text-red-400" />
+                  ? <AlertCircle className="w-4 h-4 text-[var(--zos-system-red)]" />
                   : <Bot className="w-4 h-4 text-white" />
                 }
               </div>
               <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                 message.role === 'user'
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-[var(--zos-accent-primary)] text-white'
                   : message.role === 'error'
-                  ? 'bg-red-500/20 text-red-300'
-                  : 'bg-white/10 text-white/90'
+                  ? 'bg-[var(--zos-system-red)]/20 text-[var(--zos-system-red)]'
+                  : 'zos-surface-glass zos-text-primary'
               }`}>
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
@@ -237,11 +238,11 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center flex-shrink-0">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-white/10 rounded-2xl px-4 py-3">
+              <div className="zos-surface-glass rounded-2xl px-4 py-3">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-2 h-2 bg-[var(--zos-text-muted)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-[var(--zos-text-muted)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-[var(--zos-text-muted)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
@@ -250,14 +251,14 @@ const HanzoAIWindow: React.FC<HanzoAIWindowProps> = ({ onClose, onFocus }) => {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t border-white/10">
+        <form onSubmit={handleSubmit} className="p-4 border-t zos-border">
           <div className="flex gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask Hanzo AI anything..."
-              className="flex-1 h-10 px-4 rounded-full bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30"
+              className="flex-1 h-10 px-4 rounded-full zos-surface-glass border zos-border zos-text-primary placeholder:zos-text-muted focus:outline-none focus:border-[var(--zos-border-focus)]"
             />
             <button
               type="submit"

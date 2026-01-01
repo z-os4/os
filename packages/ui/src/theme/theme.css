@@ -1,0 +1,160 @@
+/**
+ * zOS Theme CSS Variables
+ *
+ * These variables are set dynamically by ThemeProvider,
+ * but we define defaults here for SSR and fallback.
+ */
+
+:root {
+  /* Default to dark theme */
+  color-scheme: dark;
+
+  /* Background Colors */
+  --zos-bg-primary: #000000;
+  --zos-bg-secondary: #1a1a1a;
+  --zos-bg-tertiary: #2a2a2a;
+  --zos-bg-elevated: #1e1e1e;
+
+  /* Text Colors */
+  --zos-text-primary: #ffffff;
+  --zos-text-secondary: rgba(255, 255, 255, 0.7);
+  --zos-text-muted: rgba(255, 255, 255, 0.4);
+  --zos-text-inverted: #000000;
+
+  /* Accent Colors */
+  --zos-accent-primary: #007aff;
+  --zos-accent-secondary: #5856d6;
+  --zos-accent-hover: #0a84ff;
+
+  /* System Colors */
+  --zos-system-red: #ff3b30;
+  --zos-system-orange: #ff9500;
+  --zos-system-yellow: #ffcc00;
+  --zos-system-green: #28c840;
+  --zos-system-blue: #007aff;
+  --zos-system-purple: #af52de;
+  --zos-system-pink: #ff2d55;
+  --zos-system-cyan: #32d4de;
+
+  /* Border Colors */
+  --zos-border-primary: rgba(255, 255, 255, 0.1);
+  --zos-border-secondary: rgba(255, 255, 255, 0.05);
+  --zos-border-focus: rgba(0, 122, 255, 0.5);
+
+  /* Surface Colors */
+  --zos-surface-glass: rgba(30, 30, 30, 0.85);
+  --zos-surface-glass-hover: rgba(40, 40, 40, 0.9);
+  --zos-surface-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Spacing */
+  --zos-spacing-xs: 4px;
+  --zos-spacing-sm: 8px;
+  --zos-spacing-md: 16px;
+  --zos-spacing-lg: 24px;
+  --zos-spacing-xl: 32px;
+  --zos-spacing-2xl: 48px;
+  --zos-spacing-3xl: 64px;
+
+  /* Border Radius */
+  --zos-radius-none: 0;
+  --zos-radius-sm: 4px;
+  --zos-radius-md: 8px;
+  --zos-radius-lg: 12px;
+  --zos-radius-xl: 16px;
+  --zos-radius-2xl: 24px;
+  --zos-radius-full: 9999px;
+
+  /* Shadows */
+  --zos-shadow-none: none;
+  --zos-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --zos-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --zos-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --zos-shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.2);
+  --zos-shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+
+  /* Typography */
+  --zos-font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --zos-font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', monospace;
+  --zos-text-xs: 11px;
+  --zos-text-sm: 13px;
+  --zos-text-base: 15px;
+  --zos-text-lg: 17px;
+  --zos-text-xl: 20px;
+  --zos-text-2xl: 24px;
+  --zos-text-3xl: 30px;
+  --zos-text-4xl: 36px;
+
+  /* Transitions */
+  --zos-transition-fast: 100ms ease;
+  --zos-transition-normal: 200ms ease;
+  --zos-transition-slow: 300ms ease;
+}
+
+/* Light theme overrides */
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Background Colors */
+  --zos-bg-primary: #ffffff;
+  --zos-bg-secondary: #f5f5f7;
+  --zos-bg-tertiary: #e8e8ed;
+  --zos-bg-elevated: #ffffff;
+
+  /* Text Colors */
+  --zos-text-primary: #1d1d1f;
+  --zos-text-secondary: rgba(29, 29, 31, 0.7);
+  --zos-text-muted: rgba(29, 29, 31, 0.4);
+  --zos-text-inverted: #ffffff;
+
+  /* Border Colors */
+  --zos-border-primary: rgba(0, 0, 0, 0.1);
+  --zos-border-secondary: rgba(0, 0, 0, 0.05);
+
+  /* Surface Colors */
+  --zos-surface-glass: rgba(255, 255, 255, 0.85);
+  --zos-surface-glass-hover: rgba(255, 255, 255, 0.9);
+  --zos-surface-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* Utility classes using theme variables */
+.zos-bg-primary { background-color: var(--zos-bg-primary); }
+.zos-bg-secondary { background-color: var(--zos-bg-secondary); }
+.zos-bg-tertiary { background-color: var(--zos-bg-tertiary); }
+.zos-bg-elevated { background-color: var(--zos-bg-elevated); }
+
+.zos-text-primary { color: var(--zos-text-primary); }
+.zos-text-secondary { color: var(--zos-text-secondary); }
+.zos-text-muted { color: var(--zos-text-muted); }
+
+.zos-border { border-color: var(--zos-border-primary); }
+.zos-border-secondary { border-color: var(--zos-border-secondary); }
+
+.zos-surface-glass {
+  background-color: var(--zos-surface-glass);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--zos-border-primary);
+}
+
+.zos-surface-overlay {
+  background-color: var(--zos-surface-overlay);
+}
+
+/* System color utilities */
+.zos-text-red { color: var(--zos-system-red); }
+.zos-text-orange { color: var(--zos-system-orange); }
+.zos-text-yellow { color: var(--zos-system-yellow); }
+.zos-text-green { color: var(--zos-system-green); }
+.zos-text-blue { color: var(--zos-system-blue); }
+.zos-text-purple { color: var(--zos-system-purple); }
+.zos-text-pink { color: var(--zos-system-pink); }
+.zos-text-cyan { color: var(--zos-system-cyan); }
+
+.zos-bg-red { background-color: var(--zos-system-red); }
+.zos-bg-orange { background-color: var(--zos-system-orange); }
+.zos-bg-yellow { background-color: var(--zos-system-yellow); }
+.zos-bg-green { background-color: var(--zos-system-green); }
+.zos-bg-blue { background-color: var(--zos-system-blue); }
+.zos-bg-purple { background-color: var(--zos-system-purple); }
+.zos-bg-pink { background-color: var(--zos-system-pink); }
+.zos-bg-cyan { background-color: var(--zos-system-cyan); }

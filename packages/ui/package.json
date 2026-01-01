@@ -17,7 +17,40 @@
     "./quick-look": {
       "import": "./dist/quick-look/index.js",
       "types": "./dist/quick-look/index.d.ts"
-    }
+    },
+    "./notifications": {
+      "import": "./dist/notifications/index.js",
+      "types": "./dist/notifications/index.d.ts"
+    },
+    "./theme": {
+      "import": "./dist/theme/index.js",
+      "types": "./dist/theme/index.d.ts"
+    },
+    "./context-menu": {
+      "import": "./dist/context-menu/index.js",
+      "types": "./dist/context-menu/index.d.ts"
+    },
+    "./command-palette": {
+      "import": "./dist/command-palette/index.js",
+      "types": "./dist/command-palette/index.d.ts"
+    },
+    "./icons": {
+      "import": "./dist/icons/index.js",
+      "types": "./dist/icons/index.d.ts"
+    },
+    "./a11y": {
+      "import": "./dist/a11y/index.js",
+      "types": "./dist/a11y/index.d.ts"
+    },
+    "./forms": {
+      "import": "./dist/forms/index.js",
+      "types": "./dist/forms/index.d.ts"
+    },
+    "./media": {
+      "import": "./dist/media/index.js",
+      "types": "./dist/media/index.d.ts"
+    },
+    "./theme.css": "./src/theme/theme.css"
   },
   "scripts": {
     "build": "tsup",

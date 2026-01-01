@@ -37,7 +37,7 @@ function useDebouncedCallback<T extends (...args: unknown[]) => void>(
 const STORAGE_KEYS = {
   theme: 'zos-theme',
   customBgUrl: 'zos-customBgUrl',
-  colorScheme: 'zos-colorScheme',
+  colorScheme: 'zos-theme-mode', // Sync with ThemeProvider
   windowTransparency: 'zos-windowTransparency',
   fontSize: 'zos-fontSize',
   dockPosition: 'zos-dockPosition',
@@ -47,8 +47,8 @@ const STORAGE_KEYS = {
   dockAutoHide: 'zos-dockAutoHide',
 } as const;
 
-// Types
-export type ColorScheme = 'dark' | 'light' | 'auto';
+// Types - must match ThemeProvider's ThemeMode
+export type ColorScheme = 'dark' | 'light' | 'system';
 export type FontSize = 'small' | 'medium' | 'large';
 export type DockPosition = 'bottom' | 'left' | 'right';
 
@@ -248,10 +248,16 @@ export function useDesktopSettings(): DesktopSettings & DesktopSettingsActions {
   
   const setColorScheme = useCallback((value: ColorScheme) => {
     setColorSchemeState(value);
+    // Dispatch custom event for ThemeProvider to pick up
+    window.dispatchEvent(new CustomEvent('zos:theme-change', { detail: value }));
   }, []);
   
   const toggleDarkMode = useCallback(() => {
-    setColorSchemeState(prev => prev === 'dark' ? 'light' : 'dark');
+    setColorSchemeState(prev => {
+      const newValue = prev === 'dark' ? 'light' : 'dark';
+      window.dispatchEvent(new CustomEvent('zos:theme-change', { detail: newValue }));
+      return newValue;
+    });
   }, []);
   
   const setWindowTransparency = useCallback((value: number) => {

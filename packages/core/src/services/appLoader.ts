@@ -5,31 +5,32 @@
  * Apps can be dynamically loaded at runtime from GitHub.
  */
 
-// Types for app management
-export interface AppManifest {
+import type { AppCategory } from '../types/shared';
+
+/**
+ * App manifest for the loader
+ * Note: Uses 'identifier' field to match shared types convention
+ */
+export interface LoaderAppManifest {
   identifier: string;
   name: string;
   version: string;
   description?: string;
   author?: string;
   category?: AppCategory;
-  icon?: string; // Emoji icon from zos.icon in package.json
+  /** Emoji icon from zos.icon in package.json */
+  icon?: string;
   permissions?: string[];
+  /** GitHub repository URL */
   repository?: string;
+  /** Homepage URL */
   homepage?: string;
 }
 
-export type AppCategory =
-  | 'productivity'
-  | 'development'
-  | 'utilities'
-  | 'entertainment'
-  | 'communication'
-  | 'finance'
-  | 'system'
-  | 'other';
-
-export interface InstalledApp extends AppManifest {
+/**
+ * Installed app with additional metadata
+ */
+export interface InstalledApp extends LoaderAppManifest {
   installedAt: Date;
   updatedAt?: Date;
   source: 'builtin' | 'zos-apps' | 'external';
@@ -40,7 +41,7 @@ export interface AppUpdate {
   identifier: string;
   currentVersion: string;
   latestVersion: string;
-  app: AppManifest;
+  app: LoaderAppManifest;
 }
 
 // GitHub API response types
@@ -63,6 +64,9 @@ const CACHE_KEY = 'zos:apps:cache';
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 // Category to gradient mapping
+// Re-export AppCategory for backward compatibility
+export type { AppCategory } from '../types/shared';
+
 export const categoryGradients: Record<AppCategory, string> = {
   productivity: 'from-blue-500 to-cyan-500',
   development: 'from-purple-500 to-pink-500',
@@ -77,7 +81,7 @@ export const categoryGradients: Record<AppCategory, string> = {
 /**
  * Fetch available apps from the zos-apps GitHub organization
  */
-export async function fetchAvailableApps(): Promise<AppManifest[]> {
+export async function fetchAvailableApps(): Promise<LoaderAppManifest[]> {
   // Check cache first
   const cached = getCachedApps();
   if (cached) return cached;
@@ -121,7 +125,7 @@ export async function fetchAvailableApps(): Promise<AppManifest[]> {
 /**
  * Fetch app manifest from package.json
  */
-async function fetchAppManifest(repo: GitHubRepo): Promise<AppManifest> {
+async function fetchAppManifest(repo: GitHubRepo): Promise<LoaderAppManifest> {
   const response = await fetch(
     `https://api.github.com/repos/${repo.full_name}/contents/package.json`
   );
@@ -154,7 +158,7 @@ async function fetchAppManifest(repo: GitHubRepo): Promise<AppManifest> {
 /**
  * Create a basic manifest from repo info when package.json isn't available
  */
-function createManifestFromRepo(repo: GitHubRepo): AppManifest {
+function createManifestFromRepo(repo: GitHubRepo): LoaderAppManifest {
   return {
     identifier: `apps.zos.${repo.name}`,
     name: repo.name.charAt(0).toUpperCase() + repo.name.slice(1).replace(/-/g, ' '),
@@ -206,7 +210,7 @@ export function saveInstalledApps(apps: InstalledApp[]): void {
 /**
  * Install an app
  */
-export function installApp(manifest: AppManifest): InstalledApp {
+export function installApp(manifest: LoaderAppManifest): InstalledApp {
   const apps = getInstalledApps();
 
   const installed: InstalledApp = {
@@ -247,7 +251,7 @@ export function uninstallApp(identifier: string): void {
 /**
  * Update an app
  */
-export function updateApp(manifest: AppManifest): InstalledApp {
+export function updateApp(manifest: LoaderAppManifest): InstalledApp {
   const apps = getInstalledApps();
   const existing = apps.find(a => a.identifier === manifest.identifier);
 
@@ -436,7 +440,7 @@ function getBuiltinApps(): InstalledApp[] {
 /**
  * Cache helpers
  */
-function getCachedApps(): AppManifest[] | null {
+function getCachedApps(): LoaderAppManifest[] | null {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     if (!cached) return null;
@@ -453,7 +457,7 @@ function getCachedApps(): AppManifest[] | null {
   }
 }
 
-function setCachedApps(apps: AppManifest[]): void {
+function setCachedApps(apps: LoaderAppManifest[]): void {
   localStorage.setItem(CACHE_KEY, JSON.stringify({
     apps,
     timestamp: Date.now(),

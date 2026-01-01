@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ZWindow } from '@z-os/ui';
+import { ZWindow, useTheme } from '@z-os/ui';
 import { Sparkles, TrendingUp, Clock, Star, Grid, List, ExternalLink, Heart } from 'lucide-react';
 
 interface ZooWindowProps {
@@ -33,6 +33,7 @@ const categories = [
 ];
 
 const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
+  const { theme } = useTheme();
   const [activeCategory, setActiveCategory] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedNFT, setSelectedNFT] = useState<NFT | null>(null);
@@ -46,39 +47,39 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
       initialSize={{ width: 900, height: 600 }}
       windowType="system"
     >
-      <div className="flex flex-col h-full bg-black">
+      <div className="flex flex-col h-full zos-bg-primary">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
+        <div className="flex items-center justify-between p-4 border-b zos-border">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-purple-400" />
-            <h1 className="text-white font-bold text-lg">Zoo Marketplace</h1>
+            <Sparkles className="w-5 h-5 zos-text-purple" />
+            <h1 className="zos-text-primary font-bold text-lg">Zoo Marketplace</h1>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'zos-surface-glass' : 'hover:bg-[var(--zos-surface-glass-hover)]'}`}
             >
-              <Grid className="w-4 h-4 text-white/70" />
+              <Grid className="w-4 h-4 zos-text-secondary" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'zos-surface-glass' : 'hover:bg-[var(--zos-surface-glass-hover)]'}`}
             >
-              <List className="w-4 h-4 text-white/70" />
+              <List className="w-4 h-4 zos-text-secondary" />
             </button>
           </div>
         </div>
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-48 border-r border-white/10 p-3">
-            <h3 className="text-white/40 text-xs uppercase tracking-wider px-3 py-2">Browse</h3>
+          <div className="w-48 border-r zos-border p-3">
+            <h3 className="zos-text-muted text-xs uppercase tracking-wider px-3 py-2">Browse</h3>
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                  activeCategory === cat.id ? 'bg-purple-500/20 text-purple-400' : 'text-white/70 hover:bg-white/5'
+                  activeCategory === cat.id ? 'bg-[var(--zos-system-purple)]/20 zos-text-purple' : 'zos-text-secondary hover:bg-[var(--zos-surface-glass-hover)]'
                 }`}
               >
                 <cat.icon className="w-4 h-4" />
@@ -86,11 +87,11 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
               </button>
             ))}
 
-            <h3 className="text-white/40 text-xs uppercase tracking-wider px-3 py-2 mt-4">Collections</h3>
+            <h3 className="zos-text-muted text-xs uppercase tracking-wider px-3 py-2 mt-4">Collections</h3>
             {['Zoo Genesis', 'AI Animals', 'Bit Beasts'].map((col) => (
               <button
                 key={col}
-                className="w-full text-left px-3 py-2 text-white/70 hover:bg-white/5 rounded-lg text-sm transition-colors"
+                className="w-full text-left px-3 py-2 zos-text-secondary hover:bg-[var(--zos-surface-glass-hover)] rounded-lg text-sm transition-colors"
               >
                 {col}
               </button>
@@ -108,35 +109,35 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
                 <div className="flex-1">
                   <button
                     onClick={() => setSelectedNFT(null)}
-                    className="text-purple-400 text-sm mb-4 hover:underline"
+                    className="zos-text-purple text-sm mb-4 hover:underline"
                   >
-                    ← Back to gallery
+                    Back to gallery
                   </button>
-                  <p className="text-purple-400 text-sm">{selectedNFT.collection}</p>
-                  <h2 className="text-white text-2xl font-bold mt-1">{selectedNFT.name}</h2>
+                  <p className="zos-text-purple text-sm">{selectedNFT.collection}</p>
+                  <h2 className="zos-text-primary text-2xl font-bold mt-1">{selectedNFT.name}</h2>
                   <div className="flex items-center gap-4 mt-4">
                     <div>
-                      <p className="text-white/40 text-xs">Price</p>
-                      <p className="text-white text-xl font-bold">{selectedNFT.price}</p>
+                      <p className="zos-text-muted text-xs">Price</p>
+                      <p className="zos-text-primary text-xl font-bold">{selectedNFT.price}</p>
                     </div>
                     <div>
-                      <p className="text-white/40 text-xs">Likes</p>
-                      <p className="text-white/70 flex items-center gap-1">
-                        <Heart className="w-4 h-4 text-red-400" /> {selectedNFT.likes}
+                      <p className="zos-text-muted text-xs">Likes</p>
+                      <p className="zos-text-secondary flex items-center gap-1">
+                        <Heart className="w-4 h-4 zos-text-red" /> {selectedNFT.likes}
                       </p>
                     </div>
                   </div>
                   <div className="flex gap-3 mt-6">
-                    <button className="flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-medium transition-colors">
+                    <button className="flex-1 py-3 bg-[var(--zos-system-purple)] hover:opacity-90 text-white rounded-xl font-medium transition-opacity">
                       Buy Now
                     </button>
-                    <button className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors">
+                    <button className="px-4 py-3 zos-surface-glass hover:bg-[var(--zos-surface-glass-hover)] zos-text-primary rounded-xl transition-colors">
                       <Heart className="w-5 h-5" />
                     </button>
                   </div>
-                  <div className="mt-6 p-4 bg-white/5 rounded-xl">
-                    <h3 className="text-white font-medium mb-2">Description</h3>
-                    <p className="text-white/60 text-sm">
+                  <div className="mt-6 p-4 zos-surface-glass rounded-xl">
+                    <h3 className="zos-text-primary font-medium mb-2">Description</h3>
+                    <p className="zos-text-secondary text-sm">
                       A unique digital collectible from the {selectedNFT.collection} collection.
                       This NFT represents ownership of a one-of-a-kind piece in the Zoo ecosystem.
                     </p>
@@ -152,26 +153,26 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
                     onClick={() => setSelectedNFT(nft)}
                     className="group cursor-pointer"
                   >
-                    <div className="relative rounded-2xl overflow-hidden bg-white/5">
+                    <div className="relative rounded-2xl overflow-hidden zos-surface-glass">
                       <img
                         src={nft.image}
                         alt=""
                         className={`w-full ${viewMode === 'grid' ? 'aspect-square' : 'h-32'} object-cover`}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <button className="px-4 py-2 bg-purple-500 text-white rounded-lg font-medium">
+                        <button className="px-4 py-2 bg-[var(--zos-system-purple)] text-white rounded-lg font-medium">
                           View
                         </button>
                       </div>
                     </div>
                     <div className={`p-3 ${viewMode === 'list' ? 'flex items-center justify-between' : ''}`}>
                       <div>
-                        <p className="text-purple-400 text-xs">{nft.collection}</p>
-                        <p className="text-white font-medium">{nft.name}</p>
+                        <p className="zos-text-purple text-xs">{nft.collection}</p>
+                        <p className="zos-text-primary font-medium">{nft.name}</p>
                       </div>
                       <div className={viewMode === 'list' ? 'text-right' : 'flex items-center justify-between mt-2'}>
-                        <p className="text-white font-bold">{nft.price}</p>
-                        <p className="text-white/40 text-sm flex items-center gap-1">
+                        <p className="zos-text-primary font-bold">{nft.price}</p>
+                        <p className="zos-text-muted text-sm flex items-center gap-1">
                           <Heart className="w-3 h-3" /> {nft.likes}
                         </p>
                       </div>
@@ -184,9 +185,9 @@ const ZooWindow: React.FC<ZooWindowProps> = ({ onClose, onFocus }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 border-t border-white/10 flex items-center justify-between">
-          <p className="text-white/40 text-xs">Zoo Labs Foundation</p>
-          <button className="flex items-center gap-1 text-purple-400 text-sm hover:text-purple-300 transition-colors">
+        <div className="p-3 border-t zos-border flex items-center justify-between">
+          <p className="zos-text-muted text-xs">Zoo Labs Foundation</p>
+          <button className="flex items-center gap-1 zos-text-purple text-sm hover:opacity-80 transition-opacity">
             <ExternalLink className="w-3 h-3" />
             <span>zips.zoo.ngo</span>
           </button>

@@ -16,9 +16,19 @@
  * ```
  */
 
+import type { AppCategory as BaseAppCategory } from '@z-os/core';
+
 // ============================================================================
 // Types
 // ============================================================================
+
+// Re-export base types and extend for App Store features
+export type { AppManifest as BaseAppManifest, AppCategory as BaseAppCategory } from '@z-os/core';
+
+/**
+ * Extended app category including additional store categories
+ */
+export type AppCategory = BaseAppCategory | 'games' | 'audio' | 'social';
 
 export interface ScreenshotConfig {
   /** Hero/featured image for cards */
@@ -49,7 +59,10 @@ export interface RatingInfo {
   count: number;
 }
 
-export interface AppManifest {
+/**
+ * App Store manifest - extends base manifest with store-specific fields
+ */
+export interface AppStoreManifest {
   id: string;
   name: string;
   version: string;
@@ -90,18 +103,10 @@ export interface AppManifest {
   };
 }
 
-export type AppCategory =
-  | 'productivity'
-  | 'development'
-  | 'utilities'
-  | 'entertainment'
-  | 'communication'
-  | 'finance'
-  | 'system'
-  | 'games'
-  | 'audio'
-  | 'social'
-  | 'other';
+/**
+ * @deprecated Use AppStoreManifest instead
+ */
+export type AppManifest = AppStoreManifest;
 
 export interface InstalledApp extends AppManifest {
   installedAt: Date;
@@ -125,7 +130,8 @@ const RAW_GITHUB = 'https://raw.githubusercontent.com';
 export const CDN_BASE = 'https://cdn.jsdelivr.net/gh/zos-apps';
 
 const STORAGE_KEY = 'zos:apps:installed';
-const CACHE_KEY = 'zos:apps:cache';
+const CACHE_VERSION = 'v2'; // Increment to invalidate old cache with encoding issues
+const CACHE_KEY = `zos:apps:cache:${CACHE_VERSION}`;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**

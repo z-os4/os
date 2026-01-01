@@ -9,23 +9,25 @@
  */
 
 import type { ComponentType } from 'react';
+import type { AppManifest } from '@z-os/core';
 
-// App component interface
-export interface AppComponent {
-  default: ComponentType<AppProps>;
-  manifest?: AppManifest;
-}
+// Re-export shared types
+export type { AppManifest } from '@z-os/core';
 
+/**
+ * Props passed to app components
+ */
 export interface AppProps {
   onClose: () => void;
   onFocus?: () => void;
 }
 
-export interface AppManifest {
-  identifier: string;
-  name: string;
-  version: string;
-  main?: string;
+/**
+ * App module interface (what's imported from app bundles)
+ */
+export interface AppComponent {
+  default: ComponentType<AppProps>;
+  manifest?: AppManifest;
 }
 
 export interface LoadedApp {

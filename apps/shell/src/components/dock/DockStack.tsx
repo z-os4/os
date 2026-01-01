@@ -89,11 +89,11 @@ export const DockStack: React.FC<DockStackProps> = ({
       }}
     >
       {/* Fan/Grid Container */}
-      <div className="bg-black/80 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl overflow-hidden min-w-[280px] max-w-[400px]">
+      <div className="glass-menu rounded-2xl shadow-2xl overflow-hidden min-w-[280px] max-w-[400px]">
         {/* Header */}
-        <div className="px-4 py-3 border-b border-white/10">
-          <h3 className="text-white/90 font-medium text-sm">{title}</h3>
-          <p className="text-white/40 text-xs mt-0.5">{items.length} items</p>
+        <div className="px-4 py-3 border-b border-[var(--zos-border-primary)]">
+          <h3 className="zos-text-primary font-medium text-sm">{title}</h3>
+          <p className="zos-text-muted text-xs mt-0.5">{items.length} items</p>
         </div>
 
         {/* Grid of items */}
@@ -102,15 +102,15 @@ export const DockStack: React.FC<DockStackProps> = ({
             <button
               key={item.id}
               onClick={() => onItemClick?.(item)}
-              className="flex flex-col items-center p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              className="flex flex-col items-center p-2 rounded-lg hover:bg-[var(--zos-surface-glass-hover)] transition-colors group"
               style={{
                 animationDelay: `${index * 30}ms`,
               }}
             >
-              <div className="w-12 h-12 flex items-center justify-center bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">
+              <div className="w-12 h-12 flex items-center justify-center bg-[var(--zos-border-secondary)] rounded-lg group-hover:bg-[var(--zos-border-primary)] transition-colors">
                 {getIcon(item.type)}
               </div>
-              <span className="mt-1.5 text-[10px] text-white/70 text-center line-clamp-2 leading-tight max-w-full break-all">
+              <span className="mt-1.5 text-[10px] zos-text-secondary text-center line-clamp-2 leading-tight max-w-full break-all">
                 {item.name}
               </span>
             </button>
@@ -118,19 +118,19 @@ export const DockStack: React.FC<DockStackProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2.5 border-t border-white/10 flex justify-between items-center">
+        <div className="px-4 py-2.5 border-t border-[var(--zos-border-primary)] flex justify-between items-center">
           <button
             onClick={onClose}
-            className="text-xs text-white/50 hover:text-white/80 transition-colors"
+            className="text-xs zos-text-muted hover:zos-text-primary transition-colors"
           >
             Show in Finder
           </button>
           <div className="flex gap-1">
-            <button className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-              <span className="text-white/60 text-[10px]">▤</span>
+            <button className="w-6 h-6 rounded bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)] flex items-center justify-center transition-colors">
+              <span className="zos-text-secondary text-[10px]">▤</span>
             </button>
-            <button className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-              <span className="text-white/60 text-[10px]">⋮⋮</span>
+            <button className="w-6 h-6 rounded bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)] flex items-center justify-center transition-colors">
+              <span className="zos-text-secondary text-[10px]">⋮⋮</span>
             </button>
           </div>
         </div>
