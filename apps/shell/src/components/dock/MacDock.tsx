@@ -105,7 +105,7 @@ const MacDockItem = React.forwardRef<HTMLButtonElement, DockItemProps>(
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 5, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800/95 px-3 py-1.5 text-xs font-medium text-white shadow-lg backdrop-blur-sm"
+                className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md glass-menu px-3 py-1.5 text-xs font-medium zos-text-primary shadow-lg"
               >
                 {tooltip}
                 <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-gray-800/95" />
@@ -144,22 +144,22 @@ const MacDockItem = React.forwardRef<HTMLButtonElement, DockItemProps>(
 
         <ContextMenu.Portal>
           <ContextMenu.Content
-            className="min-w-[180px] bg-gray-800/95 backdrop-blur-xl rounded-lg border border-white/10 p-1 shadow-xl z-[9999]"
+            className="min-w-[180px] glass-menu rounded-lg p-1 shadow-xl z-[9999]"
           >
             <ContextMenu.Item
               onClick={handleClick}
-              className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+              className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
             >
               Open {tooltip}
             </ContextMenu.Item>
-            <ContextMenu.Separator className="h-px my-1 bg-white/10" />
+            <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
             <ContextMenu.Item
-              className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+              className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
             >
               Options
             </ContextMenu.Item>
             <ContextMenu.Item
-              className="flex items-center px-3 py-2 text-sm text-white rounded-md hover:bg-white/10 focus:bg-white/10 outline-none cursor-default"
+              className="flex items-center px-3 py-2 text-sm zos-text-primary rounded-md hover:bg-[var(--zos-surface-glass-hover)] focus:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
             >
               Show in Finder
             </ContextMenu.Item>

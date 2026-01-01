@@ -178,12 +178,11 @@ const Desktop: React.FC<DesktopProps> = ({
       onNewFolder={() => console.log('New folder')}
     >
       <div
-        className="relative h-full w-full"
-        style={{ backgroundColor: '#1c1c1e' }}
+        className="relative h-full w-full zos-bg-primary"
       >
         {/* Menu Bar */}
         <MenuBar
-          appName={activeApp}
+          fallbackAppName={activeApp}
           onShutdown={handleShutdown}
           onRestart={handleRestart}
           onLockScreen={onLock}
@@ -192,7 +191,7 @@ const Desktop: React.FC<DesktopProps> = ({
           onOpenSpotlight={() => setShowSpotlight(true)}
           onForceQuit={() => setShowForceQuit(true)}
           onAboutMac={() => setShowAboutZos(true)}
-            onOpenAppStore={handleOpenAppStore}
+          onOpenAppStore={handleOpenAppStore}
           onQuitApp={() => {
             // Close the active window
             if (windows.activeApp) {
@@ -229,7 +228,7 @@ const Desktop: React.FC<DesktopProps> = ({
               }}
             >
               {/* Title bar */}
-              <div className="h-8 flex items-center px-3 border-b border-white/10 bg-black/20 cursor-move relative">
+              <div className="h-8 flex items-center px-3 border-b border-[var(--zos-border-primary)] glass-titlebar cursor-move relative">
                 <div className="traffic-lights flex gap-1.5">
                   <button onClick={() => setShowAppStore(false)} className="traffic-light traffic-light-close group">
                     <svg viewBox="0 0 8 8" className="text-[#4d0000]">
@@ -247,7 +246,7 @@ const Desktop: React.FC<DesktopProps> = ({
                     </svg>
                   </button>
                 </div>
-                <span className="absolute left-1/2 -translate-x-1/2 text-sm text-white/70 font-medium">
+                <span className="absolute left-1/2 -translate-x-1/2 text-sm zos-text-secondary font-medium">
                   App Store
                 </span>
               </div>

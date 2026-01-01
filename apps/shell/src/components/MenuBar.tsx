@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { cn } from '@z-os/ui';
+import { cn, Z_INDEX } from '@z-os/ui';
+import { useMenuContext, Menu, MenuItem } from '@z-os/core';
 import {
   Wifi,
   Battery,
@@ -80,7 +81,7 @@ const Slider: React.FC<{
       value={value[0]}
       onChange={handleChange}
       className={cn(
-        "w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer",
+        "w-full h-1 bg-[var(--zos-border-primary)] rounded-lg appearance-none cursor-pointer",
         "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3",
         "[&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer",
         className
@@ -89,9 +90,10 @@ const Slider: React.FC<{
   );
 };
 
-interface MenuBarProps {
+export interface MenuBarProps {
   className?: string;
-  appName?: string;
+  /** Fallback app name when no active menu config */
+  fallbackAppName?: string;
   onQuitApp?: () => void;
   onOpenSettings?: () => void;
   onAboutMac?: () => void;
@@ -108,265 +110,134 @@ interface MenuBarProps {
   onToggleDarkMode?: () => void;
 }
 
-interface MenuItemType {
-  label?: string;
-  shortcut?: string;
-  type?: 'separator';
-  hasSubmenu?: boolean;
-  checked?: boolean;
-  isSearch?: boolean;
-  disabled?: boolean;
-}
+// System menu (Z logo menu) items
+const luxMenuItems: MenuItem[] = [
+  { id: 'about-zos', label: 'About zOS' },
+  { id: 'sep1', type: 'separator' },
+  { id: 'system-settings', label: 'System Settings...' },
+  { id: 'app-store', label: 'App Store...' },
+  { id: 'sep2', type: 'separator' },
+  { id: 'recent-items', label: 'Recent Items', submenu: [] },
+  { id: 'sep3', type: 'separator' },
+  { id: 'force-quit', label: 'Force Quit...', shortcut: '\u2325\u2318\u238B' },
+  { id: 'sep4', type: 'separator' },
+  { id: 'sleep', label: 'Sleep' },
+  { id: 'restart', label: 'Restart...' },
+  { id: 'shutdown', label: 'Shut Down...' },
+  { id: 'sep5', type: 'separator' },
+  { id: 'lock-screen', label: 'Lock Screen', shortcut: '\u2303\u2318Q' },
+  { id: 'logout', label: 'Log Out Z...', shortcut: '\u21E7\u2318Q' },
+];
 
-interface MenuType {
-  label: string;
-  bold?: boolean;
-  items: MenuItemType[];
-}
-
-// App-specific menu configurations
-const getAppMenus = (appName: string): MenuType[] => {
-  const baseAppMenu: MenuItemType[] = [
-    { label: `About ${appName}`, shortcut: '' },
-    { type: 'separator' } as MenuItemType,
-    { label: 'Settings...', shortcut: '⌘,' },
-    { type: 'separator' } as MenuItemType,
-    { label: 'Services', shortcut: '', hasSubmenu: true },
-    { type: 'separator' } as MenuItemType,
-    { label: `Hide ${appName}`, shortcut: '⌘H' },
-    { label: 'Hide Others', shortcut: '⌥⌘H' },
-    { label: 'Show All', shortcut: '' },
-    { type: 'separator' } as MenuItemType,
-    { label: `Quit ${appName}`, shortcut: '⌘Q' },
-  ];
-
-  const baseWindowMenu: MenuItemType[] = [
-    { label: 'Minimize', shortcut: '⌘M' },
-    { label: 'Zoom', shortcut: '' },
-    { label: 'Move Window to Left Side of Screen', shortcut: '' },
-    { label: 'Move Window to Right Side of Screen', shortcut: '' },
-    { type: 'separator' } as MenuItemType,
-    { label: 'Cycle Through Windows', shortcut: '⌘`' },
-    { type: 'separator' } as MenuItemType,
-    { label: 'Bring All to Front', shortcut: '' },
-  ];
-
-  const baseHelpMenu: MenuItemType[] = [
-    { label: 'Search', shortcut: '', isSearch: true },
-    { type: 'separator' } as MenuItemType,
-    { label: `${appName} Help`, shortcut: '' },
-  ];
-
-  // Terminal-specific menus
-  if (appName === 'Terminal') {
-    return [
-      { label: 'Terminal', bold: true, items: baseAppMenu },
-      {
-        label: 'Shell',
-        items: [
-          { label: 'New Window', shortcut: '⌘N' },
-          { label: 'New Tab', shortcut: '⌘T' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Close', shortcut: '⌘W' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Print', shortcut: '⌘P' },
-        ]
-      },
-      {
-        label: 'Edit',
-        items: [
-          { label: 'Undo', shortcut: '⌘Z' },
-          { label: 'Redo', shortcut: '⇧⌘Z' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Cut', shortcut: '⌘X' },
-          { label: 'Copy', shortcut: '⌘C' },
-          { label: 'Paste', shortcut: '⌘V' },
-          { label: 'Select All', shortcut: '⌘A' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Clear to Previous Mark', shortcut: '⌘L' },
-          { label: 'Clear Scrollback', shortcut: '' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Find...', shortcut: '⌘F' },
-        ]
-      },
-      {
-        label: 'View',
-        items: [
-          { label: 'Show Tab Bar', shortcut: '⇧⌘T' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Default Font Size', shortcut: '⌘0' },
-          { label: 'Bigger', shortcut: '⌘+' },
-          { label: 'Smaller', shortcut: '⌘-' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Enter Full Screen', shortcut: '⌃⌘F' },
-        ]
-      },
-      {
-        label: 'Profiles',
-        items: [
-          { label: 'Default', shortcut: '', checked: true },
-          { label: 'Basic', shortcut: '' },
-          { label: 'Homebrew', shortcut: '' },
-          { label: 'Pro', shortcut: '' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Open Profiles...', shortcut: '' },
-        ]
-      },
-      { label: 'Window', items: baseWindowMenu },
-      { label: 'Help', items: baseHelpMenu },
-    ];
-  }
-
-  // Safari-specific menus
-  if (appName === 'Safari') {
-    return [
-      { label: 'Safari', bold: true, items: baseAppMenu },
-      {
-        label: 'File',
-        items: [
-          { label: 'New Window', shortcut: '⌘N' },
-          { label: 'New Private Window', shortcut: '⇧⌘N' },
-          { label: 'New Tab', shortcut: '⌘T' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Open Location...', shortcut: '⌘L' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Close Window', shortcut: '⌘W' },
-          { label: 'Close Tab', shortcut: '⇧⌘W' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Print...', shortcut: '⌘P' },
-        ]
-      },
-      {
-        label: 'Edit',
-        items: [
-          { label: 'Undo', shortcut: '⌘Z' },
-          { label: 'Redo', shortcut: '⇧⌘Z' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Cut', shortcut: '⌘X' },
-          { label: 'Copy', shortcut: '⌘C' },
-          { label: 'Paste', shortcut: '⌘V' },
-          { label: 'Select All', shortcut: '⌘A' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Find', shortcut: '', hasSubmenu: true },
-        ]
-      },
-      {
-        label: 'View',
-        items: [
-          { label: 'Stop', shortcut: '⌘.' },
-          { label: 'Reload Page', shortcut: '⌘R' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Actual Size', shortcut: '⌘0' },
-          { label: 'Zoom In', shortcut: '⌘+' },
-          { label: 'Zoom Out', shortcut: '⌘-' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Enter Full Screen', shortcut: '⌃⌘F' },
-        ]
-      },
-      {
-        label: 'History',
-        items: [
-          { label: 'Back', shortcut: '⌘[' },
-          { label: 'Forward', shortcut: '⌘]' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Home', shortcut: '⇧⌘H' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Show All History', shortcut: '⌘Y' },
-          { label: 'Clear History...', shortcut: '' },
-        ]
-      },
-      {
-        label: 'Bookmarks',
-        items: [
-          { label: 'Show Bookmarks', shortcut: '⌥⌘B' },
-          { label: 'Edit Bookmarks', shortcut: '' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Add Bookmark...', shortcut: '⌘D' },
-        ]
-      },
-      {
-        label: 'Develop',
-        items: [
-          { label: 'Show Web Inspector', shortcut: '⌥⌘I' },
-          { label: 'Show JavaScript Console', shortcut: '⌥⌘C' },
-          { label: 'Show Page Source', shortcut: '⌥⌘U' },
-          { type: 'separator' } as MenuItemType,
-          { label: 'Empty Caches', shortcut: '⌥⌘E' },
-        ]
-      },
-      { label: 'Window', items: baseWindowMenu },
-      { label: 'Help', items: baseHelpMenu },
-    ];
-  }
-
-  // Default Finder-style menus
-  return [
-    { label: appName, bold: true, items: baseAppMenu },
-    {
-      label: 'File',
-      items: [
-        { label: 'New Window', shortcut: '⌘N' },
-        { label: 'New Tab', shortcut: '⌘T' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Open...', shortcut: '⌘O' },
-        { label: 'Open Recent', shortcut: '', hasSubmenu: true },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Close Window', shortcut: '⌘W' },
-        { label: 'Close All', shortcut: '⌥⌘W' },
-      ]
-    },
-    {
-      label: 'Edit',
-      items: [
-        { label: 'Undo', shortcut: '⌘Z' },
-        { label: 'Redo', shortcut: '⇧⌘Z' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Cut', shortcut: '⌘X' },
-        { label: 'Copy', shortcut: '⌘C' },
-        { label: 'Paste', shortcut: '⌘V' },
-        { label: 'Select All', shortcut: '⌘A' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Find', shortcut: '', hasSubmenu: true },
-      ]
-    },
-    {
-      label: 'View',
-      items: [
-        { label: 'as Icons', shortcut: '⌘1', checked: true },
-        { label: 'as List', shortcut: '⌘2' },
-        { label: 'as Columns', shortcut: '⌘3' },
-        { label: 'as Gallery', shortcut: '⌘4' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Show Sidebar', shortcut: '⌥⌘S', checked: true },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Enter Full Screen', shortcut: '⌃⌘F' },
-      ]
-    },
-    {
-      label: 'Go',
-      items: [
-        { label: 'Back', shortcut: '⌘[' },
-        { label: 'Forward', shortcut: '⌘]' },
-        { label: 'Enclosing Folder', shortcut: '⌘↑' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Recents', shortcut: '⇧⌘F' },
-        { label: 'Documents', shortcut: '⇧⌘O' },
-        { label: 'Desktop', shortcut: '⇧⌘D' },
-        { label: 'Downloads', shortcut: '⌥⌘L' },
-        { label: 'Home', shortcut: '⇧⌘H' },
-        { label: 'Applications', shortcut: '⇧⌘A' },
-        { type: 'separator' } as MenuItemType,
-        { label: 'Go to Folder...', shortcut: '⇧⌘G' },
-      ]
-    },
-    { label: 'Window', items: baseWindowMenu },
-    { label: 'Help', items: baseHelpMenu },
-  ];
-};
+// Default menus when no app is active (Finder-style)
+const defaultMenus: Menu[] = [
+  {
+    id: 'app',
+    label: 'Finder',
+    bold: true,
+    items: [
+      { id: 'about', label: 'About Finder' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'settings', label: 'Settings...', shortcut: '\u2318,' },
+      { id: 'sep2', type: 'separator' },
+      { id: 'services', label: 'Services', submenu: [] },
+      { id: 'sep3', type: 'separator' },
+      { id: 'hide', label: 'Hide Finder', shortcut: '\u2318H' },
+      { id: 'hideOthers', label: 'Hide Others', shortcut: '\u2325\u2318H' },
+      { id: 'showAll', label: 'Show All' },
+      { id: 'sep4', type: 'separator' },
+      { id: 'quit', label: 'Quit Finder', shortcut: '\u2318Q' },
+    ],
+  },
+  {
+    id: 'file',
+    label: 'File',
+    items: [
+      { id: 'newWindow', label: 'New Window', shortcut: '\u2318N' },
+      { id: 'newTab', label: 'New Tab', shortcut: '\u2318T' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'open', label: 'Open...', shortcut: '\u2318O' },
+      { id: 'openRecent', label: 'Open Recent', submenu: [] },
+      { id: 'sep2', type: 'separator' },
+      { id: 'close', label: 'Close Window', shortcut: '\u2318W' },
+      { id: 'closeAll', label: 'Close All', shortcut: '\u2325\u2318W' },
+    ],
+  },
+  {
+    id: 'edit',
+    label: 'Edit',
+    items: [
+      { id: 'undo', label: 'Undo', shortcut: '\u2318Z' },
+      { id: 'redo', label: 'Redo', shortcut: '\u21E7\u2318Z' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'cut', label: 'Cut', shortcut: '\u2318X' },
+      { id: 'copy', label: 'Copy', shortcut: '\u2318C' },
+      { id: 'paste', label: 'Paste', shortcut: '\u2318V' },
+      { id: 'selectAll', label: 'Select All', shortcut: '\u2318A' },
+      { id: 'sep2', type: 'separator' },
+      { id: 'find', label: 'Find', submenu: [] },
+    ],
+  },
+  {
+    id: 'view',
+    label: 'View',
+    items: [
+      { id: 'asIcons', label: 'as Icons', shortcut: '\u23181', type: 'radio', radioGroup: 'viewMode', checked: true },
+      { id: 'asList', label: 'as List', shortcut: '\u23182', type: 'radio', radioGroup: 'viewMode' },
+      { id: 'asColumns', label: 'as Columns', shortcut: '\u23183', type: 'radio', radioGroup: 'viewMode' },
+      { id: 'asGallery', label: 'as Gallery', shortcut: '\u23184', type: 'radio', radioGroup: 'viewMode' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'showSidebar', label: 'Show Sidebar', shortcut: '\u2325\u2318S', type: 'checkbox', checked: true },
+      { id: 'sep2', type: 'separator' },
+      { id: 'fullScreen', label: 'Enter Full Screen', shortcut: '\u2303\u2318F' },
+    ],
+  },
+  {
+    id: 'go',
+    label: 'Go',
+    items: [
+      { id: 'back', label: 'Back', shortcut: '\u2318[' },
+      { id: 'forward', label: 'Forward', shortcut: '\u2318]' },
+      { id: 'enclosing', label: 'Enclosing Folder', shortcut: '\u2318\u2191' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'recents', label: 'Recents', shortcut: '\u21E7\u2318F' },
+      { id: 'documents', label: 'Documents', shortcut: '\u21E7\u2318O' },
+      { id: 'desktop', label: 'Desktop', shortcut: '\u21E7\u2318D' },
+      { id: 'downloads', label: 'Downloads', shortcut: '\u2325\u2318L' },
+      { id: 'home', label: 'Home', shortcut: '\u21E7\u2318H' },
+      { id: 'applications', label: 'Applications', shortcut: '\u21E7\u2318A' },
+      { id: 'sep2', type: 'separator' },
+      { id: 'goToFolder', label: 'Go to Folder...', shortcut: '\u21E7\u2318G' },
+    ],
+  },
+  {
+    id: 'window',
+    label: 'Window',
+    items: [
+      { id: 'minimize', label: 'Minimize', shortcut: '\u2318M' },
+      { id: 'zoom', label: 'Zoom' },
+      { id: 'moveLeft', label: 'Move Window to Left Side of Screen' },
+      { id: 'moveRight', label: 'Move Window to Right Side of Screen' },
+      { id: 'sep1', type: 'separator' },
+      { id: 'cycleWindows', label: 'Cycle Through Windows', shortcut: '\u2318`' },
+      { id: 'sep2', type: 'separator' },
+      { id: 'bringAll', label: 'Bring All to Front' },
+    ],
+  },
+  {
+    id: 'help',
+    label: 'Help',
+    items: [
+      { id: 'search', label: 'Search', isSearch: true },
+      { id: 'sep1', type: 'separator' },
+      { id: 'finderHelp', label: 'Finder Help' },
+    ],
+  },
+];
 
 export const MenuBar: React.FC<MenuBarProps> = ({
   className,
-  appName = "Finder",
+  fallbackAppName = "Finder",
   onQuitApp,
   onOpenSettings,
   onAboutMac,
@@ -401,8 +272,12 @@ export const MenuBar: React.FC<MenuBarProps> = ({
   const menuBarRef = useRef<HTMLDivElement>(null);
   const [activeSystemMenu, setActiveSystemMenu] = useState<string | null>(null);
 
-  // Get app-specific menus
-  const menuItems = getAppMenus(appName);
+  // Get menu configuration from context
+  const { activeConfig, executeAction } = useMenuContext();
+  
+  // Use active config menus or fallback to defaults
+  const menuItems = activeConfig?.menus ?? defaultMenus;
+  const appName = activeConfig?.appName ?? fallbackAppName;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -458,24 +333,6 @@ export const MenuBar: React.FC<MenuBarProps> = ({
     });
   };
 
-  const luxMenuItems: MenuItemType[] = [
-    { label: 'About zOS' },
-    { type: 'separator' },
-    { label: 'System Settings...' },
-    { label: 'App Store...' },
-    { type: 'separator' },
-    { label: 'Recent Items', hasSubmenu: true },
-    { type: 'separator' },
-    { label: 'Force Quit...', shortcut: '⌥⌘⎋' },
-    { type: 'separator' },
-    { label: 'Sleep' },
-    { label: 'Restart...' },
-    { label: 'Shut Down...' },
-    { type: 'separator' },
-    { label: 'Lock Screen', shortcut: '⌃⌘Q' },
-    { label: 'Log Out Z...', shortcut: '⇧⌘Q' },
-  ];
-
   const handleMenuClick = (index: number) => {
     if (activeMenu === index) {
       setActiveMenu(null);
@@ -510,83 +367,92 @@ export const MenuBar: React.FC<MenuBarProps> = ({
     return <Volume2 className="w-[15px] h-[15px] opacity-90" />;
   };
 
-  const menuButtonClass = "h-[22px] px-[10px] flex items-center rounded-[5px] mx-[1px] hover:bg-white/20 outline-none focus:outline-none focus:ring-0 transition-colors duration-75";
-  const systemTrayButtonClass = "h-[22px] px-[7px] flex items-center rounded-[5px] mx-[1px] hover:bg-white/20 outline-none focus:outline-none focus:ring-0 transition-colors duration-75";
+  const menuButtonClass = "h-[22px] px-[10px] flex items-center rounded-[5px] mx-[1px] hover:bg-[var(--zos-border-primary)] outline-none focus:outline-none focus:ring-0 transition-colors duration-75";
+  const systemTrayButtonClass = "h-[22px] px-[7px] flex items-center rounded-[5px] mx-[1px] hover:bg-[var(--zos-border-primary)] outline-none focus:outline-none focus:ring-0 transition-colors duration-75";
 
   // Handle menu item click with action routing
-  const handleMenuItemClick = (label: string) => {
+  const handleMenuItemClick = (menuId: string, item: MenuItem) => {
     setActiveMenu(null);
     setActiveSystemMenu(null);
     setMenuBarActive(false);
 
+    // Execute through registry if we have an active config
+    if (activeConfig) {
+      executeAction(activeConfig.appId, menuId, item.id);
+      return;
+    }
+
+    // Fallback handling for system menu items and default menus
+    const label = item.label ?? '';
+
     // About {appName}
-    if (label === `About ${appName}`) {
+    if (item.id === 'about' || label.startsWith('About ')) {
       if (onAboutApp) onAboutApp(appName);
       return;
     }
 
     // Quit app
-    if (label === `Quit ${appName}` && onQuitApp) {
-      onQuitApp();
+    if (item.id === 'quit' || label.startsWith('Quit ')) {
+      if (onQuitApp) onQuitApp();
       return;
     }
 
     // Settings
-    if ((label === 'Settings...' || label === 'System Settings...') && onOpenSettings) {
-      onOpenSettings();
+    if (item.id === 'settings' || item.id === 'system-settings') {
+      if (onOpenSettings) onOpenSettings();
       return;
     }
 
     // About zOS
-    if (label === 'About zOS' && onAboutMac) {
-      onAboutMac();
+    if (item.id === 'about-zos') {
+      if (onAboutMac) onAboutMac();
       return;
     }
 
     // Minimize
-    if (label === 'Minimize' && onMinimize) {
-      onMinimize();
+    if (item.id === 'minimize') {
+      if (onMinimize) onMinimize();
       return;
     }
 
     // Hide app
-    if (label === `Hide ${appName}` && onMinimize) {
-      onMinimize();
+    if (item.id === 'hide') {
+      if (onMinimize) onMinimize();
       return;
     }
 
     // Sleep, Restart, Shutdown, Lock Screen
-    if (label === 'Sleep' && onSleep) {
-      onSleep();
+    if (item.id === 'sleep') {
+      if (onSleep) onSleep();
       return;
     }
-    if (label === 'Restart...' && onRestart) {
-      onRestart();
+    if (item.id === 'restart') {
+      if (onRestart) onRestart();
       return;
     }
-    if (label === 'Shut Down...' && onShutdown) {
-      onShutdown();
+    if (item.id === 'shutdown') {
+      if (onShutdown) onShutdown();
       return;
     }
-    if ((label === 'Lock Screen' || label === 'Log Out Z...') && onLockScreen) {
-      onLockScreen();
+    if (item.id === 'lock-screen' || item.id === 'logout') {
+      if (onLockScreen) onLockScreen();
       return;
     }
 
     // Force Quit
-    if (label === 'Force Quit...' && onForceQuit) {
-      onForceQuit();
+    if (item.id === 'force-quit') {
+      if (onForceQuit) onForceQuit();
       return;
     }
 
     // App Store
-    if (label === 'App Store...' && onOpenAppStore) {
-      onOpenAppStore();
+    if (item.id === 'app-store') {
+      if (onOpenAppStore) onOpenAppStore();
       return;
     }
 
     // Enter Full Screen
-    if (label === 'Enter Full Screen') {
+    if (item.id === 'fullScreen') {
       if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
@@ -596,33 +462,39 @@ export const MenuBar: React.FC<MenuBarProps> = ({
     }
 
     // Close Window
-    if ((label === 'Close Window' || label === 'Close') && onQuitApp) {
-      onQuitApp();
+    if (item.id === 'close' || item.id === 'closeAll') {
+      if (onQuitApp) onQuitApp();
       return;
     }
 
-    console.log('Menu action:', label);
+    // Call item's onClick if present
+    if (item.onClick) {
+      item.onClick();
+      return;
+    }
+
+    console.log('Menu action:', item.id, label);
   };
 
-  const renderMenuItem = (item: MenuItemType, itemIndex: number) => {
+  const renderMenuItem = (menuId: string, item: MenuItem, itemIndex: number) => {
     if (item.type === 'separator') {
-      return <div key={itemIndex} className="h-[1px] bg-white/10 my-[6px] mx-3" />;
+      return <div key={itemIndex} className="h-[1px] bg-[var(--zos-border-primary)] my-[6px] mx-3" />;
     }
     if (item.isSearch) {
       return (
         <div key={itemIndex} className="px-2 py-1.5">
           <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg">
-            <Search className="w-3.5 h-3.5 text-white/50" />
+            <Search className="w-3.5 h-3.5 zos-text-muted" />
             <input
               type="text"
               placeholder="Search"
-              className="flex-1 bg-transparent text-white text-[13px] outline-none placeholder:text-white/50"
+              className="flex-1 bg-transparent zos-text-primary text-[13px] outline-none placeholder:zos-text-muted"
             />
           </div>
         </div>
       );
     }
-    if (item.hasSubmenu) {
+    if (item.submenu && item.submenu.length > 0) {
       return (
         <div
           key={itemIndex}
@@ -636,6 +508,9 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         </div>
       );
     }
+    
+    const isCheckable = item.type === 'checkbox' || item.type === 'radio';
+    
     return (
       <div
         key={itemIndex}
@@ -643,14 +518,19 @@ export const MenuBar: React.FC<MenuBarProps> = ({
           "flex items-center justify-between mx-1.5 px-3 py-[6px] rounded-[5px] hover:bg-blue-500 cursor-pointer transition-colors",
           item.disabled && "opacity-40 cursor-default hover:bg-transparent"
         )}
-        onClick={() => item.label && handleMenuItemClick(item.label)}
+        onClick={() => !item.disabled && handleMenuItemClick(menuId, item)}
       >
         <span className="flex items-center gap-2">
-          {item.checked && <Check className="w-3.5 h-3.5" />}
+          {isCheckable && (
+            <span className="w-3.5 flex justify-center">
+              {item.checked && <Check className="w-3.5 h-3.5" />}
+            </span>
+          )}
+          {!isCheckable && item.checked && <Check className="w-3.5 h-3.5" />}
           {item.label}
         </span>
         {item.shortcut && (
-          <span className="text-white/50 ml-4">{item.shortcut}</span>
+          <span className="zos-text-muted ml-4">{item.shortcut}</span>
         )}
       </div>
     );
@@ -660,42 +540,43 @@ export const MenuBar: React.FC<MenuBarProps> = ({
     <div
       ref={menuBarRef}
       className={cn(
-        'fixed top-[3px] left-[4px] right-[4px] z-[10000]',
-        'h-[28px] px-2',
+        'fixed top-0 left-0 right-0',
+        'h-[28px] px-4',
         'flex items-center justify-between',
-        'bg-black/50 backdrop-blur-2xl saturate-150',
-        'rounded-[9px]',
-        'text-white/90 text-[13px] font-medium tracking-[-0.01em]',
+        // Glass effect with theme-aware styling
+        'glass-menubar',
+        'zos-text-primary text-[13px] font-medium tracking-[-0.01em]',
         'select-none',
         className
       )}
+      style={{ zIndex: Z_INDEX.MENU_BAR }}
     >
       {/* Left side - Logo and menus */}
       <div className="flex items-center h-full">
         {/* Z Logo (system menu) */}
         <div className="relative h-full">
           <button
-            className={cn(menuButtonClass, "px-[8px]", activeMenu === -1 && "bg-white/20")}
+            className={cn(menuButtonClass, "px-[8px]", activeMenu === -1 && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleMenuClick(-1)}
             onMouseEnter={() => handleMenuHover(-1)}
           >
-            <ZMenuLogo className="w-[14px] h-[14px] text-white opacity-90" />
+            <ZMenuLogo className="w-[14px] h-[14px] opacity-90" />
           </button>
           {activeMenu === -1 && (
-            <div className="absolute top-full left-0 mt-[5px] min-w-[230px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-1 z-[10001]">
-              {luxMenuItems.map((item, index) => renderMenuItem(item, index))}
+            <div className="absolute top-full left-0 mt-[5px] min-w-[230px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-1" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
+              {luxMenuItems.map((item, index) => renderMenuItem('system', item, index))}
             </div>
           )}
         </div>
 
         {/* App menus */}
         {menuItems.map((menu, index) => (
-          <div key={index} className="relative h-full">
+          <div key={menu.id} className="relative h-full">
             <button
               className={cn(
                 menuButtonClass,
                 menu.bold && "font-bold",
-                activeMenu === index && "bg-white/20"
+                activeMenu === index && "bg-[var(--zos-border-primary)]"
               )}
               onClick={() => handleMenuClick(index)}
               onMouseEnter={() => handleMenuHover(index)}
@@ -703,8 +584,8 @@ export const MenuBar: React.FC<MenuBarProps> = ({
               {menu.label}
             </button>
             {activeMenu === index && (
-              <div className="absolute top-full left-0 mt-[5px] min-w-[230px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-1 max-h-[80vh] overflow-y-auto z-[10001]">
-                {menu.items.map((item, itemIndex) => renderMenuItem(item, itemIndex))}
+              <div className="absolute top-full left-0 mt-[5px] min-w-[230px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-1 max-h-[80vh] overflow-y-auto" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
+                {menu.items.map((item, itemIndex) => renderMenuItem(menu.id, item, itemIndex))}
               </div>
             )}
           </div>
@@ -716,7 +597,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         {/* Bluetooth */}
         <div className="relative h-full">
           <button
-            className={cn(systemTrayButtonClass, activeSystemMenu === 'bluetooth' && "bg-white/20")}
+            className={cn(systemTrayButtonClass, activeSystemMenu === 'bluetooth' && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleSystemMenuClick('bluetooth')}
           >
             {bluetoothEnabled ? (
@@ -726,14 +607,14 @@ export const MenuBar: React.FC<MenuBarProps> = ({
             )}
           </button>
           {activeSystemMenu === 'bluetooth' && (
-            <div className="absolute top-full right-0 mt-[5px] min-w-[280px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-1 z-[10001]">
+            <div className="absolute top-full right-0 mt-[5px] min-w-[280px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-1" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
               <div className="px-3 py-2 flex items-center justify-between">
                 <span className="font-semibold">Bluetooth</span>
                 <button
                   onClick={() => setBluetoothEnabled(!bluetoothEnabled)}
                   className={cn(
                     "w-10 h-6 rounded-full transition-colors relative",
-                    bluetoothEnabled ? "bg-blue-500" : "bg-white/20"
+                    bluetoothEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)]"
                   )}
                 >
                   <div className={cn(
@@ -742,17 +623,17 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   )} />
                 </button>
               </div>
-              <div className="h-[1px] bg-white/10 my-1" />
-              <div className="px-3 py-1 text-white/50 text-xs">Devices</div>
+              <div className="h-[1px] bg-[var(--zos-border-primary)] my-1" />
+              <div className="px-3 py-1 zos-text-muted text-xs">Devices</div>
               <div className="px-3 py-2 flex items-center gap-3 rounded-md hover:bg-blue-500 cursor-pointer mx-1">
                 <Keyboard className="w-4 h-4" />
                 <div className="flex-1">
                   <p>Magic Keyboard</p>
-                  <p className="text-white/50 text-xs">Connected</p>
+                  <p className="zos-text-muted text-xs">Connected</p>
                 </div>
                 <div className="w-2 h-2 rounded-full bg-green-500" />
               </div>
-              <div className="h-[1px] bg-white/10 my-1" />
+              <div className="h-[1px] bg-[var(--zos-border-primary)] my-1" />
               <div className="px-3 py-1.5 rounded-md hover:bg-blue-500 cursor-pointer mx-1">
                 Bluetooth Settings...
               </div>
@@ -763,7 +644,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         {/* Battery */}
         <div className="relative h-full">
           <button
-            className={cn(systemTrayButtonClass, activeSystemMenu === 'battery' && "bg-white/20")}
+            className={cn(systemTrayButtonClass, activeSystemMenu === 'battery' && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleSystemMenuClick('battery')}
           >
             <div className="flex items-center gap-1">
@@ -775,12 +656,12 @@ export const MenuBar: React.FC<MenuBarProps> = ({
             </div>
           </button>
           {activeSystemMenu === 'battery' && (
-            <div className="absolute top-full right-0 mt-[5px] min-w-[200px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-1 z-[10001]">
+            <div className="absolute top-full right-0 mt-[5px] min-w-[200px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-1" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
               <div className="px-3 py-2">
                 <p className="font-semibold">Battery</p>
-                <p className="text-white/60">{batteryLevel}% {isCharging ? '(Charging)' : ''}</p>
+                <p className="zos-text-muted">{batteryLevel}% {isCharging ? '(Charging)' : ''}</p>
               </div>
-              <div className="h-[1px] bg-white/10 my-1" />
+              <div className="h-[1px] bg-[var(--zos-border-primary)] my-1" />
               <div className="px-3 py-1.5 rounded-md hover:bg-blue-500 cursor-pointer mx-1">
                 Battery Settings...
               </div>
@@ -791,13 +672,13 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         {/* Volume */}
         <div className="relative h-full">
           <button
-            className={cn(systemTrayButtonClass, activeSystemMenu === 'volume' && "bg-white/20")}
+            className={cn(systemTrayButtonClass, activeSystemMenu === 'volume' && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleSystemMenuClick('volume')}
           >
             <VolumeIcon />
           </button>
           {activeSystemMenu === 'volume' && (
-            <div className="absolute top-full right-0 mt-[5px] min-w-[200px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-3 z-[10001]">
+            <div className="absolute top-full right-0 mt-[5px] min-w-[200px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-3" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
               <p className="font-semibold mb-2">Sound</p>
               <Slider
                 value={volume}
@@ -805,7 +686,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                 max={100}
                 step={1}
               />
-              <div className="h-[1px] bg-white/10 my-2" />
+              <div className="h-[1px] bg-[var(--zos-border-primary)] my-2" />
               <div className="py-1.5 rounded-md hover:bg-blue-500 cursor-pointer px-2 -mx-2">
                 Sound Settings...
               </div>
@@ -816,21 +697,21 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         {/* Control Center */}
         <div className="relative h-full">
           <button
-            className={cn(systemTrayButtonClass, activeSystemMenu === 'control' && "bg-white/20")}
+            className={cn(systemTrayButtonClass, activeSystemMenu === 'control' && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleSystemMenuClick('control')}
           >
             <ControlCenterIcon className="w-[15px] h-[15px] opacity-90" />
           </button>
           {activeSystemMenu === 'control' && (
-            <div className="absolute top-full right-0 mt-[1px] w-[320px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl text-white/90 text-[13px] p-3 z-[10001]">
+            <div className="absolute top-full right-0 mt-[1px] w-[320px] glass-menu rounded-2xl shadow-2xl zos-text-primary text-[13px] p-3" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
               {/* Top Row - Connectivity */}
               <div className="flex gap-2 mb-2">
-                <div className="flex-1 bg-white/10 rounded-2xl p-2 flex gap-2">
+                <div className="flex-1 bg-[var(--zos-border-primary)] rounded-2xl p-2 flex gap-2">
                   <button
                     onClick={() => setWifiEnabled(!wifiEnabled)}
                     className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
-                      wifiEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                      wifiEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                     )}
                   >
                     <Wifi className="w-5 h-5" />
@@ -839,7 +720,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                     onClick={() => setBluetoothEnabled(!bluetoothEnabled)}
                     className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
-                      bluetoothEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                      bluetoothEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                     )}
                   >
                     <Bluetooth className="w-5 h-5" />
@@ -848,7 +729,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                     onClick={() => setAirDropEnabled(!airDropEnabled)}
                     className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
-                      airDropEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                      airDropEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                     )}
                   >
                     <Airplay className="w-5 h-5" />
@@ -862,7 +743,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={() => setFocusEnabled(!focusEnabled)}
                   className={cn(
                     "flex-1 p-3 rounded-2xl text-left transition-colors",
-                    focusEnabled ? "bg-purple-500" : "bg-white/10 hover:bg-white/15"
+                    focusEnabled ? "bg-purple-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   <Moon className="w-5 h-5 mb-1" />
@@ -870,7 +751,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   <p className="text-xs opacity-70">{focusEnabled ? "On" : "Off"}</p>
                 </button>
 
-                <div className="flex-1 bg-white/10 rounded-2xl p-3">
+                <div className="flex-1 bg-[var(--zos-border-primary)] rounded-2xl p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 rounded-md bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
                       <Music className="w-4 h-4" />
@@ -881,16 +762,16 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                     </div>
                   </div>
                   <div className="flex items-center justify-center gap-3">
-                    <button className="p-1 hover:bg-white/10 rounded">
+                    <button className="p-1 hover:bg-[var(--zos-border-primary)] rounded">
                       <SkipBack className="w-4 h-4" />
                     </button>
                     <button
-                      className="p-1 hover:bg-white/10 rounded"
+                      className="p-1 hover:bg-[var(--zos-border-primary)] rounded"
                       onClick={() => setIsPlaying(!isPlaying)}
                     >
                       {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                     </button>
-                    <button className="p-1 hover:bg-white/10 rounded">
+                    <button className="p-1 hover:bg-[var(--zos-border-primary)] rounded">
                       <SkipForward className="w-4 h-4" />
                     </button>
                   </div>
@@ -903,7 +784,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={() => setStageManagerEnabled(!stageManagerEnabled)}
                   className={cn(
                     "flex-1 p-3 rounded-2xl text-left transition-colors",
-                    stageManagerEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                    stageManagerEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   <Layers className="w-5 h-5 mb-1" />
@@ -914,7 +795,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={() => setScreenMirroringEnabled(!screenMirroringEnabled)}
                   className={cn(
                     "flex-1 p-3 rounded-2xl text-left transition-colors",
-                    screenMirroringEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                    screenMirroringEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   <MonitorSmartphone className="w-5 h-5 mb-1" />
@@ -928,7 +809,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={() => setAccessibilityEnabled(!accessibilityEnabled)}
                   className={cn(
                     "flex-1 p-3 rounded-2xl transition-colors flex flex-col items-center",
-                    accessibilityEnabled ? "bg-blue-500" : "bg-white/10 hover:bg-white/15"
+                    accessibilityEnabled ? "bg-blue-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   <Accessibility className="w-5 h-5" />
@@ -938,7 +819,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={() => setCameraEnabled(!cameraEnabled)}
                   className={cn(
                     "flex-1 p-3 rounded-2xl transition-colors flex flex-col items-center",
-                    cameraEnabled ? "bg-green-500" : "bg-white/10 hover:bg-white/15"
+                    cameraEnabled ? "bg-green-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   <Camera className="w-5 h-5" />
@@ -948,7 +829,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
                   onClick={onToggleDarkMode}
                   className={cn(
                     "flex-1 p-3 rounded-2xl transition-colors flex flex-col items-center",
-                    darkMode ? "bg-indigo-500" : "bg-white/10 hover:bg-white/15"
+                    darkMode ? "bg-indigo-500" : "bg-[var(--zos-border-primary)] hover:bg-[var(--zos-surface-glass-hover)]"
                   )}
                 >
                   {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -957,7 +838,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
               </div>
 
               {/* Display Slider */}
-              <div className="bg-white/10 rounded-2xl p-3 mb-2">
+              <div className="bg-[var(--zos-border-primary)] rounded-2xl p-3 mb-2">
                 <div className="flex items-center gap-3">
                   <Sun className="w-4 h-4 opacity-50" />
                   <Slider
@@ -972,7 +853,7 @@ export const MenuBar: React.FC<MenuBarProps> = ({
               </div>
 
               {/* Sound Slider */}
-              <div className="bg-white/10 rounded-2xl p-3">
+              <div className="bg-[var(--zos-border-primary)] rounded-2xl p-3">
                 <div className="flex items-center gap-3">
                   <VolumeX className="w-4 h-4 opacity-50" />
                   <Slider
@@ -1000,22 +881,22 @@ export const MenuBar: React.FC<MenuBarProps> = ({
         {/* Date/Time */}
         <div className="relative h-full">
           <button
-            className={cn(systemTrayButtonClass, "px-[10px]", activeSystemMenu === 'datetime' && "bg-white/20")}
+            className={cn(systemTrayButtonClass, "px-[10px]", activeSystemMenu === 'datetime' && "bg-[var(--zos-border-primary)]")}
             onClick={() => handleSystemMenuClick('datetime')}
           >
             <span className="text-[13px] opacity-90">{formatTime(currentTime)}</span>
           </button>
           {activeSystemMenu === 'datetime' && (
-            <div className="absolute top-full right-0 mt-[5px] min-w-[280px] bg-black/80 backdrop-blur-xl border border-white/20 rounded-[10px] shadow-2xl text-white/90 text-[13px] p-1 z-[10001]">
+            <div className="absolute top-full right-0 mt-[5px] min-w-[280px] glass-menu rounded-[10px] shadow-2xl zos-text-primary text-[13px] p-1" style={{ zIndex: Z_INDEX.MENU_BAR_DROPDOWN }}>
               <div className="px-3 py-2 text-center">
                 <p className="text-2xl font-light">
                   {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
                 </p>
-                <p className="text-white/60">
+                <p className="zos-text-muted">
                   {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 </p>
               </div>
-              <div className="h-[1px] bg-white/10 my-1" />
+              <div className="h-[1px] bg-[var(--zos-border-primary)] my-1" />
               <div className="px-3 py-1.5 rounded-md hover:bg-blue-500 cursor-pointer mx-1">
                 Open Date & Time Settings...
               </div>

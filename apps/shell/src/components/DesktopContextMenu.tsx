@@ -26,42 +26,42 @@ export const DesktopContextMenu: React.FC<DesktopContextMenuProps> = ({
 
       <ContextMenu.Portal>
         <ContextMenu.Content
-          className="min-w-[220px] bg-black/90 backdrop-blur-xl rounded-lg border border-white/20 p-1 shadow-xl z-[9999]"
+          className="min-w-[220px] glass-menu rounded-lg p-1 shadow-xl z-[9999]"
         >
           <ContextMenu.Item
             onClick={onNewFolder}
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             New Folder
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Get Info
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Item
             onClick={onChangeWallpaper}
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Change Wallpaper...
           </ContextMenu.Item>
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Edit Widgets...
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Sub>
-            <ContextMenu.SubTrigger className="flex items-center justify-between px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+            <ContextMenu.SubTrigger className="flex items-center justify-between px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
               Sort By
               <svg className="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -69,42 +69,42 @@ export const DesktopContextMenu: React.FC<DesktopContextMenuProps> = ({
             </ContextMenu.SubTrigger>
             <ContextMenu.Portal>
               <ContextMenu.SubContent
-                className="min-w-[160px] bg-black/90 backdrop-blur-xl rounded-lg border border-white/20 p-1 shadow-xl"
+                className="min-w-[160px] glass-menu rounded-lg p-1 shadow-xl"
                 sideOffset={8}
               >
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('name')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Name
                 </ContextMenu.Item>
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('kind')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Kind
                 </ContextMenu.Item>
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('date-modified')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Date Modified
                 </ContextMenu.Item>
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('date-created')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Date Created
                 </ContextMenu.Item>
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('size')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Size
                 </ContextMenu.Item>
                 <ContextMenu.Item
                   onClick={() => onSortBy?.('tags')}
-                  className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+                  className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
                 >
                   Tags
                 </ContextMenu.Item>
@@ -114,22 +114,22 @@ export const DesktopContextMenu: React.FC<DesktopContextMenuProps> = ({
 
           <ContextMenu.Item
             onClick={onCleanUp}
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Clean Up
           </ContextMenu.Item>
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Clean Up By
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.CheckboxItem
             checked={true}
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             <ContextMenu.ItemIndicator className="mr-2">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -139,16 +139,16 @@ export const DesktopContextMenu: React.FC<DesktopContextMenuProps> = ({
             Show View Options
           </ContextMenu.CheckboxItem>
 
-          <ContextMenu.Separator className="h-px my-1 bg-white/20" />
+          <ContextMenu.Separator className="h-px my-1 bg-[var(--zos-border-primary)]" />
 
           <ContextMenu.Item
-            className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default"
+            className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default"
           >
             Use Stacks
           </ContextMenu.Item>
 
           <ContextMenu.Sub>
-            <ContextMenu.SubTrigger className="flex items-center justify-between px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+            <ContextMenu.SubTrigger className="flex items-center justify-between px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
               Group Stacks By
               <svg className="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -156,22 +156,22 @@ export const DesktopContextMenu: React.FC<DesktopContextMenuProps> = ({
             </ContextMenu.SubTrigger>
             <ContextMenu.Portal>
               <ContextMenu.SubContent
-                className="min-w-[140px] bg-black/90 backdrop-blur-xl rounded-lg border border-white/20 p-1 shadow-xl"
+                className="min-w-[140px] glass-menu rounded-lg p-1 shadow-xl"
                 sideOffset={8}
               >
-                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
                   Kind
                 </ContextMenu.Item>
-                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
                   Date Last Opened
                 </ContextMenu.Item>
-                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
                   Date Added
                 </ContextMenu.Item>
-                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
                   Date Modified
                 </ContextMenu.Item>
-                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm text-white rounded hover:bg-white/10 outline-none cursor-default">
+                <ContextMenu.Item className="flex items-center px-3 py-1.5 text-sm zos-text-primary rounded hover:bg-[var(--zos-surface-glass-hover)] outline-none cursor-default">
                   Date Created
                 </ContextMenu.Item>
               </ContextMenu.SubContent>

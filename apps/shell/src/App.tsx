@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { DockProvider } from '@z-os/core';
+import { ThemeProvider } from '@z-os/ui';
 import ResponsiveShell from './components/ResponsiveShell';
 import BootSequence from './components/BootSequence';
-import { useDevice } from './components/hooks/useDevice';
 
 // System states
 type SystemState = 'booting' | 'running' | 'locked' | 'sleeping' | 'shutdown';
@@ -20,28 +20,36 @@ function App() {
 
   if (systemState === 'shutdown') {
     return (
-      <div className="h-screen w-screen bg-black flex items-center justify-center">
-        <p className="text-white/50 text-sm">System shut down</p>
-      </div>
+      <ThemeProvider>
+        <div className="h-screen w-screen zos-bg-primary flex items-center justify-center">
+          <p className="zos-text-muted text-sm">System shut down</p>
+        </div>
+      </ThemeProvider>
     );
   }
 
   if (systemState === 'booting') {
-    return <BootSequence onComplete={() => setSystemState('running')} />;
+    return (
+      <ThemeProvider>
+        <BootSequence onComplete={() => setSystemState('running')} />
+      </ThemeProvider>
+    );
   }
 
   return (
-    <DockProvider>
-      <div className="h-screen w-screen overflow-hidden bg-black">
-        <ResponsiveShell
-          isLocked={systemState === 'locked'}
-          onUnlock={handleUnlock}
-          onShutdown={handleShutdown}
-          onRestart={handleRestart}
-          onLock={handleLock}
-        />
-      </div>
-    </DockProvider>
+    <ThemeProvider>
+      <DockProvider>
+        <div className="h-screen w-screen overflow-hidden zos-bg-primary">
+          <ResponsiveShell
+            isLocked={systemState === 'locked'}
+            onUnlock={handleUnlock}
+            onShutdown={handleShutdown}
+            onRestart={handleRestart}
+            onLock={handleLock}
+          />
+        </div>
+      </DockProvider>
+    </ThemeProvider>
   );
 }
 
